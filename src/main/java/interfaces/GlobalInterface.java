@@ -3,7 +3,7 @@ package interfaces;
 import java.util.List;
 
 public interface GlobalInterface <T>{
-    void add(T t);
+    void add (T t);
     void update(T t);
     List<T> getAll();
     void delete(T t);
