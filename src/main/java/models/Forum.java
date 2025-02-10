@@ -1,28 +1,29 @@
 package models;
+
 import java.sql.Date;
 
 public class Forum {
     private int id;
     private String titre;
     private String contenu;
-    private String imageUrl;
+    private String image; // Changement de imageUrl à image
     private Date dateCreation;
 
     // Constructeurs
     public Forum() {}
 
-    public Forum(int id, String titre, String contenu, String imageUrl, Date dateCreation) {
+    public Forum(int id, String titre, String contenu, String image, Date dateCreation) {
         this.id = id;
         this.titre = titre;
         this.contenu = contenu;
-        this.imageUrl = imageUrl;
+        this.image = image;
         this.dateCreation = dateCreation;
     }
 
-    public Forum(String titre, String contenu, String imageUrl, Date dateCreation) {
+    public Forum(String titre, String contenu, String image, Date dateCreation) {
         this.titre = titre;
         this.contenu = contenu;
-        this.imageUrl = imageUrl;
+        this.image = image;
         this.dateCreation = dateCreation;
     }
 
@@ -51,12 +52,12 @@ public class Forum {
         this.contenu = contenu;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getImage() {
+        return image;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public Date getDateCreation() {
@@ -73,14 +74,8 @@ public class Forum {
                 "id=" + id +
                 ", titre='" + titre + '\'' +
                 ", contenu='" + contenu + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
+                ", image='" + image + '\'' +
                 ", dateCreation=" + dateCreation +
                 '}';
     }
-
-    public String getImage() {
-        return "http://example.com/image.jpg";  // Retournez une valeur de type String
-    }
-
 }
-
