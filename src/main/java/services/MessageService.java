@@ -17,11 +17,13 @@ public class MessageService implements GlobalInterface<Message> {
 
     @Override
     public void add(Message message) {
-        String SQL = "INSERT INTO message (contenu, dateEnvoi) VALUES (?, ?)";
+        // Mise à jour de la requête SQL pour inclure idforum
+        String SQL = "INSERT INTO message (contenu, dateEnvoi, idforum) VALUES (?, ?, ?)";
 
         try (PreparedStatement pstmt = conn.prepareStatement(SQL)) {
             pstmt.setString(1, message.getContenu());
             pstmt.setDate(2, message.getDateEnvoi());
+            pstmt.setInt(3, message.getIdforum());  // Ajout de la clé étrangère
 
             pstmt.executeUpdate();
             System.out.println("Message ajouté avec succès !");
@@ -32,12 +34,14 @@ public class MessageService implements GlobalInterface<Message> {
 
     @Override
     public void update(Message message) {
-        String SQL = "UPDATE message SET contenu = ?, dateEnvoi = ? WHERE id = ?";
+        // Mise à jour de la requête SQL pour inclure idforum
+        String SQL = "UPDATE message SET contenu = ?, dateEnvoi = ?, idforum = ? WHERE idmessage = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(SQL)) {
             pstmt.setString(1, message.getContenu());
             pstmt.setDate(2, message.getDateEnvoi());
-            pstmt.setInt(3, message.getId());
+            pstmt.setInt(3, message.getIdforum());
+            pstmt.setInt(4, message.getIdmessage());
 
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
@@ -59,11 +63,12 @@ public class MessageService implements GlobalInterface<Message> {
              ResultSet rs = stmt.executeQuery(SQL)) {
 
             while (rs.next()) {
-                int id = rs.getInt("id");
+                int idmessage = rs.getInt("idmessage");
                 String contenu = rs.getString("contenu");
                 Date dateEnvoi = rs.getDate("dateEnvoi");
+                int idforum = rs.getInt("idforum");
 
-                Message message = new Message(id, contenu, dateEnvoi);
+                Message message = new Message(idmessage, contenu, dateEnvoi, idforum);
                 messages.add(message);
             }
         } catch (SQLException e) {
@@ -75,10 +80,10 @@ public class MessageService implements GlobalInterface<Message> {
 
     @Override
     public void delete(Message message) {
-        String SQL = "DELETE FROM message WHERE id = ?";
+        String SQL = "DELETE FROM message WHERE idmessage = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(SQL)) {
-            pstmt.setInt(1, message.getId());
+            pstmt.setInt(1, message.getIdmessage());
 
             int rowsDeleted = pstmt.executeUpdate();
             if (rowsDeleted > 0) {

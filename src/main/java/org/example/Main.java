@@ -17,7 +17,7 @@ public class Main {
             System.out.println("Test réussi : connexion établie !");
         } else {
             System.out.println("Échec de la connexion !");
-            return;  // Sortir si la connexion échoue
+            return;
         }
 
 
@@ -44,14 +44,14 @@ public class Main {
 
         // Suppression d'un forum
         Forum forumToDelete = new Forum();
-        forumToDelete.setId(20);
+        forumToDelete.setIdForum(20);
         forumService.delete(forumToDelete);
         System.out.println("Post supprimé avec succès !");
 
         // Affichage des forums
         System.out.println("\nListe des forums existants :");
         for (Forum forum : forumService.getAll()) {
-            System.out.println("ID: " + forum.getId() + ", Titre: " + forum.getTitre() +
+            System.out.println("ID: " + forum.getIdForum() + ", Titre: " + forum.getTitre() +
                     ", Contenu: " + forum.getContenu() + ", Image: " + forum.getImage() +
                     ", Date de création: " + forum.getDateCreation());
         }
@@ -61,29 +61,30 @@ public class Main {
 
         // Ajout d'un message
         Message message = new Message("Ceci est mon premier message.",
-                new Date(System.currentTimeMillis()));
+                new Date(System.currentTimeMillis()), 17);
 
         messageService.add(message);
         System.out.println("Message ajouté avec succès !");
 
         // Mise à jour d'un message existant
-        Message updatedMessage = new Message(1,
+        Message updatedMessage = new Message(15,
                 "Message mis à jour.",
-                new Date(System.currentTimeMillis()));
+                new Date(System.currentTimeMillis()),
+                17);
 
         messageService.update(updatedMessage);
         System.out.println("Message mis à jour avec succès !");
 
         // Suppression d'un message
         Message messageToDelete = new Message();
-        messageToDelete.setId(0);
+        messageToDelete.setIdmessage(0);
         messageService.delete(messageToDelete);
         System.out.println("Message supprimé avec succès !");
 
         // Affichage des messages
         System.out.println("\nListe des messages existants :");
         for (Message msg : messageService.getAll()) {
-            System.out.println("ID: " + msg.getId() + ", Contenu: " + msg.getContenu() + ", Date d'envoi: " + msg.getDateEnvoi());
+            System.out.println("ID: " + msg.getIdmessage() + ", Contenu: " + msg.getContenu() + ", Date d'envoi: " + msg.getDateEnvoi());
         }
     }
 }

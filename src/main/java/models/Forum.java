@@ -3,17 +3,17 @@ package models;
 import java.sql.Date;
 
 public class Forum {
-    private int id;
+    private int idForum; // Modification de "id" en "idForum"
     private String titre;
     private String contenu;
-    private String image; // Changement de imageUrl à image
+    private String image;
     private Date dateCreation;
 
     // Constructeurs
     public Forum() {}
 
-    public Forum(int id, String titre, String contenu, String image, Date dateCreation) {
-        this.id = id;
+    public Forum(int idForum, String titre, String contenu, String image, Date dateCreation) {
+        this.idForum = idForum;
         this.titre = titre;
         this.contenu = contenu;
         this.image = image;
@@ -28,12 +28,12 @@ public class Forum {
     }
 
     // Getters et Setters
-    public int getId() {
-        return id;
+    public int getIdForum() {
+        return idForum;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdForum(int idForum) {
+        this.idForum = idForum;
     }
 
     public String getTitre() {
@@ -71,7 +71,7 @@ public class Forum {
     @Override
     public String toString() {
         return "Forum{" +
-                "id=" + id +
+                "idForum=" + idForum +
                 ", titre='" + titre + '\'' +
                 ", contenu='" + contenu + '\'' +
                 ", image='" + image + '\'' +
