@@ -18,6 +18,9 @@
       <Button layoutX="129.0" layoutY="470.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="342.0" style="-fx-background-color: #1B4B65;" text="Ajouter" textFill="WHITE" />
       <Button layoutX="128.0" layoutY="506.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="342.0" style="-fx-background-color: #1B4B65;" text="Afficher" textFill="WHITE" />
       <Button layoutX="363.0" layoutY="261.0" mnemonicParsing="false" style="-fx-background-color: #1B4B65;" text="choisir Image" textFill="WHITE" onAction="#choisirImage" />
+      <Button layoutX="129.0" layoutY="470.0" mnemonicParsing="false"
+              prefHeight="26.0" prefWidth="342.0" style="-fx-background-color: #1B4B65;"
+              text="Ajouter" textFill="WHITE" onAction="#ajouter"/>
 
    </children>
 </AnchorPane>
