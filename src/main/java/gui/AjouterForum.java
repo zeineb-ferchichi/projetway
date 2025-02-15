@@ -1,21 +1,27 @@
 package gui;
 
-import models.Forum;  // Importation de Forum depuis models
-import services.ForumService;  // Importation de ForumService depuis services
+import models.Forum;
+import services.ForumService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
-
+import javafx.fxml.FXMLLoader;
 import java.io.File;
+import java.io.IOException;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AjouterForum {
 
     private final ForumService forumService = new ForumService();  // Création de l'objet ForumService
+    private static List<Forum> forumsList = new ArrayList<>(); // Liste statique pour stocker les forums ajoutés
 
     @FXML
     private TextField TFcontenue;
@@ -26,6 +32,9 @@ public class AjouterForum {
     @FXML
     private TextField TFtitre;
 
+    @FXML
+    private Button btnAfficherForum; // Bouton pour afficher les forums
+private String imagePath ="";
     @FXML
     void ajouter(ActionEvent event) {
         String titre = TFtitre.getText().trim();
@@ -56,14 +65,15 @@ public class AjouterForum {
         }
 
         // Récupérer l'image depuis ImageView
-        String imagePath = "path_to_your_images/" + "imageName.jpg"; // Remplacer par un nom d'image approprié
 
         try {
-            Image image = TFimage.getImage();
-            File file = new File(imagePath);
-            Forum forum = new Forum(titre, contenu, file.getAbsolutePath(), new Date(System.currentTimeMillis()));
+            Forum forum = new Forum(titre, contenu, imagePath, new Date(System.currentTimeMillis()));
 
             forumService.add(forum); // Utilisation de ForumService pour l'ajout
+
+            // Ajouter le forum à la liste statique
+            forumsList.add(forum);
+
             showAlert(Alert.AlertType.INFORMATION, "Succès", "Forum ajouté avec succès !");
 
             // Réinitialiser les champs après l'ajout
@@ -97,9 +107,31 @@ public class AjouterForum {
 
         File file = fileChooser.showOpenDialog(null);
         if (file != null) {
-            String imagePath = file.toURI().toString();
-            TFimage.setImage(new Image(imagePath));
+             imagePath = file.toURI().toString();
+
+            TFimage.setImage(new Image(imagePath));  // Afficher l'image sélectionnée dans l'ImageView
+            imagePath=  file.toPath().toString();
+            System.out.println(imagePath);
         }
     }
 
+    // Méthode pour obtenir la liste des forums
+    public static List<Forum> getForumsList() {
+        return forumsList; // Retourne la liste statique des forums
+    }
+
+    /**
+     * Méthode pour afficher l'écran des forums
+     */
+    @FXML
+    void afficher(ActionEvent event) {
+        try {
+            // Charge le fichier FXML de l'écran des forums
+            Parent root = FXMLLoader.load(getClass().getResource("/AfficherForum.fxml"));
+            // Change la scène pour afficher la nouvelle interface
+            btnAfficherForum.getScene().setRoot(root);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }
