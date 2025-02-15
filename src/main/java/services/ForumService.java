@@ -1,103 +1,117 @@
 package services;
 
-import interfaces.GlobalInterface;
 import models.Forum;
 import util.MyConnection;
-import java.util.ArrayList;
-import java.sql.Date;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
-import java.sql.ResultSet;
 
-public class ForumService implements GlobalInterface<Forum> {
-    Connection conn;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ForumService {
+    private Connection connection;
 
     public ForumService() {
-        this.conn = MyConnection.getInstance().getCnx();
+        this.connection = MyConnection.getInstance().getCnx();
     }
 
-    @Override
+    // Ajouter un forum
     public void add(Forum forum) {
-        String SQL = "INSERT INTO forum (titre, contenu, image, datecreation) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO forum (titre, contenu, image, dateCreation) VALUES (?, ?, ?, ?)";
+        try {
+            PreparedStatement pst = connection.prepareStatement(query);
+            pst.setString(1, forum.getTitre());
+            pst.setString(2, forum.getContenu());
+            pst.setString(3, forum.getImage());
+            pst.setDate(4, forum.getDateCreation());
 
-        try (PreparedStatement pstmt = conn.prepareStatement(SQL)) {
-            pstmt.setString(1, forum.getTitre());
-            pstmt.setString(2, forum.getContenu());
-            pstmt.setString(3, forum.getImage());
-            pstmt.setDate(4, forum.getDateCreation());
-
-            pstmt.executeUpdate();
-            System.out.println("Post ajouté avec succès !");
+            pst.executeUpdate();
+            System.out.println("Forum ajouté avec succès !");
         } catch (SQLException e) {
-            System.out.println("Erreur lors de l'ajout : " + e.getMessage());
+            System.out.println("Erreur lors de l'ajout du forum : " + e.getMessage());
         }
     }
 
-    @Override
+    // Mettre à jour un forum
     public void update(Forum forum) {
-        String SQL = "UPDATE forum SET titre = ?, contenu = ?, image = ?, datecreation = ? WHERE idForum = ?";
+        String query = "UPDATE forum SET titre=?, contenu=?, image=?, dateCreation=? WHERE idForum=?";
+        try {
+            PreparedStatement pst = connection.prepareStatement(query);
+            pst.setString(1, forum.getTitre());
+            pst.setString(2, forum.getContenu());
+            pst.setString(3, forum.getImage());
+            pst.setDate(4, forum.getDateCreation());
+            pst.setInt(5, forum.getIdForum());
 
-        try (PreparedStatement pstmt = conn.prepareStatement(SQL)) {
-            pstmt.setString(1, forum.getTitre());
-            pstmt.setString(2, forum.getContenu());
-            pstmt.setString(3, forum.getImage());
-            pstmt.setDate(4, forum.getDateCreation());
-            pstmt.setInt(5, forum.getIdForum());
-
-            int rowsUpdated = pstmt.executeUpdate();
+            int rowsUpdated = pst.executeUpdate();
             if (rowsUpdated > 0) {
                 System.out.println("Forum mis à jour avec succès !");
             } else {
                 System.out.println("Aucun forum trouvé avec cet ID.");
             }
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la mise à jour : " + e.getMessage());
+            System.out.println("Erreur lors de la mise à jour du forum : " + e.getMessage());
         }
     }
 
-    @Override
-    public List<Forum> getAll() {
-        List<Forum> forums = new ArrayList<>();
-        String SQL = "SELECT * FROM forum";
-
-        try (Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(SQL)) {
-
-            while (rs.next()) {
-                int idForum = rs.getInt("idForum");
-                String titre = rs.getString("titre");
-                String contenu = rs.getString("contenu");
-                String image = rs.getString("image");
-                Date dateCreation = rs.getDate("datecreation");
-
-                Forum forum = new Forum(idForum, titre, contenu, image, dateCreation);
-                forums.add(forum);
-            }
-        } catch (SQLException e) {
-            System.out.println("Erreur lors de la récupération des forums : " + e.getMessage());
-        }
-
-        return forums;
-    }
-
-    @Override
+    // Supprimer un forum
     public void delete(Forum forum) {
-        String SQL = "DELETE FROM forum WHERE idForum = ?";
+        String query = "DELETE FROM forum WHERE idForum=?";
+        try {
+            PreparedStatement pst = connection.prepareStatement(query);
+            pst.setInt(1, forum.getIdForum());
 
-        try (PreparedStatement pstmt = conn.prepareStatement(SQL)) {
-            pstmt.setInt(1, forum.getIdForum());
-
-            int rowsDeleted = pstmt.executeUpdate();
+            int rowsDeleted = pst.executeUpdate();
             if (rowsDeleted > 0) {
                 System.out.println("Forum supprimé avec succès !");
             } else {
                 System.out.println("Aucun forum trouvé avec cet ID.");
             }
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la suppression : " + e.getMessage());
+            System.out.println("Erreur lors de la suppression du forum : " + e.getMessage());
         }
+    }
+
+    // Récupérer tous les forums
+    public List<Forum> getAll() {
+        List<Forum> forums = new ArrayList<>();
+        String query = "SELECT * FROM forum";
+        try {
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                Forum forum = new Forum(
+                        rs.getInt("idForum"),
+                        rs.getString("titre"),
+                        rs.getString("contenu"),
+                        rs.getString("image"),
+                        rs.getDate("dateCreation")
+                );
+                forums.add(forum);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des forums : " + e.getMessage());
+        }
+        return forums;
+    }
+
+    // Récupérer le dernier forum ajouté
+    public Forum getLastForum() {
+        String query = "SELECT * FROM forum ORDER BY idForum DESC LIMIT 1";
+        try {
+            PreparedStatement pst = connection.prepareStatement(query);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                return new Forum(
+                        rs.getInt("idForum"),
+                        rs.getString("titre"),
+                        rs.getString("contenu"),
+                        rs.getString("image"),
+                        rs.getDate("dateCreation")
+                );
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération du dernier forum : " + e.getMessage());
+        }
+        return null;
     }
 }

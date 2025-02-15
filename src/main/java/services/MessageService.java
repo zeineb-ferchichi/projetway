@@ -17,13 +17,16 @@ public class MessageService implements GlobalInterface<Message> {
 
     @Override
     public void add(Message message) {
-        // Mise à jour de la requête SQL pour inclure idforum
         String SQL = "INSERT INTO message (contenu, dateEnvoi, idforum) VALUES (?, ?, ?)";
-
         try (PreparedStatement pstmt = conn.prepareStatement(SQL)) {
             pstmt.setString(1, message.getContenu());
             pstmt.setDate(2, message.getDateEnvoi());
-            pstmt.setInt(3, message.getIdforum());  // Ajout de la clé étrangère
+
+            if (message.getIdforum() != 0) {
+                pstmt.setInt(3, message.getIdforum());
+            } else {
+                pstmt.setNull(3, Types.INTEGER);
+            }
 
             pstmt.executeUpdate();
             System.out.println("Message ajouté avec succès !");
@@ -34,14 +37,21 @@ public class MessageService implements GlobalInterface<Message> {
 
     @Override
     public void update(Message message) {
-        // Mise à jour de la requête SQL pour inclure idforum
-        String SQL = "UPDATE message SET contenu = ?, dateEnvoi = ?, idforum = ? WHERE idmessage = ?";
+        boolean hasIdForum = (message.getIdforum() != 0);
+        String SQL = hasIdForum
+                ? "UPDATE message SET contenu = ?, dateEnvoi = ?, idforum = ? WHERE idmessage = ?"
+                : "UPDATE message SET contenu = ?, dateEnvoi = ? WHERE idmessage = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(SQL)) {
             pstmt.setString(1, message.getContenu());
             pstmt.setDate(2, message.getDateEnvoi());
-            pstmt.setInt(3, message.getIdforum());
-            pstmt.setInt(4, message.getIdmessage());
+
+            if (hasIdForum) {
+                pstmt.setInt(3, message.getIdforum());
+                pstmt.setInt(4, message.getIdmessage());
+            } else {
+                pstmt.setInt(3, message.getIdmessage());
+            }
 
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
@@ -61,7 +71,6 @@ public class MessageService implements GlobalInterface<Message> {
 
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(SQL)) {
-
             while (rs.next()) {
                 int idmessage = rs.getInt("idmessage");
                 String contenu = rs.getString("contenu");

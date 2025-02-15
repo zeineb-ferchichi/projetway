@@ -18,6 +18,12 @@ public class Message {
         this.idforum = idforum;  // Initialisation de la clé étrangère
     }
 
+    public Message(int idmessage, String contenu, Date dateEnvoi) {
+        this.idmessage = idmessage;
+        this.contenu = contenu;
+        this.dateEnvoi = dateEnvoi;
+    }
+
     public Message(String contenu, Date dateEnvoi, int idforum) {
         this.contenu = contenu;
         this.dateEnvoi = dateEnvoi;

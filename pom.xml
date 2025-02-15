@@ -13,6 +13,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>mysql</groupId>
@@ -20,8 +21,29 @@
             <version>8.0.33</version>
         </dependency>
 
-
-
+        <!-- JavaFX dependencies (compatibles avec JDK 17) -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>17.0.2</version> <!-- Utilisation de la version stable pour JDK 17 -->
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>17.0.2</version> <!-- Utilisation de la version stable pour JDK 17 -->
+        </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>org.example.TestFX</mainClass> <!-- Remplace avec ta classe principale -->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

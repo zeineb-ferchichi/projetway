@@ -1,8 +1,9 @@
-package org.example;  // Assurez-vous que votre package est bien "org.example"
+package org.example;
 
 import java.sql.Connection;
 import java.sql.Date;
-import util.MyConnection;  // Importez MyConnection depuis le package util
+import java.util.Scanner;
+import util.MyConnection;
 import models.Forum;
 import models.Message;
 import services.ForumService;
@@ -10,81 +11,132 @@ import services.MessageService;
 
 public class Main {
     public static void main(String[] args) {
-        // Vérification de la connexion à la base de données
+        Scanner scanner = new Scanner(System.in);
         Connection connection = MyConnection.getInstance().getCnx();
 
-        if (connection != null) {
-            System.out.println("Test réussi : connexion établie !");
-        } else {
-            System.out.println("Échec de la connexion !");
+        if (connection == null) {
+            System.out.println("Échec de la connexion à la base de données !");
             return;
+        } else {
+            System.out.println("Connexion établie avec succès !");
         }
 
 
         ForumService forumService = new ForumService();
-
-        // Ajout d'un forum
-        Forum post = new Forum("Mon premier post",
-                "Ceci est le contenu de mon post.",
-                "https://example.com/image.jpg",
-                new Date(System.currentTimeMillis()));
-
-        forumService.add(post);
-        System.out.println("Post ajouté avec succès !");
-
-        // Mise à jour d'un forum existant
-        Forum updatedForum = new Forum(17,
-                "Mon post mis à jour",
-                "Voici le contenu mis à jour.",
-                "https://example.com/new-image.jpg",
-                new Date(System.currentTimeMillis()));
-
-        forumService.update(updatedForum);
-        System.out.println("Post mis à jour avec succès !");
-
-        // Suppression d'un forum
-        Forum forumToDelete = new Forum();
-        forumToDelete.setIdForum(20);
-        forumService.delete(forumToDelete);
-        System.out.println("Post supprimé avec succès !");
-
-        // Affichage des forums
-        System.out.println("\nListe des forums existants :");
-        for (Forum forum : forumService.getAll()) {
-            System.out.println("ID: " + forum.getIdForum() + ", Titre: " + forum.getTitre() +
-                    ", Contenu: " + forum.getContenu() + ", Image: " + forum.getImage() +
-                    ", Date de création: " + forum.getDateCreation());
-        }
-
-
         MessageService messageService = new MessageService();
 
-        // Ajout d'un message
-        Message message = new Message("Ceci est mon premier message.",
-                new Date(System.currentTimeMillis()), 17);
+        while (true) {
+            System.out.println("\n=== MENU ===");
+            System.out.println("1. Ajouter un forum");
+            System.out.println("2. Mettre à jour un forum");
+            System.out.println("3. Supprimer un forum");
+            System.out.println("4. Afficher les forums");
+            System.out.println("5. Ajouter un message");
+            System.out.println("6. Mettre à jour un message");
+            System.out.println("7. Supprimer un message");
+            System.out.println("8. Afficher les messages");
+            System.out.println("9. Quitter");
+            System.out.print("Choisissez une option : ");
 
-        messageService.add(message);
-        System.out.println("Message ajouté avec succès !");
+            int choix = scanner.nextInt();
+            scanner.nextLine(); // Consommer la ligne
 
-        // Mise à jour d'un message existant
-        Message updatedMessage = new Message(15,
-                "Message mis à jour.",
-                new Date(System.currentTimeMillis()),
-                17);
+            switch (choix) {
+                case 1:
+                    System.out.print("Titre du forum : ");
+                    String titre = scanner.nextLine();
+                    System.out.print("Contenu du forum : ");
+                    String contenu = scanner.nextLine();
+                    System.out.print("URL de l'image : ");
+                    String image = scanner.nextLine();
 
-        messageService.update(updatedMessage);
-        System.out.println("Message mis à jour avec succès !");
+                    Forum post = new Forum(titre, contenu, image, new Date(System.currentTimeMillis()));
+                    forumService.add(post);
+                    System.out.println("Post ajouté avec succès !");
+                    break;
 
-        // Suppression d'un message
-        Message messageToDelete = new Message();
-        messageToDelete.setIdmessage(0);
-        messageService.delete(messageToDelete);
-        System.out.println("Message supprimé avec succès !");
+                case 2:
+                    System.out.print("ID du forum à mettre à jour : ");
+                    int idUpdate = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.print("Nouveau titre : ");
+                    String newTitre = scanner.nextLine();
+                    System.out.print("Nouveau contenu : ");
+                    String newContenu = scanner.nextLine();
+                    System.out.print("Nouvelle image : ");
+                    String newImage = scanner.nextLine();
 
-        // Affichage des messages
-        System.out.println("\nListe des messages existants :");
-        for (Message msg : messageService.getAll()) {
-            System.out.println("ID: " + msg.getIdmessage() + ", Contenu: " + msg.getContenu() + ", Date d'envoi: " + msg.getDateEnvoi());
+                    Forum updatedForum = new Forum(idUpdate, newTitre, newContenu, newImage, new Date(System.currentTimeMillis()));
+                    forumService.update(updatedForum);
+                    System.out.println("Post mis à jour avec succès !");
+                    break;
+
+                case 3:
+                    System.out.print("ID du forum à supprimer : ");
+                    int idDelete = scanner.nextInt();
+
+                    forumService.delete(new Forum(idDelete, "", "", "", null));
+                    System.out.println("Post supprimé avec succès !");
+                    break;
+
+                case 4:
+                    System.out.println("\nListe des forums :");
+                    for (Forum forum : forumService.getAll()) {
+                        System.out.println("ID: " + forum.getIdForum() + ", Titre: " + forum.getTitre() + ", Contenu: " + forum.getContenu());
+                    }
+                    break;
+
+                case 5:
+                    System.out.print("Contenu du message : ");
+                    String msgContent = scanner.nextLine();
+
+                    Forum lastForum = forumService.getLastForum();
+                    int forumId = (lastForum != null) ? lastForum.getIdForum() : 0;
+
+                    Message message = new Message(msgContent, new Date(System.currentTimeMillis()), forumId);
+                    messageService.add(message);
+                    System.out.println("Message ajouté avec succès !");
+                    break;
+
+
+                case 6:
+                    System.out.print("ID du message à mettre à jour : ");
+                    int msgUpdateId = scanner.nextInt();
+                    scanner.nextLine(); // Consommer la ligne restante
+                    System.out.print("Nouveau contenu  : ");
+
+                    // Lire le contenu sans attendre qu'Entrée soit pressé à la fin
+                    String updatedMsg = scanner.nextLine(); // Utilise nextLine() pour lire l'entrée complète après un mot
+
+                    // Mise à jour du message
+                    Message updatedMessage = new Message(msgUpdateId, updatedMsg, new Date(System.currentTimeMillis()), 0); // On met 0 pour l'ID du forum si pas de modification
+                    messageService.update(updatedMessage);
+                    System.out.println("Message mis à jour avec succès !");
+                    break;
+
+                case 7:
+                    System.out.print("ID du message à supprimer : ");
+                    int msgDeleteId = scanner.nextInt();
+
+                    messageService.delete(new Message(msgDeleteId, "", null, 0));
+                    System.out.println("Message supprimé avec succès !");
+                    break;
+
+                case 8:
+                    System.out.println("\nListe des messages :");
+                    for (Message msg : messageService.getAll()) {
+                        System.out.println("ID: " + msg.getIdmessage() + ", Contenu: " + msg.getContenu() + ", ID Forum: " + (msg.getIdforum() == 0 ? "Aucun" : msg.getIdforum()));
+                    }
+                    break;
+
+                case 9:
+                    System.out.println("Fermeture du programme.");
+                    scanner.close();
+                    return;
+
+                default:
+                    System.out.println("Option invalide, veuillez réessayer.");
+            }
         }
     }
 }
