@@ -21,7 +21,6 @@ public class Main {
             System.out.println("Connexion établie avec succès !");
         }
 
-
         ForumService forumService = new ForumService();
         MessageService messageService = new MessageService();
 
@@ -39,10 +38,11 @@ public class Main {
             System.out.print("Choisissez une option : ");
 
             int choix = scanner.nextInt();
-            scanner.nextLine(); // Consommer la ligne
+            scanner.nextLine(); // Consommer la ligne restante
 
             switch (choix) {
                 case 1:
+                    // Ajouter un forum
                     System.out.print("Titre du forum : ");
                     String titre = scanner.nextLine();
                     System.out.print("Contenu du forum : ");
@@ -52,34 +52,46 @@ public class Main {
 
                     Forum post = new Forum(titre, contenu, image, new Date(System.currentTimeMillis()));
                     forumService.add(post);
-                    System.out.println("Post ajouté avec succès !");
+                    System.out.println("Forum ajouté avec succès !");
                     break;
 
                 case 2:
+                    // Mettre à jour un forum
                     System.out.print("ID du forum à mettre à jour : ");
                     int idUpdate = scanner.nextInt();
-                    scanner.nextLine();
-                    System.out.print("Nouveau titre : ");
-                    String newTitre = scanner.nextLine();
-                    System.out.print("Nouveau contenu : ");
-                    String newContenu = scanner.nextLine();
-                    System.out.print("Nouvelle image : ");
-                    String newImage = scanner.nextLine();
+                    scanner.nextLine(); // Consommer la ligne restante
 
-                    Forum updatedForum = new Forum(idUpdate, newTitre, newContenu, newImage, new Date(System.currentTimeMillis()));
-                    forumService.update(updatedForum);
-                    System.out.println("Post mis à jour avec succès !");
+                    if (forumService.getById(idUpdate) != null) {
+                        System.out.print("Nouveau titre : ");
+                        String newTitre = scanner.nextLine();
+                        System.out.print("Nouveau contenu : ");
+                        String newContenu = scanner.nextLine();
+                        System.out.print("Nouvelle image : ");
+                        String newImage = scanner.nextLine();
+
+                        Forum updatedForum = new Forum(idUpdate, newTitre, newContenu, newImage, new Date(System.currentTimeMillis()));
+                        forumService.update(updatedForum);
+                        System.out.println("Forum mis à jour avec succès !");
+                    } else {
+                        System.out.println("Forum avec cet ID non trouvé.");
+                    }
                     break;
 
                 case 3:
+                    // Supprimer un forum
                     System.out.print("ID du forum à supprimer : ");
                     int idDelete = scanner.nextInt();
 
-                    forumService.delete(new Forum(idDelete, "", "", "", null));
-                    System.out.println("Post supprimé avec succès !");
+                    if (forumService.getById(idDelete) != null) {
+                        forumService.delete(new Forum(idDelete, "", "", "", null));
+                        System.out.println("Forum supprimé avec succès !");
+                    } else {
+                        System.out.println("Forum avec cet ID non trouvé.");
+                    }
                     break;
 
                 case 4:
+                    // Afficher les forums
                     System.out.println("\nListe des forums :");
                     for (Forum forum : forumService.getAll()) {
                         System.out.println("ID: " + forum.getIdForum() + ", Titre: " + forum.getTitre() + ", Contenu: " + forum.getContenu());
@@ -87,42 +99,67 @@ public class Main {
                     break;
 
                 case 5:
+                    // Ajouter un message
                     System.out.print("Contenu du message : ");
                     String msgContent = scanner.nextLine();
 
-                    Forum lastForum = forumService.getLastForum();
-                    int forumId = (lastForum != null) ? lastForum.getIdForum() : 0;
+                    // Affichage des forums disponibles pour sélectionner un forum
+                    System.out.println("Liste des forums disponibles :");
+                    for (Forum forum : forumService.getAll()) {
+                        System.out.println("ID: " + forum.getIdForum() + ", Titre: " + forum.getTitre());
+                    }
+                    System.out.print("Entrez l'ID du forum auquel vous souhaitez ajouter un message : ");
+                    int forumId = scanner.nextInt();
+                    scanner.nextLine(); // Consommer la ligne restante
 
-                    Message message = new Message(msgContent, new Date(System.currentTimeMillis()), forumId);
-                    messageService.add(message);
-                    System.out.println("Message ajouté avec succès !");
+                    if (forumService.getById(forumId) != null) {
+                        Message message = new Message(msgContent, new Date(System.currentTimeMillis()), forumId);
+                        messageService.add(message);
+                        System.out.println("Message ajouté avec succès !");
+                    } else {
+                        System.out.println("Forum avec cet ID non trouvé.");
+                    }
                     break;
 
-
                 case 6:
+                    // Mettre à jour un message
                     System.out.print("ID du message à mettre à jour : ");
                     int msgUpdateId = scanner.nextInt();
                     scanner.nextLine(); // Consommer la ligne restante
-                    System.out.print("Nouveau contenu  : ");
 
-                    // Lire le contenu sans attendre qu'Entrée soit pressé à la fin
-                    String updatedMsg = scanner.nextLine(); // Utilise nextLine() pour lire l'entrée complète après un mot
+                    Message messageToUpdate = messageService.getById(msgUpdateId);
+                    if (messageToUpdate != null) {
+                        System.out.print("Nouveau contenu : ");
+                        String updatedMsgContent = scanner.nextLine();
 
-                    // Mise à jour du message
-                    Message updatedMessage = new Message(msgUpdateId, updatedMsg, new Date(System.currentTimeMillis()), 0); // On met 0 pour l'ID du forum si pas de modification
-                    messageService.update(updatedMessage);
-                    System.out.println("Message mis à jour avec succès !");
+                        // Récupérer l'ID du forum déjà associé au message (ne pas demander à l'utilisateur)
+                        int existingForumId = messageToUpdate.getIdforum();
+
+                        // Mettre à jour le message avec le nouveau contenu, sans modifier le forum
+                        Message updatedMessage = new Message(msgUpdateId, updatedMsgContent, new Date(System.currentTimeMillis()), existingForumId);
+                        messageService.update(updatedMessage);
+                        System.out.println("Message mis à jour avec succès !");
+                    } else {
+                        System.out.println("Message avec cet ID non trouvé.");
+                    }
                     break;
 
+
                 case 7:
+                    // Supprimer un message
                     System.out.print("ID du message à supprimer : ");
                     int msgDeleteId = scanner.nextInt();
 
-                    messageService.delete(new Message(msgDeleteId, "", null, 0));
-                    System.out.println("Message supprimé avec succès !");
+                    if (messageService.getById(msgDeleteId) != null) {
+                        messageService.delete(new Message(msgDeleteId, "", null, 0));
+                        System.out.println("Message supprimé avec succès !");
+                    } else {
+                        System.out.println("Message avec cet ID non trouvé.");
+                    }
                     break;
 
                 case 8:
+                    // Afficher les messages
                     System.out.println("\nListe des messages :");
                     for (Message msg : messageService.getAll()) {
                         System.out.println("ID: " + msg.getIdmessage() + ", Contenu: " + msg.getContenu() + ", ID Forum: " + (msg.getIdforum() == 0 ? "Aucun" : msg.getIdforum()));
@@ -130,6 +167,7 @@ public class Main {
                     break;
 
                 case 9:
+                    // Quitter le programme
                     System.out.println("Fermeture du programme.");
                     scanner.close();
                     return;

@@ -12,6 +12,10 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.ScrollPane;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.util.List;
@@ -91,7 +95,7 @@ public class AfficherForum {
                 contentLabel.setWrapText(true);
                 forumBox.getChildren().add(contentLabel);
 
-                // Boutons Modifier et Supprimer
+                // Boutons Modifier, Supprimer et Message
                 Button btnModifier = new Button("Modifier");
                 btnModifier.setStyle("-fx-background-color: #62B9CB; -fx-text-fill: white;");
                 btnModifier.setOnAction(e -> modifierForum(forum)); // Action pour modifier un forum
@@ -99,11 +103,13 @@ public class AfficherForum {
                 Button btnSupprimer = new Button("Supprimer");
                 btnSupprimer.setStyle("-fx-background-color: #D9534F; -fx-text-fill: white;");
                 btnSupprimer.setOnAction(e -> supprimerForum(forum)); // Action pour supprimer un forum
-                Button btnSupprimercmp = new Button("message");
 
+                Button btnSupprimercmp = new Button("Message");
                 btnSupprimercmp.setStyle("-fx-background-color:#1B4B65; -fx-text-fill: white;");
+                btnSupprimercmp.setOnAction(e -> ouvrirAjouterMessage(forum)); // Action pour ouvrir AjouterMessage
+
                 // Conteneur pour les boutons
-                HBox buttonContainer = new HBox(10, btnModifier, btnSupprimer,btnSupprimercmp);
+                HBox buttonContainer = new HBox(10, btnModifier, btnSupprimer, btnSupprimercmp);
                 forumBox.getChildren().add(buttonContainer);
 
                 // Ajouter la VBox au TilePane
@@ -144,5 +150,26 @@ public class AfficherForum {
                 refreshForums(); // Rafraîchit la liste des forums après la suppression
             }
         });
+    }
+
+    // Méthode pour ouvrir l'écran AjouterMessage et passer le forum
+    private void ouvrirAjouterMessage(Forum forum) {
+        try {
+            // Charger le fichier FXML de l'écran AjouterMessage
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterMessage.fxml"));
+            Parent root = loader.load();
+
+            // Récupérer le contrôleur de l'écran AjouterMessage
+            AjouterMessage controller = loader.getController();
+            controller.initData(forum); // Passer le forum au contrôleur
+
+            // Afficher la nouvelle scène
+            Stage stage = (Stage) tilePane.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

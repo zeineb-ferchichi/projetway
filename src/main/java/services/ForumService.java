@@ -17,13 +17,11 @@ public class ForumService {
     // Ajouter un forum
     public void add(Forum forum) {
         String query = "INSERT INTO forum (titre, contenu, image, dateCreation) VALUES (?, ?, ?, ?)";
-        try {
-            PreparedStatement pst = connection.prepareStatement(query);
+        try (PreparedStatement pst = connection.prepareStatement(query)) {
             pst.setString(1, forum.getTitre());
             pst.setString(2, forum.getContenu());
             pst.setString(3, forum.getImage());
             pst.setDate(4, forum.getDateCreation());
-
             pst.executeUpdate();
             System.out.println("Forum ajouté avec succès !");
         } catch (SQLException e) {
@@ -34,8 +32,7 @@ public class ForumService {
     // Mettre à jour un forum
     public void update(Forum forum) {
         String query = "UPDATE forum SET titre=?, contenu=?, image=?, dateCreation=? WHERE idForum=?";
-        try {
-            PreparedStatement pst = connection.prepareStatement(query);
+        try (PreparedStatement pst = connection.prepareStatement(query)) {
             pst.setString(1, forum.getTitre());
             pst.setString(2, forum.getContenu());
             pst.setString(3, forum.getImage());
@@ -56,8 +53,7 @@ public class ForumService {
     // Supprimer un forum
     public void delete(Forum forum) {
         String query = "DELETE FROM forum WHERE idForum=?";
-        try {
-            PreparedStatement pst = connection.prepareStatement(query);
+        try (PreparedStatement pst = connection.prepareStatement(query)) {
             pst.setInt(1, forum.getIdForum());
 
             int rowsDeleted = pst.executeUpdate();
@@ -75,9 +71,8 @@ public class ForumService {
     public List<Forum> getAll() {
         List<Forum> forums = new ArrayList<>();
         String query = "SELECT * FROM forum";
-        try {
-            Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
                 Forum forum = new Forum(
                         rs.getInt("idForum"),
@@ -97,9 +92,8 @@ public class ForumService {
     // Récupérer le dernier forum ajouté
     public Forum getLastForum() {
         String query = "SELECT * FROM forum ORDER BY idForum DESC LIMIT 1";
-        try {
-            PreparedStatement pst = connection.prepareStatement(query);
-            ResultSet rs = pst.executeQuery();
+        try (PreparedStatement pst = connection.prepareStatement(query);
+             ResultSet rs = pst.executeQuery()) {
             if (rs.next()) {
                 return new Forum(
                         rs.getInt("idForum"),
@@ -114,5 +108,27 @@ public class ForumService {
         }
         return null;
     }
-}
 
+    // Method to get Forum by ID
+    public Forum getById(int id) {
+        Forum forum = null;
+        String query = "SELECT * FROM forum WHERE idForum = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    forum = new Forum(
+                            rs.getInt("idForum"),
+                            rs.getString("titre"),
+                            rs.getString("contenu"),
+                            rs.getString("image"),
+                            rs.getDate("dateCreation")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération du forum : " + e.getMessage());
+        }
+        return forum;
+    }
+}
