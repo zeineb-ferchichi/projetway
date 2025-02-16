@@ -31,6 +31,7 @@ public class AjouterMessage {
 
     @FXML
     public void initialize() {
+        // Action sur le bouton d'envoi
         btnEnvoyer.setOnAction(event -> ajouterMessage());
     }
 
@@ -42,22 +43,29 @@ public class AjouterMessage {
 
     // Affiche tous les messages du forum sélectionné
     private void afficherMessages() {
-        messageContainer.getChildren().clear(); // Nettoyer la liste avant de recharger
+        messageContainer.getChildren().clear(); // Nettoyer les anciens messages avant de les recharger
         try {
             List<Message> messages = messageService.getAllByForumId(forumId);
 
-            for (Message msg : messages) {
-                VBox messageBox = new VBox();
-                messageBox.setStyle("-fx-background-color: #e0e0e0; -fx-padding: 10px; -fx-border-radius: 5px; -fx-margin-bottom: 5px;");
+            // Vérification s'il y a des messages à afficher
+            if (messages.isEmpty()) {
+                Label noMessagesLabel = new Label("Aucun message dans ce forum.");
+                messageContainer.getChildren().add(noMessagesLabel);
+            } else {
+                // Affichage des messages
+                for (Message msg : messages) {
+                    VBox messageBox = new VBox();
+                    messageBox.setStyle("-fx-background-color: #e0e0e0; -fx-padding: 10px; -fx-border-radius: 5px; -fx-margin-bottom: 5px;");
 
-                Label contenuLabel = new Label(msg.getContenu());
-                contenuLabel.setWrapText(true);
+                    Label contenuLabel = new Label(msg.getContenu());
+                    contenuLabel.setWrapText(true);
 
-                Label dateLabel = new Label("Envoyé le : " + msg.getDateEnvoi().toString());
-                dateLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: gray;");
+                    Label dateLabel = new Label("Envoyé le : " + msg.getDateEnvoi().toString());
+                    dateLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: gray;");
 
-                messageBox.getChildren().addAll(contenuLabel, dateLabel);
-                messageContainer.getChildren().add(messageBox);
+                    messageBox.getChildren().addAll(contenuLabel, dateLabel);
+                    messageContainer.getChildren().add(messageBox);
+                }
             }
 
             // Faire défiler vers le bas après le chargement des messages
@@ -88,18 +96,38 @@ public class AjouterMessage {
                     messageInput.clear();
 
                     // Rafraîchir l'affichage des messages
-                    afficherMessages();
+                    afficherMessages();  // Cette ligne met à jour les messages affichés
 
-                    // Défilement automatique vers le bas du ScrollPane après l'ajout d'un message
+                    // Ajouter le message immédiatement après son ajout
+                    VBox messageBox = new VBox();
+                    messageBox.setStyle("-fx-background-color: #e0e0e0; -fx-padding: 10px; -fx-border-radius: 5px; -fx-margin-bottom: 5px;");
+
+                    Label contenuLabel = new Label(message.getContenu());
+                    contenuLabel.setWrapText(true);
+
+                    Label dateLabel = new Label("Envoyé le : " + message.getDateEnvoi().toString());
+                    dateLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: gray;");
+
+                    messageBox.getChildren().addAll(contenuLabel, dateLabel);
+                    messageContainer.getChildren().add(messageBox);
+
+                    // Défilement automatique vers le bas du ScrollPane après l'ajout du message
                     scrollPane.setVvalue(1.0);  // Fait défiler le ScrollPane vers le bas
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println("Erreur lors de l'ajout du message.");
+                    // Affichage de l'alerte d'erreur lors de l'ajout
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Erreur");
+                    alert.setHeaderText("Erreur lors de l'ajout du message");
+                    alert.setContentText("Une erreur est survenue lors de l'ajout du message.");
+                    alert.showAndWait();
                 }
             } else {
                 // Affichage d'un message d'erreur si le forum n'existe pas
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Erreur");
+                alert.setTitle("Forum non trouvé");
                 alert.setHeaderText("Forum non trouvé");
                 alert.setContentText("Le forum avec cet ID n'existe pas.");
                 alert.showAndWait();
@@ -107,8 +135,8 @@ public class AjouterMessage {
         } else {
             // Message d'erreur si le contenu est vide
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur");
-            alert.setHeaderText("Message vide");
+            alert.setTitle("Message vide");
+            alert.setHeaderText("Le message est vide");
             alert.setContentText("Le message ne peut pas être vide.");
             alert.showAndWait();
         }
