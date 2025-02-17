@@ -3,42 +3,34 @@ package gui;
 import models.Forum;
 import services.ForumService;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
-import javafx.scene.control.ScrollPane;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import javafx.scene.control.TextField;
 
 public class AfficherForum {
 
     private final ForumService forumService = new ForumService(); // Service pour interagir avec la BDD
-    public Button btnCommenter;
 
     @FXML
-    private Button btnModifier;  // Bouton Modifier pour un forum
+    private Button btnModifier, btnSupprimer;
 
     @FXML
-    private Button btnSupprimer;  // Bouton Supprimer pour un forum
+    private Label forumContent, forumTitle;
 
     @FXML
-    private Label forumContent;  // Affichage du contenu du forum
-
-    @FXML
-    private ImageView forumImageView;  // Correspond à fx:id dans le FXML
-
-    @FXML
-    private Label forumTitle;  // Affichage du titre du forum
+    private ImageView forumImageView;
 
     @FXML
     private ScrollPane scrollPane;
@@ -47,46 +39,41 @@ public class AfficherForum {
     private TilePane tilePane;
 
     @FXML
+    private TextField TFtitre; // Vérification si ce champ existe bien dans ModifierForum.fxml
+
+    @FXML
     void initialize() {
-        refreshForums(); // Charge les forums au démarrage
+        refreshForums();
     }
 
     private void refreshForums() {
-        tilePane.getChildren().clear(); // Nettoie l'affichage avant de recharger les forums
+        tilePane.getChildren().clear();
 
         try {
-            List<Forum> forums = forumService.getAll(); // Assurez-vous que votre ForumService retourne une List
+            List<Forum> forums = forumService.getAll();
 
             for (Forum forum : forums) {
                 VBox forumBox = new VBox();
                 forumBox.setSpacing(10);
                 forumBox.setStyle("-fx-background-color: #FFFFFF; -fx-padding: 10; -fx-background-radius: 10; -fx-border-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0.5, 0, 0);");
 
-                String imagePath = forum.getImage(); // Récupère le chemin de l'image
-                System.out.println("Chemin de l'image : " + imagePath); // Debug
-
+                String imagePath = forum.getImage();
                 File imageFile = new File(imagePath);
-                Image image = null;
+                Image image;
 
-                // Vérification de l'existence du fichier image
                 if (imageFile.exists() && imageFile.isFile()) {
                     image = new Image("file:" + imagePath);
-                    System.out.println("Image trouvée et chargée");
                 } else {
-                    image = new Image("file:/chemin/vers/image/empty.png"); // Remplacez avec un fichier d'image par défaut
-                    System.out.println("Image non trouvée, image par défaut utilisée");
+                    image = new Image("file:/chemin/vers/image/empty.png");
                 }
 
-                // Création de l'ImageView
                 ImageView imageView = new ImageView(image);
                 imageView.setFitWidth(200);
                 imageView.setFitHeight(150);
                 imageView.setPreserveRatio(true);
 
-                // Ajout de l'image à la VBox
-                forumBox.getChildren().addAll(imageView);
+                forumBox.getChildren().add(imageView);
 
-                // Ajout du titre et du contenu
                 Label titleLabel = new Label(forum.getTitre());
                 titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
                 forumBox.getChildren().add(titleLabel);
@@ -95,81 +82,81 @@ public class AfficherForum {
                 contentLabel.setWrapText(true);
                 forumBox.getChildren().add(contentLabel);
 
-                // Boutons Modifier, Supprimer et Message
                 Button btnModifier = new Button("Modifier");
                 btnModifier.setStyle("-fx-background-color: #62B9CB; -fx-text-fill: white;");
-                btnModifier.setOnAction(e -> modifierForum(forum)); // Action pour modifier un forum
+                btnModifier.setOnAction(e -> modifierForum(forum));
 
                 Button btnSupprimer = new Button("Supprimer");
                 btnSupprimer.setStyle("-fx-background-color: #D9534F; -fx-text-fill: white;");
-                btnSupprimer.setOnAction(e -> supprimerForum(forum)); // Action pour supprimer un forum
+                btnSupprimer.setOnAction(e -> supprimerForum(forum));
 
-                Button btnSupprimercmp = new Button("Message");
-                btnSupprimercmp.setStyle("-fx-background-color:#1B4B65; -fx-text-fill: white;");
-                btnSupprimercmp.setOnAction(e -> ouvrirAjouterMessage(forum)); // Action pour ouvrir AjouterMessage
+                Button btnMessage = new Button("Message");
+                btnMessage.setStyle("-fx-background-color:#1B4B65; -fx-text-fill: white;");
+                btnMessage.setOnAction(e -> ouvrirAjouterMessage(forum));
 
-                // Conteneur pour les boutons
-                HBox buttonContainer = new HBox(10, btnModifier, btnSupprimer, btnSupprimercmp);
+                HBox buttonContainer = new HBox(10, btnModifier, btnSupprimer, btnMessage);
                 forumBox.getChildren().add(buttonContainer);
 
-                // Ajouter la VBox au TilePane
                 tilePane.getChildren().add(forumBox);
             }
         } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur");
-            alert.setContentText("Erreur lors du chargement des forums : " + e.getMessage());
-            alert.showAndWait();
+            showError("Erreur lors du chargement des forums", e);
         }
     }
 
-    // Méthode pour modifier un forum
+    @FXML
     private void modifierForum(Forum forum) {
-        // Implémentation de la logique pour modifier un forum
-        // Par exemple, vous pouvez ouvrir un formulaire d'édition ici.
-        String nouveauTitre = "Nouveau titre"; // À remplacer par un champ d'édition
-        forum.setTitre(nouveauTitre);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierForum.fxml"));
+            Parent root = loader.load();
 
-        // Mettre à jour la base de données avec la nouvelle valeur
-        forumService.update(forum); // Assurez-vous que la méthode update existe dans ForumService
+            ModifierForum controller = loader.getController();
+            controller.setForum(forum);
 
-        // Rafraîchissement de la vue
-        refreshForums();
+            Stage stage = (Stage) tilePane.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showError("Erreur lors du chargement de ModifierForum.fxml", e);
+        }
     }
 
-    // Méthode pour supprimer un forum
     private void supprimerForum(Forum forum) {
-        // Implémentation de la logique pour supprimer un forum
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation de suppression");
         alert.setHeaderText("Êtes-vous sûr de vouloir supprimer ce forum ?");
+        alert.setContentText("Cette action est irréversible.");
 
         alert.showAndWait().ifPresent(response -> {
-            if (response.getText().equals("OK")) {
-                forumService.delete(forum); // Assurez-vous que la méthode delete existe dans ForumService
-                refreshForums(); // Rafraîchit la liste des forums après la suppression
+            if (response == ButtonType.OK) {
+                forumService.delete(forum);
+                refreshForums();
             }
         });
     }
 
-    // Méthode pour ouvrir l'écran AjouterMessage et passer le forum
     private void ouvrirAjouterMessage(Forum forum) {
         try {
-            // Charger le fichier FXML de l'écran AjouterMessage
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterMessage.fxml"));
             Parent root = loader.load();
 
-            // Récupérer le contrôleur de l'écran AjouterMessage
             AjouterMessage controller = loader.getController();
-            controller.initData(forum); // Passer le forum au contrôleur
+            controller.initData(forum);
 
-            // Afficher la nouvelle scène
             Stage stage = (Stage) tilePane.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+            stage.setScene(new Scene(root));
             stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            showError("Erreur lors du chargement de AjouterMessage.fxml", e);
         }
+    }
+
+    private void showError(String message, Exception e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Erreur");
+        alert.setHeaderText(message);
+        alert.setContentText(e.getMessage());
+        alert.showAndWait();
+        e.printStackTrace();
     }
 }

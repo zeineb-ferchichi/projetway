@@ -30,7 +30,8 @@ public class ForumService {
     }
 
     // Mettre à jour un forum
-    public void update(Forum forum) {
+    // Mettre à jour un forum
+    public boolean update(Forum forum) {
         String query = "UPDATE forum SET titre=?, contenu=?, image=?, dateCreation=? WHERE idForum=?";
         try (PreparedStatement pst = connection.prepareStatement(query)) {
             pst.setString(1, forum.getTitre());
@@ -42,13 +43,17 @@ public class ForumService {
             int rowsUpdated = pst.executeUpdate();
             if (rowsUpdated > 0) {
                 System.out.println("Forum mis à jour avec succès !");
+                return true; // Retourne true si la mise à jour réussit
             } else {
                 System.out.println("Aucun forum trouvé avec cet ID.");
+                return false; // Retourne false si aucune ligne n'a été mise à jour
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la mise à jour du forum : " + e.getMessage());
+            return false; // Retourne false en cas d'erreur
         }
     }
+
 
     // Supprimer un forum
     public void delete(Forum forum) {

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="547.0" prefWidth="600.0" style="-fx-background-color: #FAFDF9;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ModifierForum">
+    <children>
+        <ImageView fx:id="TFimage" fitHeight="184.0" fitWidth="318.0" layoutX="129.0" layoutY="62.0" pickOnBounds="true" preserveRatio="true" />
+        <TextField fx:id="TFtitre" layoutX="128.0" layoutY="310.0" prefHeight="26.0" prefWidth="342.0" promptText="titre" />
+        <Label layoutX="134.0" layoutY="44.0" text="image" />
+        <Label layoutX="140.0" layoutY="292.0" text="titre" />
+        <Label layoutX="137.0" layoutY="347.0" text="contenu" />
+        <TextField fx:id="TFcontenue" layoutX="128.0" layoutY="365.0" prefHeight="90.0" prefWidth="342.0" promptText="contenu" />
+        <Button layoutX="129.0" layoutY="470.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="342.0" style="-fx-background-color: #1B4B65;" text="Modifier" textFill="WHITE" onAction="#modifier"  />
+        <Button layoutX="128.0" layoutY="506.0" fx:id="btnAfficherForum" mnemonicParsing="false" prefHeight="26.0" prefWidth="342.0" style="-fx-background-color: #1B4B65;" text="Afficher" textFill="WHITE"  onAction="#afficherListeForums"/>
+
+        <Button layoutX="363.0" layoutY="261.0" mnemonicParsing="false" style="-fx-background-color: #1B4B65;" text="Choisir Image" textFill="WHITE"  onAction="#choisirImage"
+        />
+    </children>
+</AnchorPane>
