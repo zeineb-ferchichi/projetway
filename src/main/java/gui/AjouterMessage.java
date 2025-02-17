@@ -3,6 +3,10 @@ package gui;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.Parent;
+import javafx.fxml.FXMLLoader;
+import javafx.event.ActionEvent;
+import java.io.IOException;
 import models.Forum;
 import models.Message;
 import services.MessageService;
@@ -23,6 +27,9 @@ public class AjouterMessage {
     private Button btnEnvoyer;
 
     @FXML
+    private Button btnAfficherMessages; // Bouton pour afficher les messages
+
+    @FXML
     private ScrollPane scrollPane;
 
     private final MessageService messageService = new MessageService();
@@ -38,7 +45,7 @@ public class AjouterMessage {
     // Méthode pour initialiser les données avec le forum sélectionné
     public void initData(Forum forum) {
         this.forumId = forum.getIdForum(); // ✅ Récupérer l'ID du forum
-        afficherMessages();
+        afficherMessages(); // Affiche les messages du forum au démarrage
     }
 
     // Affiche tous les messages du forum sélectionné
@@ -98,22 +105,6 @@ public class AjouterMessage {
                     // Rafraîchir l'affichage des messages
                     afficherMessages();  // Cette ligne met à jour les messages affichés
 
-                    // Ajouter le message immédiatement après son ajout
-                    VBox messageBox = new VBox();
-                    messageBox.setStyle("-fx-background-color: #e0e0e0; -fx-padding: 10px; -fx-border-radius: 5px; -fx-margin-bottom: 5px;");
-
-                    Label contenuLabel = new Label(message.getContenu());
-                    contenuLabel.setWrapText(true);
-
-                    Label dateLabel = new Label("Envoyé le : " + message.getDateEnvoi().toString());
-                    dateLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: gray;");
-
-                    messageBox.getChildren().addAll(contenuLabel, dateLabel);
-                    messageContainer.getChildren().add(messageBox);
-
-                    // Défilement automatique vers le bas du ScrollPane après l'ajout du message
-                    scrollPane.setVvalue(1.0);  // Fait défiler le ScrollPane vers le bas
-
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println("Erreur lors de l'ajout du message.");
@@ -139,6 +130,20 @@ public class AjouterMessage {
             alert.setHeaderText("Le message est vide");
             alert.setContentText("Le message ne peut pas être vide.");
             alert.showAndWait();
+        }
+    }
+
+    // Méthode pour afficher l'interface "AfficherMessage"
+    @FXML
+    void afficherMessages(ActionEvent event) {
+        try {
+            // Charger l'interface AfficherMessage.fxml
+            Parent root = FXMLLoader.load(getClass().getResource("/AfficherMessage.fxml"));
+
+            // Changer la scène actuelle pour afficher l'interface de messages
+            messageInput.getScene().setRoot(root);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
     }
 }

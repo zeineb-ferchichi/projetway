@@ -132,23 +132,33 @@ public class MessageService implements GlobalInterface<Message> {
     }
     public List<Message> getAllByForumId(int forumId) {
         List<Message> messages = new ArrayList<>();
-        String query = "SELECT * FROM message WHERE id_forum = ?";
+        String query = "SELECT * FROM message WHERE idforum = ?";
 
-        try {
-            PreparedStatement pst = conn.prepareStatement(query);
-            pst.setInt(1, forumId);
-            ResultSet rs = pst.executeQuery();
-
-            while (rs.next()) {
-                Message message = new Message(rs.getInt("id_message"), rs.getString("contenu"),
-                        rs.getDate("date"), rs.getInt("id_forum"));
-                messages.add(message);
-            }
-        } catch (SQLException ex) {
-            System.out.println("Erreur lors du chargement des messages : " + ex.getMessage());
+        if (conn == null) {
+            System.out.println("Erreur : Connexion à la base de données non initialisée.");
+            return messages;
         }
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, forumId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Message msg = new Message();
+                    msg.setIdmessage(rs.getInt("idmessage"));
+                    msg.setContenu(rs.getString("contenu"));
+                    msg.setDateEnvoi(rs.getDate("dateEnvoi"));
+                    msg.setIdforum(rs.getInt("idforum"));
+
+                    messages.add(msg);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors du chargement des messages : " + e.getMessage());
+            e.printStackTrace();
+        }
+
         return messages;
     }
-
 
 }

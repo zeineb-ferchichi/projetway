@@ -19,5 +19,10 @@
             <TextField fx:id="messageInput" promptText="Écrivez votre message..." HBox.hgrow="ALWAYS"/>
             <Button fx:id="btnEnvoyer" text="Envoyer"/>
         </HBox>
+
+        <!-- Bouton pour afficher les messages -->
+        <HBox spacing="10" alignment="CENTER">
+            <Button fx:id="btnAfficherMessages" text="Afficher les Messages" onAction="#afficherMessages"/>
+        </HBox>
     </VBox>
 </AnchorPane>
