@@ -133,17 +133,34 @@ public class AjouterMessage {
         }
     }
 
-    // Méthode pour afficher l'interface "AfficherMessage"
     @FXML
     void afficherMessages(ActionEvent event) {
         try {
             // Charger l'interface AfficherMessage.fxml
-            Parent root = FXMLLoader.load(getClass().getResource("/AfficherMessage.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherMessage.fxml"));
+
+            // Vérifiez si le chemin est correct et que le fichier est accessible
+            if (loader.getLocation() == null) {
+                System.out.println("Le fichier FXML n'a pas pu être chargé !");
+                return;
+            }
+
+            Parent root = loader.load();
+
+            // Obtenir le contrôleur de l'interface AfficherMessage
+            AfficherMessage controller = loader.getController();
+
+            // Passer l'ID du forum à l'interface AfficherMessage
+            controller.initData(forumId);
 
             // Changer la scène actuelle pour afficher l'interface de messages
             messageInput.getScene().setRoot(root);
+
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
+            System.out.println("Erreur lors du chargement du FXML : " + e.getMessage());
         }
     }
+
+
 }
