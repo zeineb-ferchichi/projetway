@@ -24,6 +24,7 @@
 
                 <HBox fx:id="buttonBox" spacing="10">
                     <Button fx:id="modifyButton" text="Modifier" style="-fx-background-color: #62B9CB; -fx-text-fill: white;"/>
+
                     <Button fx:id="deleteButton" text="Supprimer" style="-fx-background-color: #D9534F; -fx-text-fill: white;"/>
                 </HBox>
 

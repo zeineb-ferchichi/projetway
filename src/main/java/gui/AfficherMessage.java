@@ -1,15 +1,20 @@
 package gui;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import models.Message;
 import services.MessageService;
 
+import java.io.IOException;
 import java.util.List;
 
 public class AfficherMessage {
@@ -46,7 +51,6 @@ public class AfficherMessage {
 
     // Affiche tous les messages du forum sélectionné
     private void afficherMessages() {
-        // Vérification si messageTilePane est correctement initialisé
         if (messageTilePane == null) {
             System.err.println("Le conteneur des messages est nul.");
             return;
@@ -57,12 +61,10 @@ public class AfficherMessage {
         try {
             List<Message> messages = messageService.getAllByForumId(forumId);
 
-            // Vérification s'il y a des messages à afficher
             if (messages.isEmpty()) {
                 Label noMessagesLabel = new Label("Aucun message dans ce forum.");
                 messageTilePane.getChildren().add(noMessagesLabel);
             } else {
-                // Affichage des messages
                 for (Message msg : messages) {
                     VBox messageBox = new VBox();
                     messageBox.setStyle("-fx-background-color: #e0e0e0; -fx-padding: 10px; -fx-border-radius: 5px; -fx-margin-bottom: 5px;");
@@ -85,7 +87,6 @@ public class AfficherMessage {
             }
 
         } catch (Exception e) {
-            // Affichage d'un message d'erreur si l'appel à la méthode échoue
             e.printStackTrace();
             Label errorLabel = new Label("Erreur lors du chargement des messages.");
             messageTilePane.getChildren().add(errorLabel);
@@ -94,27 +95,47 @@ public class AfficherMessage {
 
     // Méthode pour modifier un message
     private void modifyMessage(Message message) {
-        // Logique de modification ici, peut-être ouvrir une fenêtre ou un formulaire
-        System.out.println("Modification du message : " + message.getContenu());
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierMessage.fxml"));
+            Parent root = loader.load();
+
+            ModifierMessage controller = loader.getController();
+            if (controller != null) {
+                controller.initData(message);
+            } else {
+                System.err.println("Erreur: Impossible de récupérer le contrôleur ModifierMessage.");
+            }
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Modifier Message");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Méthode pour supprimer un message
     private void deleteMessage(Message message) {
-        // Appel au service pour supprimer le message
         try {
-            messageService.delete(message); // Suppression du message via le service
-
-            // Mise à jour de l'affichage après la suppression
+            messageService.delete(message);
             afficherMessages();
-
-            // Optionnel: Affichage d'un message de confirmation
             System.out.println("Message supprimé : " + message.getContenu());
-
         } catch (Exception e) {
-            // Affichage d'un message d'erreur si la suppression échoue
             e.printStackTrace();
             Label errorLabel = new Label("Erreur lors de la suppression du message.");
             messageTilePane.getChildren().add(errorLabel);
         }
     }
+
+    public void refreshMessages() {
+        afficherMessages(); // Appeler la méthode pour recharger et afficher les messages après modification
+    }
+
+    // Méthode pour rafraîchir les messages du forum spécifique
+    public void refreshMessages(int forumId) {
+        this.forumId = forumId;  // Utilisation de forumId au lieu de currentForumId
+        afficherMessages();  // Appeler la méthode pour recharger et afficher les messages après modification
+    }
+
 }
