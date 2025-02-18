@@ -1,5 +1,6 @@
 package gui;
 
+import javafx.event.ActionEvent;
 import models.Forum;
 import services.ForumService;
 import javafx.fxml.FXML;
@@ -42,13 +43,19 @@ public class AfficherForum {
     private TextField TFtitre; // Vérification si ce champ existe bien dans ModifierForum.fxml
 
     @FXML
+    private Button btnAjouterforum; // Bouton pour afficher les forums
+
+    @FXML
     void initialize() {
         refreshForums();
     }
 
     private void refreshForums() {
         tilePane.getChildren().clear();
-
+        Button btnAjouterInterface = new Button("Ajouter Forum");
+        btnAjouterInterface.setStyle("-fx-background-color:#1B4B65; -fx-text-fill: white;");
+        btnAjouterInterface.setOnAction(e -> ajouter(btnAjouterInterface));
+        tilePane.getChildren().add(btnAjouterInterface);
         try {
             List<Forum> forums = forumService.getAll();
 
@@ -158,5 +165,17 @@ public class AfficherForum {
         alert.setContentText(e.getMessage());
         alert.showAndWait();
         e.printStackTrace();
+    }
+    @FXML
+    void ajouter(Button btnAjouterInterface) {
+        try {
+            // Charge le fichier FXML de l'écran des forums
+            Parent root = FXMLLoader.load(getClass().getResource("/Ajouterforum.fxml"));
+            // Change la scène pour afficher la nouvelle interface
+
+            btnAjouterInterface.getScene().setRoot(root);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
