@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 
-<ScrollPane fx:id="scrollPane" prefHeight="600.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AfficherForum">
+<ScrollPane fx:id="scrollPane" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AfficherForum">
 
     <content >
         <TilePane fx:id="tilePane" hgap="10" prefColumns="3" style="-fx-padding: 10;" vgap="10">
@@ -24,6 +24,7 @@
                    <Button fx:id="btnModifier" style="-fx-background-color: #62B9CB; -fx-text-fill: white;" text="Modifier" />
                     <Button fx:id="btnSupprimer" prefHeight="26.0" prefWidth="73.0" style="-fx-background-color: #D9534F; -fx-text-fill: white;" text="Supprimer" />
                     <Button fx:id="btnCommenter" style="-fx-background-color: #1B4B65; -fx-text-fill: white;" text="message" />
+
                 </HBox>
                 <HBox spacing="10">
                     <Button fx:id="btnCommenter2" style="-fx-background-color: #1B4B65; -fx-text-fill: white;" text="message" />

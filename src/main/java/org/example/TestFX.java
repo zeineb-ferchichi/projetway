@@ -17,7 +17,7 @@ public class TestFX extends Application {
     @Override
     public void start(Stage primaryStage) {
         // Charger le fichier FXML
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterForum.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherForum.fxml"));
 
         try {
             // Charger le contenu de l'interface graphique depuis le FXML

@@ -76,12 +76,16 @@ public class AfficherMessage {
                     dateLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: gray;");
 
                     Button modifyButton = new Button("Modifier");
+                    modifyButton.setStyle("-fx-background-color: #62B9CB; -fx-text-fill: white; -fx-background-radius: 5;");
                     modifyButton.setOnAction(event -> modifyMessage(msg));
 
                     Button deleteButton = new Button("Supprimer");
+                    deleteButton.setStyle("-fx-background-color: #D9534F; -fx-text-fill: white; -fx-background-radius: 5;");
                     deleteButton.setOnAction(event -> deleteMessage(msg));
 
-                    messageBox.getChildren().addAll(contenuLabel, dateLabel, modifyButton, deleteButton);
+                    HBox buttonBox = new HBox(10, modifyButton, deleteButton);
+
+                    messageBox.getChildren().addAll(contenuLabel, dateLabel, buttonBox);
                     messageTilePane.getChildren().add(messageBox);
                 }
             }

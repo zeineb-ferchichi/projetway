@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.ScrollPane?>
 
-<ScrollPane fx:id="messageScrollPane" prefHeight="600.0" prefWidth="1920.0"
+<ScrollPane fx:id="messageScrollPane" prefHeight="600.0" prefWidth="600.0"
             xmlns="http://javafx.com/javafx/17.0.2"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="gui.AfficherMessage">
