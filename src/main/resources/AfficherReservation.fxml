@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="tn.esprit.gui.AfficherReservation"
-      spacing="10"
-      style="-fx-padding: 20; -fx-alignment: center; -fx-background-color: #E3F2FD;">
+      spacing="15" alignment="CENTER"
+      style="-fx-padding: 20; -fx-background-color: #f9f9f9;">
 
-    <Label text="Liste des Réservations"
-           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #0D47A1;"/>
+    <!-- Buttons Section (Top) -->
+    <HBox alignment="CENTER" spacing="10">
+        <Button fx:id="btnAjouter" text="➕ Ajouter une Réservation" onAction="#handleAjouterReservation"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px 15px; -fx-font-weight: bold;"/>
+        <Button fx:id="btnRefresh" text="🔄 Actualiser" onAction="#handleRefresh"
+                style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px 15px; -fx-font-weight: bold;"/>
+    </HBox>
 
-    <TableView fx:id="tableReservations" prefWidth="600">
+    <!-- Table Section -->
+    <TableView fx:id="tableReservations" style="-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-font-size: 14px;">
         <columns>
-            <TableColumn text="ID" fx:id="idCol" prefWidth="50"/>
-            <TableColumn text="Nom du Client" fx:id="clientCol" prefWidth="150"/>
-            <TableColumn text="Date Début" fx:id="dateDebutCol" prefWidth="120"/>
-            <TableColumn text="Date Fin" fx:id="dateFinCol" prefWidth="120"/>
-            <TableColumn text="ID Hébergement" fx:id="hebergementCol" prefWidth="100"/>
-            <TableColumn text="Actions" fx:id="actionsCol" prefWidth="80"/>
+            <TableColumn fx:id="clientCol" text="Nom du Client" prefWidth="150"/>
+            <TableColumn fx:id="dateDebutCol" text="Date Début" prefWidth="120"/>
+            <TableColumn fx:id="dateFinCol" text="Date Fin" prefWidth="120"/>
+            <TableColumn fx:id="hebergementCol" text="ID Hébergement" prefWidth="100"/>
+            <TableColumn fx:id="actionsCol" text="Actions" prefWidth="120"/>
         </columns>
     </TableView>
 
-    <Button text="Actualiser" fx:id="btnRefresh" onAction="#handleRefresh"
-            style="-fx-background-color: #42A5F5; -fx-text-fill: white;"/>
 </VBox>

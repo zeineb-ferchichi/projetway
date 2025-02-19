@@ -15,10 +15,6 @@ public class Main {
         ouvrirFenetre("/AfficherHebergement.fxml", "Afficher les Hébergements");
     }
 
-
-
-
-
     @FXML
     private void AfficherReservation() {
         ouvrirFenetre("/AfficherReservation.fxml", "Afficher les Réservations");

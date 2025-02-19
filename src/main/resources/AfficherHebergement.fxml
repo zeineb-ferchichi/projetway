@@ -1,20 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
 
-<?import javafx.scene.control.Button?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="tn.esprit.gui.AfficherHebergement"
-      spacing="10" alignment="CENTER"
-      style="-fx-padding: 20;">
+      spacing="15" alignment="CENTER"
+      style="-fx-padding: 20; -fx-background-color: #f9f9f9;">
 
-    <TableView fx:id="listHebergements">
+    <!-- Buttons Section (Top) -->
+    <HBox alignment="CENTER" spacing="10">
+        <Button fx:id="btnAjouter" text="➕ Ajouter un Hébergement" onAction="#handleAjouterHebergement"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px 15px; -fx-font-weight: bold;"/>
+        <Button fx:id="btnRefresh" text="🔄 Actualiser" onAction="#handleRefresh"
+                style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px 15px; -fx-font-weight: bold;"/>
+    </HBox>
+
+    <!-- Table Section -->
+    <TableView fx:id="listHebergements" style="-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-font-size: 14px;">
         <columns>
-            <TableColumn fx:id="idCol" text="ID" />
             <TableColumn fx:id="nomCol" text="Nom" />
             <TableColumn fx:id="typeCol" text="Type" />
             <TableColumn fx:id="adresseCol" text="Adresse" />
@@ -22,10 +28,11 @@
             <TableColumn fx:id="paysCol" text="Pays" />
             <TableColumn fx:id="capaciteCol" text="Capacité" />
             <TableColumn fx:id="prixCol" text="Prix" />
-            <TableColumn fx:id="actionsCol" text="Actions" />
+            <TableColumn fx:id="actionsCol" text="Actions" /> <!-- ✅ Added this column -->
         </columns>
     </TableView>
 
-    <Button fx:id="btnAjouter" text="Ajouter un hébergement" onAction="#handleAjouterHebergement" />
-    <Button fx:id="btnRefresh" text="Refresh" onAction="#handleRefresh" />
+    <!-- Action Buttons (Below the Table) -->
+
+
 </VBox>

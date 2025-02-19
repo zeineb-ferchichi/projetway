@@ -3,11 +3,9 @@ package tn.esprit.gui;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import tn.esprit.models.Hebergement;
 import tn.esprit.services.HebergementService;
@@ -18,7 +16,6 @@ import java.util.List;
 public class AfficherHebergement {
 
     @FXML private TableView<Hebergement> listHebergements;
-    @FXML private TableColumn<Hebergement, String> idCol;
     @FXML private TableColumn<Hebergement, String> nomCol;
     @FXML private TableColumn<Hebergement, String> typeCol;
     @FXML private TableColumn<Hebergement, String> adresseCol;
@@ -28,22 +25,10 @@ public class AfficherHebergement {
     @FXML private TableColumn<Hebergement, Double> prixCol;
     @FXML private TableColumn<Hebergement, Void> actionsCol;
 
-    @FXML private Button btnRetour;
     @FXML private Button btnAjouter;
+    @FXML private Button btnRefresh;
 
     private final HebergementService hebergementService = new HebergementService();
-
-    private void loadHebergements() {
-        listHebergements.getItems().clear();
-        List<Hebergement> hebergements = hebergementService.getAll();
-        listHebergements.getItems().addAll(hebergements);
-    }
-
-    @FXML
-    private void retour() {
-        Stage stage = (Stage) btnRetour.getScene().getWindow();
-        stage.close();
-    }
 
     @FXML
     public void initialize() {
@@ -53,7 +38,6 @@ public class AfficherHebergement {
         }
 
         // Bind columns to Hebergement properties
-        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         nomCol.setCellValueFactory(new PropertyValueFactory<>("nom"));
         typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
         adresseCol.setCellValueFactory(new PropertyValueFactory<>("adresse"));
@@ -62,12 +46,16 @@ public class AfficherHebergement {
         capaciteCol.setCellValueFactory(new PropertyValueFactory<>("capacite"));
         prixCol.setCellValueFactory(new PropertyValueFactory<>("prix"));
 
-        // Ajouter une colonne de boutons d'actions (Supprimer & Modifier)
+        // Add "Modifier" and "Supprimer" buttons to each row
         actionsCol.setCellFactory(col -> new TableCell<>() {
-            private final Button deleteButton = new Button("Supprimer");
-            private final Button editButton = new Button("Modifier");
+            private final Button deleteButton = new Button("🗑 Supprimer");
+            private final Button editButton = new Button("✏ Modifier");
+            private final HBox buttonContainer = new HBox(10, editButton, deleteButton);
 
             {
+                deleteButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;");
+                editButton.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold;");
+
                 deleteButton.setOnAction(event -> {
                     Hebergement hebergement = getTableRow().getItem();
                     if (hebergement != null) {
@@ -86,20 +74,22 @@ public class AfficherHebergement {
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(new javafx.scene.layout.HBox(5, editButton, deleteButton));
-                }
+                setGraphic(empty ? null : buttonContainer);
             }
         });
 
         loadHebergements();
     }
 
+    private void loadHebergements() {
+        listHebergements.getItems().clear();
+        List<Hebergement> hebergements = hebergementService.getAll();
+        listHebergements.getItems().addAll(hebergements);
+    }
+
     private void deleteHebergement(Hebergement hebergement) {
-        hebergementService.delete(hebergement.getId()); // Supprime l'hébergement
-        loadHebergements(); // Rafraîchir la liste après suppression
+        hebergementService.delete(hebergement.getId()); // Delete the Hebergement
+        loadHebergements(); // Refresh the list
     }
 
     private void openModifierHebergement(Hebergement hebergement) {
@@ -108,7 +98,7 @@ public class AfficherHebergement {
             Scene scene = new Scene(loader.load());
 
             ModifierHebergement controller = loader.getController();
-            controller.setHebergement(hebergement); // Passer les données à la fenêtre de modification
+            controller.setHebergement(hebergement); // Pass data to modification window
 
             Stage newStage = new Stage();
             newStage.setTitle("Modifier un Hébergement");
