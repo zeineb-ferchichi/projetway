@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4521cf16-3487-4307-9bcd-1a7e6c8c1d4f" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="package.json" />
+        <option value="Enum" />
+        <option value="Class" />
+        <option value="FxmlFile" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$USER_HOME$/.jdks/corretto-17.0.14/lib/src.zip!/java.base/java/lang/Object.java" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="2sfbAT6dTIGkLi5gAYw1Cdau0Li" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Debug",
+    "Application.MainGUI.executor": "Run",
+    "Application.Unnamed.executor": "Run",
+    "Maven.Project3A2 [clean].executor": "Run",
+    "Maven.Project3A2 [install].executor": "Run",
+    "Maven.Project3A2 [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
+    "Maven.Unknown [clean].executor": "Run",
+    "Maven.WorkshopJDBC3A20 [clean].executor": "Run",
+    "Maven.WorkshopJDBC3A20 [install].executor": "Run",
+    "Maven.projectway [clean].executor": "Run",
+    "Maven.projectway [install].executor": "Run",
+    "Maven.projetway [clean].executor": "Run",
+    "Maven.projetway [install].executor": "Run",
+    "Maven.projetway [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
+    "Maven.projetwayMission [clean].executor": "Run",
+    "Maven.projetwayMission [install].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "mission",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/projetwayMission",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "onboarding.tips.debug.path": "C:/projetwayMission/src/main/java/org/example/Main.java",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\projetwayMission\src\main\resources\views" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="org.example" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.MainGUI">
+    <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.Main" />
+      <module name="projetwayMission" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MainGUI" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="gui.MainGUI" />
+      <module name="projetwayMission" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="gui.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.MainGUI" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-b114ca120d71-intellij.indexing.shared.core-IU-242.21829.142" />
+        <option value="bundled-js-predefined-d6986cc7102b-7c0b70fcd90d-JavaScript-IU-242.21829.142" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4521cf16-3487-4307-9bcd-1a7e6c8c1d4f" name="Changes" comment="" />
+      <created>1738849435039</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1738849435039</updated>
+      <workItem from="1738849436261" duration="48000" />
+      <workItem from="1738875377465" duration="1591000" />
+      <workItem from="1738946907949" duration="1715000" />
+      <workItem from="1739126195542" duration="8199000" />
+      <workItem from="1739195242150" duration="467000" />
+      <workItem from="1739195727589" duration="34000" />
+      <workItem from="1739195816841" duration="601000" />
+      <workItem from="1739218494985" duration="18000" />
+      <workItem from="1739218580986" duration="8179000" />
+      <workItem from="1739313094615" duration="279000" />
+      <workItem from="1739313403334" duration="7929000" />
+      <workItem from="1739322190436" duration="2233000" />
+      <workItem from="1739368502031" duration="543000" />
+      <workItem from="1739387215023" duration="5875000" />
+      <workItem from="1739396376499" duration="534000" />
+      <workItem from="1739396918637" duration="6669000" />
+      <workItem from="1739403905252" duration="1565000" />
+      <workItem from="1739434484474" duration="8072000" />
+      <workItem from="1739555632662" duration="1059000" />
+      <workItem from="1739559058808" duration="8206000" />
+      <workItem from="1739622075291" duration="4155000" />
+      <workItem from="1739635202006" duration="9431000" />
+      <workItem from="1739706393608" duration="201000" />
+      <workItem from="1739706607727" duration="14211000" />
+      <workItem from="1739818165580" duration="13782000" />
+      <workItem from="1739887310864" duration="16564000" />
+      <workItem from="1739913265675" duration="6885000" />
+      <workItem from="1739962592657" duration="21625000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
