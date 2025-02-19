@@ -1,0 +1,158 @@
+/* ------------------------------------------------------
+   STYLES GÉNÉRAUX
+   ------------------------------------------------------ */
+.root-pane {
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 0;
+}
+
+.background-image {
+    -fx-opacity: 0.2;
+}
+
+/* ------------------------------------------------------
+   FORMULAIRE AJOUT TRAJET
+   ------------------------------------------------------ */
+.form-container {
+    -fx-padding: 20;
+    -fx-alignment: center;
+    -fx-spacing: 12;
+    -fx-background-color: white;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 3);
+}
+
+.form-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #212529;
+    -fx-padding: 0 0 15 0;
+}
+
+.input-field {
+    -fx-pref-width: 300;
+    -fx-padding: 8;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-background-color: white;
+}
+
+.input-field:focused {
+    -fx-border-color: #0d6efd;
+    -fx-effect: dropshadow(three-pass-box, rgba(13,110,253,0.25), 4, 0, 0, 0);
+}
+
+/* Boutons */
+.button-primary {
+    -fx-background-color: #0d6efd;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 4, 0, 0, 1);
+}
+
+.button-primary:hover {
+    -fx-background-color: #0b5ed7;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 6, 0, 0, 2);
+}
+
+.button-primary:pressed {
+    -fx-background-color: #0a58ca;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 2, 0, 0, 1);
+}
+
+.button-secondary {
+    -fx-background-color: #6c757d;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.button-secondary:hover {
+    -fx-background-color: #5c636a;
+}
+
+.button-secondary:pressed {
+    -fx-background-color: #565e64;
+}
+
+/* ------------------------------------------------------
+   LISTVIEW & SCROLLPANE
+   ------------------------------------------------------ */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 8;
+    -fx-padding: 5;
+    -fx-background-radius: 8;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.list-view {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 5;
+}
+
+.list-view .list-cell {
+    -fx-background-color: white;
+    -fx-padding: 12;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);
+    -fx-margin: 0 0 5 0;
+}
+
+.list-view .list-cell:hover {
+    -fx-background-color: #f8f9fa;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 3);
+}
+
+.list-view .list-cell:selected {
+    -fx-background-color: #e9ecef;
+    -fx-text-fill: #212529;
+    -fx-border-color: #0d6efd;
+}
+
+/* ScrollBar Styling */
+.scroll-bar {
+    -fx-background-color: transparent;
+    -fx-pref-width: 12;
+    -fx-pref-height: 12;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #adb5bd;
+    -fx-background-radius: 6;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #6c757d;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 3;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-background-color: #6c757d;
+    -fx-shape: " ";
+    -fx-padding: 0;
+}

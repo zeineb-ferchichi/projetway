@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.affichertrajet">
+
+    <!-- Title -->
+    <Text layoutX="208.0" layoutY="40.0" styleClass="title" text="Liste des Trajets" textAlignment="CENTER">
+      <font>
+         <Font name="Aldhabi" size="43.0" />
+      </font></Text>
+
+    <!-- ListView for displaying trajets -->
+    <ListView fx:id="listViewTrajets" layoutX="50" layoutY="70" prefHeight="300" prefWidth="500" styleClass="trajet-list" />
+</AnchorPane>
