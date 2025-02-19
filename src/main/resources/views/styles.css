@@ -1,0 +1,53 @@
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: #A9CCE3;
+}
+
+.label {
+    -fx-text-fill: #2C3E50;
+    -fx-font-size: 14px;
+}
+
+.title {
+    -fx-font-size: 22px;
+    -fx-text-fill: #2C3E50;
+    -fx-font-weight: bold;
+}
+
+.header {
+    -fx-alignment: center;
+    -fx-padding: 15px;
+}
+
+.logo {
+    -fx-fit-height: 80px;
+    -fx-fit-width: 80px;
+}
+
+.grid-container {
+    -fx-background-color: #EAF2F8;
+    -fx-padding: 15px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #2C3E50;
+}
+
+.button {
+    -fx-background-color: #2980B9;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+    -fx-padding: 8 16;
+}
+
+.button:hover {
+    -fx-background-color: #1A5276;
+}
+
+.icon-button {
+    -fx-background-color: transparent;
+    -fx-border-radius: 50%;
+}
+
+.icon-button:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.1);
+}

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="gui.AfficherRapportController">
+    <children>
+        <VBox spacing="10" layoutX="20" layoutY="20">
+            <Label text="Liste des Rapports" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+            <!-- GridPane pour afficher les rapports -->
+            <GridPane fx:id="gridRapports" hgap="10" vgap="10">
+                <columnConstraints>
+                    <ColumnConstraints minWidth="50"/>
+                    <ColumnConstraints minWidth="150"/>
+                    <ColumnConstraints minWidth="100"/>
+                    <ColumnConstraints minWidth="200"/>
+                    <ColumnConstraints minWidth="150"/>
+                    <ColumnConstraints minWidth="100"/>
+                    <ColumnConstraints minWidth="100"/>
+                </columnConstraints>
+            </GridPane>
+
+            <!-- Boutons d'action -->
+            <HBox spacing="15">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+
+                <Button fx:id="btnAjouterRapport" text="➕ Ajouter ton Rapport" onAction="#ouvrirAjoutRapport"
+                        style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+
+                <Button fx:id="btnSupprimerRapport" text="🗑️ Supprimer" onAction="#supprimerRapport"
+                        style="-fx-background-color: #FF5252; -fx-text-fill: white;"/>
+
+                <Button fx:id="btnModifierRapport" text="✏️ Modifier" onAction="#ouvrirModificationRapport"
+                        style="-fx-background-color: #FFC107; -fx-text-fill: black;"/>
+
+
+                <Button fx:id="btnRafraichir" text="🔄 Rafraîchir" onAction="#rafraichirListe"
+                        style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="gui.MainGUIController">
+
+    <children>
+        <!-- Conteneur principal -->
+        <VBox spacing="20" alignment="CENTER" layoutX="50.0" layoutY="30.0"
+              prefWidth="400" prefHeight="300" style="-fx-background-color: #f4f4f4;">
+
+            <!-- Titre -->
+            <Label text="Gestion des Missions et Rapports"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+            <!-- Boutons -->
+            <Button text="📌 Gérer les Missions" onAction="#ouvrirGestionMissions"
+                    style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 14px;"/>
+
+            <Button text="📑 deposer vos Rapports" onAction="#ouvrirGestionRapports"
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px;"/>
+
+            <Button text="❌ Quitter" onAction="#quitterApplication"
+                    style="-fx-background-color: #FF5252; -fx-text-fill: white; -fx-font-size: 14px;"/>
+        </VBox>
+    </children>
+</AnchorPane>
+

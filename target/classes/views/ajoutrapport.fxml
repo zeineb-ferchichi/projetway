@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="gui.AjoutRapportController">
+    <children>
+        <!-- Conteneur principal -->
+        <VBox spacing="10" alignment="CENTER" layoutX="50.0" layoutY="30.0">
+            <Label text="Ajouter un Rapport" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+            <!-- Libellé du rapport -->
+            <HBox spacing="10">
+                <Label text="Libellé:"/>
+                <TextField fx:id="TFLibelle"/>
+            </HBox>
+
+            <!-- Date d'exposition -->
+            <HBox spacing="10">
+                <Label text="Date d'exposition:"/>
+                <DatePicker fx:id="DPDateExpo"/>
+            </HBox>
+
+            <!-- Sélection de fichiers -->
+            <HBox spacing="10">
+                <Label text="Ressources:"/>
+                <ListView fx:id="LVFiles" prefHeight="100"/>
+                <Button text="📂 Ajouter Fichier" onAction="#addFile"/>
+            </HBox>
+
+            <!-- Sélection de la mission associée -->
+            <HBox spacing="10">
+                <Label text="Mission associée:"/>
+                <ComboBox fx:id="cbMission"/>
+            </HBox>
+
+            <!-- Boutons d'action -->
+            <HBox spacing="15">
+                <Button fx:id="btnAjouter" text="✅ Ajouter" onAction="#ajouterRapport" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+                <Button fx:id="btnAnnuler" text="❌ Annuler" onAction="#annuler" style="-fx-background-color: #FF5252; -fx-text-fill: white;"/>
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+
+<AnchorPane prefHeight="450.0" prefWidth="650.0"
+            stylesheets="@styles.css"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="gui.addmission">
+
+    <children>
+        <!-- Arrière-plan principal -->
+        <Pane layoutX="0.0" layoutY="0.0" prefHeight="450.0" prefWidth="650.0" styleClass="background-pane"/>
+        <!-- Titre Centré -->
+        <Label text="Upload Missions"
+               layoutX="0" layoutY="10"
+               prefWidth="600"
+               styleClass="title-label"
+               alignment="CENTER"/>
+
+
+        <!-- Formulaire bien aligné -->
+        <VBox spacing="15" layoutX="100.0" layoutY="40.0" alignment="CENTER_LEFT">
+
+            <!-- Champ Nom de la Mission -->
+            <HBox spacing="20">
+                <Label text="Nom de la Mission" styleClass="field-label"/>
+                <TextField fx:id="TFNomMission" promptText="Nom de la mission" styleClass="custom-textfield"/>
+            </HBox>
+
+            <!-- Champ Description -->
+            <HBox spacing="20">
+                <Label text="Description" styleClass="field-label"/>
+                <TextField fx:id="TFDescription" promptText="Description" styleClass="custom-textfield"/>
+            </HBox>
+
+            <!-- Sélection de la date de début -->
+            <HBox spacing="20">
+                <Label text="Date de début" styleClass="field-label"/>
+                <DatePicker fx:id="DPDateDebut" styleClass="custom-datepicker"/>
+            </HBox>
+
+            <!-- Sélection de la date de fin -->
+            <HBox spacing="20">
+                <Label text="Date de fin" styleClass="field-label"/>
+                <DatePicker fx:id="DPDateFin" styleClass="custom-datepicker"/>
+            </HBox>
+
+            <!-- Sélection du statut -->
+            <HBox spacing="20">
+                <Label text="Statut" styleClass="field-label"/>
+                <ComboBox fx:id="cbStatut" styleClass="custom-combobox">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="EN_COURS"/>
+                            <String fx:value="TERMINE"/>
+                            <String fx:value="EN_ATTENTE"/>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </HBox>
+
+        </VBox>
+
+        <!-- Boutons centrés et bien espacés -->
+        <HBox spacing="30" layoutX="180.0" layoutY="380.0">
+            <Button text="Ajouter" styleClass="custom-button" onAction="#ajouterMission"/>
+            <Button text="Afficher" styleClass="custom-button-secondary" onAction="#afficherMissions"/>
+        </HBox>
+
+    </children>
+</AnchorPane>

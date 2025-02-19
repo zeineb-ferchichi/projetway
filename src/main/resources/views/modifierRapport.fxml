@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="gui.ModifierRapportController"
+            style="-fx-background-color: #F4F4F4; -fx-border-color: #D1D1D1; -fx-border-radius: 10; -fx-padding: 20;">
+    <children>
+
+        <!-- Titre -->
+        <Label text="Modifier Rapport" layoutX="80" layoutY="10"
+               style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+        <!-- Grille pour le formulaire -->
+        <GridPane layoutX="20" layoutY="50" hgap="15" vgap="15">
+            <Label text="Nom du Rapport:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextField fx:id="TFNomRapport" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="200"/>
+
+            <Label text="Date de création:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <DatePicker fx:id="DPDateCreation" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="200"/>
+
+            <Label text="Fichier joint:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <TextField fx:id="TFFichier" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="200"/>
+            <Button text="📂 Parcourir" onAction="#choisirFichier" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+        </GridPane>
+
+        <!-- Bouton de mise à jour -->
+        <Button text="Mettre à jour"
+                layoutX="90"
+                layoutY="200"
+                fx:id="btnUpdateRapport"
+                onAction="#updateRapport"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-border-radius: 5; -fx-padding: 10 20;"/>
+    </children>
+</AnchorPane>

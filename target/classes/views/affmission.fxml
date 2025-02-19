@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="gui.AfficherMission">
+    <children>
+
+        <!-- Tableau des missions -->
+        <GridPane fx:id="gridMissions" hgap="15" layoutX="50.0" layoutY="50.0" vgap="10">
+            <!-- En-têtes -->
+            <Label text="ID" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <Label text="Nom" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <Label text="Date Début" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+            <Label text="Date Fin" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+            <Label text="Description" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+            <Label minWidth="100" text="Statut" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+            <Label minWidth="100" text="Modifier" GridPane.columnIndex="6" GridPane.rowIndex="0" />
+            <Label minWidth="100" text="Supprimer" GridPane.columnIndex="7" GridPane.rowIndex="0" />
+
+            <!-- Contraintes des colonnes -->
+            <columnConstraints>
+                <ColumnConstraints hgrow="ALWAYS"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints/>
+            </rowConstraints>
+        </GridPane>
+        <Button text="Ajouter" layoutX="50.0" layoutY="10.0"
+                onAction="#ouvrirAjoutMission"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px;" />
+
+        <!-- Bouton Rafraîchir -->
+        <Button layoutX="14.0" layoutY="400.0" onAction="#refreshMissions" text="🔄 Rafraîchir" />
+
+    </children>
+</AnchorPane>

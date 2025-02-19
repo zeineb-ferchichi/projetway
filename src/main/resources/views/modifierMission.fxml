@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.control.DatePicker?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="gui.ModifierMission"
+            style="-fx-background-color: #F4F4F4; -fx-border-color: #D1D1D1; -fx-border-radius: 10; -fx-padding: 20;">
+    <children>
+
+        <!-- Titre -->
+        <Label text="Modifier Mission" layoutX="80" layoutY="10"
+               style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+        <!-- Grille pour le formulaire -->
+        <GridPane layoutX="20" layoutY="50" hgap="15" vgap="15">
+            <Label text="Nom de la Mission:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextField fx:id="TFNomMission" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="200"/>
+
+            <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <TextField fx:id="TFDescription" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="200"/>
+
+            <Label text="Date de début:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <DatePicker fx:id="DPDateDebut" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="200"/>
+
+            <Label text="Date de fin:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+            <DatePicker fx:id="DPDateFin" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="200"/>
+
+            <Label text="Statut:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+            <ComboBox fx:id="cbStatut" GridPane.columnIndex="1" GridPane.rowIndex="4" prefWidth="200"/>
+        </GridPane>
+
+        <!-- Bouton de mise à jour -->
+        <Button text="Mettre à jour"
+                layoutX="90"
+                layoutY="250"
+                fx:id="btnUpdate"
+                onAction="#updateMission"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-border-radius: 5; -fx-padding: 10 20;"/>
+    </children>
+</AnchorPane>
