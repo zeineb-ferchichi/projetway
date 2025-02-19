@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+
+<?import javafx.scene.control.Button?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.gui.AfficherHebergement"
+      spacing="10" alignment="CENTER"
+      style="-fx-padding: 20;">
+
+    <TableView fx:id="listHebergements">
+        <columns>
+            <TableColumn fx:id="idCol" text="ID" />
+            <TableColumn fx:id="nomCol" text="Nom" />
+            <TableColumn fx:id="typeCol" text="Type" />
+            <TableColumn fx:id="adresseCol" text="Adresse" />
+            <TableColumn fx:id="villeCol" text="Ville" />
+            <TableColumn fx:id="paysCol" text="Pays" />
+            <TableColumn fx:id="capaciteCol" text="Capacité" />
+            <TableColumn fx:id="prixCol" text="Prix" />
+            <TableColumn fx:id="actionsCol" text="Actions" />
+        </columns>
+    </TableView>
+
+    <Button fx:id="btnAjouter" text="Ajouter un hébergement" onAction="#handleAjouterHebergement" />
+    <Button fx:id="btnRefresh" text="Refresh" onAction="#handleRefresh" />
+</VBox>

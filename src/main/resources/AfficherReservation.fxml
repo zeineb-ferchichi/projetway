@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.gui.AfficherReservation"
+      spacing="10"
+      style="-fx-padding: 20; -fx-alignment: center; -fx-background-color: #E3F2FD;">
+
+    <Label text="Liste des Réservations"
+           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #0D47A1;"/>
+
+    <TableView fx:id="tableReservations" prefWidth="600">
+        <columns>
+            <TableColumn text="ID" fx:id="idCol" prefWidth="50"/>
+            <TableColumn text="Nom du Client" fx:id="clientCol" prefWidth="150"/>
+            <TableColumn text="Date Début" fx:id="dateDebutCol" prefWidth="120"/>
+            <TableColumn text="Date Fin" fx:id="dateFinCol" prefWidth="120"/>
+            <TableColumn text="ID Hébergement" fx:id="hebergementCol" prefWidth="100"/>
+            <TableColumn text="Actions" fx:id="actionsCol" prefWidth="80"/>
+        </columns>
+    </TableView>
+
+    <Button text="Actualiser" fx:id="btnRefresh" onAction="#handleRefresh"
+            style="-fx-background-color: #42A5F5; -fx-text-fill: white;"/>
+</VBox>
