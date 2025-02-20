@@ -190,13 +190,14 @@ public class EmployeController {
         loadNotesFrais();
 
         // Hide the modification pane and clear fields
-        modificationPane.setVisible(false);
+
         clearFields();
     }
 
 
     @FXML
     private void supprimerNoteFrais() {
+        System.out.println("Selected Note: " + selectedNoteFrais);
         if (selectedNoteFrais == null) {
             afficherAlerte("Veuillez sélectionner une note de frais à supprimer.");
             return;
@@ -249,7 +250,12 @@ public class EmployeController {
         MenuItem supprimer = new MenuItem("Supprimer");
 
         modifier.setOnAction(e -> selectNoteFrais(note));
-        supprimer.setOnAction(e -> supprimerNoteFrais());
+
+        supprimer.setOnAction(e -> {
+            selectNoteFrais(note); // sélectionne la note
+            supprimerNoteFrais();  // puis supprime
+        });
+
 
         menuButton.getItems().addAll(modifier, supprimer);
         HBox.setHgrow(noteDetails, Priority.ALWAYS);
@@ -289,6 +295,7 @@ public class EmployeController {
         selectedNoteFrais = null;
         tfNomActiviteModif.clear();
         tfDescriptionModif.clear();
+        notedefraitImage.setImage(null);
     }
 
     private void afficherAlerte(String message) {
