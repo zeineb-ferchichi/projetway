@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Hyperlink?>
+
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.image.Image?>
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="gui.EmployeController" stylesheets="/style.css">
+
+    <HBox spacing="30" styleClass="root">
+
+        <!-- Sidebar -->
+        <VBox alignment="CENTER" prefWidth="300"  styleClass="sidebar">
+            <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="300">
+                <!-- Contenu éventuel -->
+            </VBox>
+
+            <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="300">
+                <Hyperlink onAction="#ajouterNoteFrait" text="Gerer note de frait" styleClass="listeUser" />
+                <Hyperlink onAction="#afficherProfil" text="Profil" styleClass="listeAdmin" />
+            </VBox>
+
+            <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="300">
+                <ImageView fx:id="currentUserImage" fitHeight="100" fitWidth="100" styleClass="user-image"/>
+                <Label fx:id="currentUserName" text="Nom Admin" styleClass="user-name"/>
+                <Label fx:id="currentUserRole" text="Rôle Employe" styleClass="user-role"/>
+                <Button text="Log out" onAction="#handleSignIn" styleClass="logout-button"/>
+            </VBox>
+        </VBox>
+
+        <!-- Conteneur de vues -->
+        <StackPane fx:id="mainContent" alignment="CENTER" prefWidth="700" >
+        </StackPane>
+
+
+    </HBox>
+</VBox>

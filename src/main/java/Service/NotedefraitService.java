@@ -1,7 +1,6 @@
 package Service;
 
 import Entitie.Notedefrait;
-
 import util.DataSource;
 
 import java.sql.*;
@@ -9,135 +8,109 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NotedefraitService implements IService<Notedefrait> {
+    private static Connection cnx;
 
+    public NotedefraitService() {
+        cnx = DataSource.getInstance().getConnection();
+    }
+    @Override
+    public void insert(Notedefrait notedefrait) {
+        String query = "INSERT INTO Notedefrait (nomActivite, description, lienFacture, user_id) VALUES (?, ?, ?, ?)";
+        try {
+            PreparedStatement ps = cnx.prepareStatement(query);
+            ps.setString(1, notedefrait.getNomactivite());
+            ps.setString(2, notedefrait.getDescription());
+            ps.setString(3, notedefrait.getLienfacture());
+            ps.setInt(4, notedefrait.getUserId());
+            ps.executeUpdate();
+            System.out.println("Note de frais ajoutée avec succès pour l'utilisateur ID " + notedefrait.getUserId());
 
-
-
-
-        private static Connection cnx;
-
-        public NotedefraitService() {
-            cnx = DataSource.getInstance().getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+    }
 
-        @Override
-        public void insert(Notedefrait notedefrait) {
-            String requete = "INSERT INTO notedefrait (Nomactivite, Description, Lienfacture) VALUES (?, ?, ? )";
+    @Override
+    public void update(Notedefrait notedefrait) {
+        String query = "UPDATE Notedefrait SET nomActivite= ?, description= ?, lienFacture = ?, user_id = ? WHERE id = ?";
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setString(1, notedefrait.getNomactivite());
+            pst.setString(2, notedefrait.getDescription());
+            pst.setString(3, notedefrait.getLienfacture());
+            pst.setInt(4, notedefrait.getUserId());
+            pst.setInt(5, notedefrait.getId());
 
-            try (PreparedStatement pst = cnx.prepareStatement(requete)) {
-                pst.setString(1, notedefrait.getNomactivite());
-                pst.setString(2, notedefrait.getDescription());
-                pst.setString(3, notedefrait.getLienfacture());
+            pst.executeUpdate();
+            System.out.println("Note de frais mise à jour avec succès pour l'utilisateur ID " + notedefrait.getUserId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-
-                pst.executeUpdate();
-                System.out.println("note de frait inséré avec succès !");
-            } catch (SQLException e) {
-                System.out.println("Erreur lors de l'insertion du note de frait : " + e.getMessage());
-                e.printStackTrace();
+    @Override
+    public List<Notedefrait> getAll() {
+        List<Notedefrait> notes = new ArrayList<>();
+        String query = "SELECT n.id, n.nomActivite, n.description, n.lienFacture, u.id AS userId, u.nom, u.prenom " +
+                "FROM Notedefrait n JOIN User u ON n.user_id = u.id";
+        try {
+            Statement st = cnx.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next()) {
+                Notedefrait notedefrait = new Notedefrait(
+                        rs.getInt("id"),
+                        rs.getString("nomActivite"),
+                        rs.getString("description"),
+                        rs.getString("lienFacture"),
+                        rs.getInt("userId")
+                );
+                System.out.println("Note de frais de " + rs.getString("nom") + " " + rs.getString("prenom") + " : " + notedefrait);
+                notes.add(notedefrait);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return notes;
+    }
 
-
-
-        @Override
-        public void update(Notedefrait notedefrait) {
-            String requete = "UPDATE notedefrait SET Nomactivite= ?, Description= ?, Lienfacture = ? WHERE id = ?";
-            try (PreparedStatement pst = cnx.prepareStatement(requete)) {
-                pst.setString(1, notedefrait.getNomactivite());
-                pst.setString(2, notedefrait.getDescription());
-                pst.setString(3, notedefrait.getLienfacture());
-                pst.setInt(4, notedefrait.getId()); // L'ID doit être le dernier paramètre (WHERE id = ?)
-
-                pst.executeUpdate();
-                System.out.println("Note de frait mis à jour avec succès !");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-
-
-        @Override
-        public List<Notedefrait> getAll() {
-            List<Notedefrait> listeNotedefrait = new ArrayList<>();
-            String requete = "SELECT * FROM notedefrait";
-            try (Statement ste = cnx.createStatement();
-                 ResultSet rs = ste.executeQuery(requete)) {
-                while (rs.next()) {
-                    Notedefrait p = new Notedefrait(
-                            rs.getInt("Id"),
-                            rs.getString("Nomactivite"),
-                            rs.getString("Description"),
-                            rs.getString("Lienfacture")
-
-
+    @Override
+    public Notedefrait getById(int id) {
+        String query = "SELECT * FROM Notedefrait WHERE id = ?";
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setInt(1, id);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return new Notedefrait(
+                            rs.getInt("id"),
+                            rs.getString("nomActivite"),
+                            rs.getString("description"),
+                            rs.getString("lienFacture"),
+                            rs.getInt("user_id")
                     );
-                    listeNotedefrait.add(p);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return listeNotedefrait;
-        }
-
-        @Override
-        public Notedefrait getById(int id) {
-            String requete = "SELECT * FROM notedefrait WHERE id = ?";
-            try (PreparedStatement pst = cnx.prepareStatement(requete)) {
-                pst.setInt(1, id);
-                try (ResultSet rs = pst.executeQuery()) {
-                    if (rs.next()) {
-                        return new Notedefrait(
-                                rs.getInt("Id"),
-                                rs.getString("Nomactivite"),
-                                rs.getString("Description"),
-                                rs.getString("Lienfacture")
-                        );
-                    }
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        public List<Notedefrait> readAll() throws SQLException {
-            List<Notedefrait> listeNotedefrait = new ArrayList<>();
-            String requete = "SELECT * FROM notedefrait";
-            try (Statement ste = cnx.createStatement();
-                 ResultSet rs = ste.executeQuery(requete)) {
-                while (rs.next()) {
-                    Notedefrait p = new Notedefrait(
-                            rs.getInt("Id"),
-                            rs.getString("Nomactivite"),
-                            rs.getString("Description"),
-                            rs.getString("Lienfacture")
-                    );
-                    listeNotedefrait.add(p);
                 }
             }
-            return listeNotedefrait;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        @Override
-        public void deleteById(int id) {
-            String requete = "DELETE FROM notedefrait WHERE id = ?";
-            try (PreparedStatement pst = cnx.prepareStatement(requete , Statement.RETURN_GENERATED_KEYS)) {
-                pst.setInt(1, id);
-                ResultSet rs = pst.getGeneratedKeys();
+        return null;
+    }
 
-                int rowsAffected = pst.executeUpdate();
-
-                if (rowsAffected > 0) {
-                    System.out.println("Note de frait avec l'ID " + id + " supprimé avec succès !");
-                } else {
-                    System.out.println("Aucun Note de frait trouvé avec l'ID " + id + ".");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+    @Override
+    public void deleteById(int id) {
+        String query = "DELETE FROM Notedefrait WHERE id = ?";
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setInt(1, id);
+            int rowsAffected = pst.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Note de frais avec l'ID " + id + " supprimée avec succès !");
+            } else {
+                System.out.println("Aucune note de frais trouvée avec l'ID " + id + ".");
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+    }
+
+
 
     public static boolean validateNotedefrait(Notedefrait notedefrait) {
         // Vérifier que le nom de l'activité est rempli et respecte la contrainte
@@ -189,19 +162,47 @@ public class NotedefraitService implements IService<Notedefrait> {
 
 
     public static boolean isUniqueLienFacture(String lienfacture) {
-        String requete = "SELECT * FROM notedefrait WHERE lienfacture = ?";
+        String requete = "SELECT COUNT(*) FROM notedefrait WHERE lienfacture = ?";
         try (PreparedStatement pst = cnx.prepareStatement(requete)) {
             pst.setString(1, lienfacture);
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt(1) == 0; // Retourne vrai si le lien n'existe pas
+                    return rs.getInt(1) == 0; // Retourne vrai si aucun lien n'existe
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return false; // En cas d'erreur, mieux vaut considérer que le lien existe déjà
     }
+
+
+    public List<Notedefrait> getNotesByUserId(int userId) {
+        List<Notedefrait> notes = new ArrayList<>();
+        String query = "SELECT * FROM Notedefrait WHERE user_id = ?";
+
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setInt(1, userId);
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    Notedefrait notedefrait = new Notedefrait(
+                            rs.getInt("id"),
+                            rs.getString("nomActivite"),
+                            rs.getString("description"),
+                            rs.getString("lienFacture"),
+                            rs.getInt("user_id")
+                    );
+                    notes.add(notedefrait);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return notes;
+    }
+
+
+
 
 
 

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Hyperlink?>
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="gui.AdminController" stylesheets="/style.css">
+
+    <HBox spacing="30" styleClass="root">
+
+        <!-- Sidebar -->
+        <VBox alignment="CENTER" prefWidth="300" spacing="20" styleClass="sidebar">
+
+            <!-- Espace réservé (premier VBox) -->
+            <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="300">
+                <!-- Contenu éventuel -->
+            </VBox>
+
+            <!-- Liens de navigation -->
+            <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="300">
+                <Hyperlink onAction="#showUserList" text="listeUser" styleClass="listeUser" />
+                <Hyperlink onAction="#showAdminList" text="listeAdmin" styleClass="listeAdmin" />
+            </VBox>
+
+            <!-- Informations et actions sur l'utilisateur courant -->
+            <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="300">
+                <ImageView fx:id="currentUserImage" fitHeight="100" fitWidth="100" styleClass="user-image"/>
+                <Label fx:id="currentUserName" text="Nom Admin" styleClass="user-name"/>
+                <Label fx:id="currentUserRole" text="Rôle Admin" styleClass="user-role"/>
+                <Button text="Log out" onAction="#handleSignIn" styleClass="logout-button"/>
+            </VBox>
+        </VBox>
+
+        <StackPane fx:id="listContainer" prefWidth="407.0" prefHeight="556.0">
+            <!-- Liste des utilisateurs (visible par défaut) -->
+            <VBox fx:id="userListContainer" visible="true">
+                <Label text="Liste des utilisateurs" styleClass="text-title"/>
+                <ScrollPane fitToWidth="true" prefHeight="556.0" prefWidth="407.0">
+                    <GridPane fx:id="gridUsers" hgap="20" vgap="20">
+                        <padding>
+                            <Insets bottom="10" left="10" right="10" top="10"/>
+                        </padding>
+                    </GridPane>
+                </ScrollPane>
+            </VBox>
+            <!-- Liste des administrateurs (invisible par défaut) -->
+            <VBox fx:id="adminListContainer" visible="false">
+                <Label text="Liste des administrateurs" styleClass="text-title"/>
+                <ScrollPane fitToWidth="true" prefHeight="556.0" prefWidth="407.0">
+                    <GridPane fx:id="gridAdmins" hgap="20" vgap="20">
+                        <padding>
+                            <Insets bottom="10" left="10" right="10" top="10"/>
+                        </padding>
+                    </GridPane>
+                </ScrollPane>
+            </VBox>
+        </StackPane>
+
+
+        <!-- VBox de modification (détails de l'utilisateur/admin sélectionné) -->
+        <VBox alignment="CENTER" prefWidth="350" spacing="15" styleClass="user-details">
+            <ImageView fx:id="userImage" fitHeight="90" fitWidth="90" styleClass="user-profile-image"/>
+            <TextField fx:id="userName" promptText="Nom" styleClass="input-field"/>
+            <TextField fx:id="userPrenom" promptText="Prénom" styleClass="input-field"/>
+            <TextField fx:id="userGmail" promptText="Gmail" styleClass="input-field"/>
+            <TextField fx:id="userIdentifiant" promptText="Identifiant" styleClass="input-field"/>
+            <TextField fx:id="userRole" promptText="Rôle" styleClass="input-field"/>
+            <PasswordField fx:id="userMotdepasse" promptText="Mot de passe" styleClass="input-field"/>
+            <Button onAction="#handleChangeImage" text="Changer l'image" styleClass="button-modify"/>
+            <Button onAction="#handleEditUser" text="Modifier" styleClass="button-modify"/>
+        </VBox>
+    </HBox>
+</VBox>

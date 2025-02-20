@@ -1,0 +1,318 @@
+/* Style général */
+.root {
+    -fx-font-family: "Arial";
+}
+
+/* Partie gauche (illustration) */
+.pane-left {
+    -fx-background-color: white;
+}
+
+/* Partie droite (formulaire) */
+.pane-right {
+    -fx-background-color: #00509E;
+}
+
+/* Texte principal */
+.text-title {
+    -fx-font-size: 20px;
+    -fx-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Champs de saisie */
+.text-field {
+    -fx-pref-width: 200px;
+    -fx-padding: 10px;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-width: 0;
+    -fx-font-size: 14px;
+}
+
+/* Placeholder des champs */
+.text-field:focused {
+    -fx-background-color: #D6E6FF;
+}
+
+/* Bouton "Create account" */
+.button-create {
+    -fx-background-color: #007BFF;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-pref-width: 200px;
+    -fx-padding: 10px;
+}
+
+.button-create:hover {
+    -fx-background-color: #0056b3;
+}
+
+/* Bouton "Sign in" */
+.button-signin {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-border-color: white;
+    -fx-border-radius: 20;
+    -fx-pref-width: 200px;
+    -fx-padding: 10px;
+}
+
+.button-signin:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Bouton "Select Image" */
+.button-image {
+    -fx-background-color: #00A2FF;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-pref-width: 200px;
+    -fx-padding: 10px;
+}
+
+.button-image:hover {
+    -fx-background-color: #0080CC;
+}
+
+/* Indicateur de force du mot de passe */
+.password-strength {
+    -fx-background-color: gray;
+    -fx-pref-height: 5px;
+}
+
+.password-strength-weak {
+    -fx-background-color: red;
+}
+
+.password-strength-medium {
+    -fx-background-color: yellow;
+}
+
+.password-strength-strong {
+    -fx-background-color: green;
+}
+.button-image, .button-create, .button-signin {
+    -fx-margin: 10px 0 0 0;
+}
+.text-button {
+    -fx-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-alignment: center;
+    -fx-translate-x: -50%;
+}
+
+.text-button:hover {
+    -fx-underline: true;
+}
+/* Styles globaux */
+.root {
+    -fx-font-family: "Arial";
+    -fx-background-color: #F5F7FA;
+}
+
+.sidebar {
+    -fx-background-image: url("/img/hh.png"); /* Image de fond */
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+
+}
+
+/* Image circulaire */
+.user-image {
+        position: absolute;
+        bottom: 0; /* Place l'image en bas de la fenêtre */
+        left: 0;
+        width: 100%;
+        height: 33.33%; /* 1/3 de la hauteur */
+        -fx-background-radius: 50%;
+        -fx-border-radius: 50%;
+        -fx-border-color: white;
+        -fx-border-width: 3px;
+}
+
+/* Espacement du titre */
+.title {
+    -fx-font-size: 20px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+
+}
+
+/* Nom d'utilisateur */
+.user-name {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+
+}
+
+/* Rôle de l'utilisateur */
+.user-role {
+    -fx-text-fill: #000000;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+
+}
+
+/* Bouton "Log out" avec plus d'espace */
+.logout-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: red;
+    -fx-border-color: red;
+    -fx-border-radius: 5px;
+    -fx-border-width: 2px;
+    -fx-padding: 4px 8px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+
+}
+
+
+.logout-button:hover {
+    -fx-background-color: rgba(255, 0, 0, 0.2);
+}
+
+/* Contenu principal */
+.main-container {
+    -fx-background-color: white;
+    -fx-padding: 30px;
+    -fx-alignment: center-left;
+    -fx-pref-width: 600px;
+}
+
+.section-title {
+    -fx-font-size: 20px;
+    -fx-text-fill: #333;
+    -fx-font-weight: bold;
+}
+
+/* Liste des clients */
+.customers-list {
+    -fx-background-color: #FFFFFF;
+    -fx-border-radius: 10px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 5);
+}
+
+.customer-item {
+    -fx-background-color: #F8F9FA;
+    -fx-padding: 10px;
+    -fx-border-radius: 5px;
+    -fx-spacing: 10px;
+}
+
+.customer-item:hover {
+    -fx-background-color: #E3E8EF;
+}
+
+.customer-name {
+    -fx-font-weight: bold;
+}
+
+.customer-avatar {
+    -fx-background-radius: 50%;
+}
+
+/* Formulaire utilisateur */
+.user-details {
+    -fx-background-color: #7dbfe4;
+    -fx-padding: 30px;
+    -fx-border-radius: 10px;
+}
+
+.input-field {
+    -fx-pref-width: 250px;
+    -fx-padding: 10px;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-width: 0;
+    -fx-font-size: 14px;
+}
+
+.button-modify {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-border-color: white;
+    -fx-border-radius: 20;
+    -fx-pref-width: 200px;
+    -fx-padding: 10px;
+}
+.button-changer {
+    -fx-background-color: transparent;
+    -fx-text-fill: #000000;
+    -fx-border-color: rgba(0, 86, 179, 0.11);
+    -fx-border-radius: 20;
+    -fx-pref-width: 200px;
+    -fx-padding: 10px;
+}
+
+.button-modify:hover {
+    -fx-background-color: rgba(0, 86, 179, 0.11);
+    -fx-border-radius: 20;
+    -fx-pref-width: 200px;
+    -fx-padding: 10px;
+}
+.button-changer:hover {
+    -fx-background-color: rgba(0, 86, 179, 0.11);
+    -fx-border-radius: 20;
+    -fx-pref-width: 200px;
+    -fx-padding: 10px;
+}
+
+.button-delete {
+    -fx-background-color: red;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-pref-width: 200px;
+    -fx-padding: 10px;
+}
+
+.button-delete:hover {
+    -fx-background-color: darkred;
+}
+.listeUser, .listeAdmin {
+    -fx-font-size: 18px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow( gaussian , rgba(0, 0, 0, 0.5) , 5, 0.5 , 2 , 2 );
+    -fx-text-decoration: none;
+    -fx-transition: all 0.3s ease;
+}
+
+.listeUser:hover, .listeAdmin:hover {
+    -fx-text-fill: #1459a5; /* Changement de couleur au survol */
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+
+}
+
+
+.button-back {
+    -fx-background-color: #ff5c5c; /* Rouge clair */
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+/* Effet au survol */
+.button-back:hover {
+    -fx-background-color: #ff3b3b; /* Rouge plus foncé */
+}
+
+/* Effet au clic */
+.button-back:pressed {
+    -fx-background-color: #cc0000;
+}

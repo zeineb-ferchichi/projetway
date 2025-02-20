@@ -74,8 +74,10 @@ public class Main {
                     String role = scanner.nextLine();
                     System.out.print("Mot de passe : ");
                     String motDePasse = scanner.nextLine();
+                    System.out.print("Mot de passe : ");
+                    String image = scanner.nextLine();
 
-                    User user = new User(0, nom, prenom, email, identifiant, role, motDePasse);
+                    User user = new User(0, nom, prenom, email, identifiant, role, motDePasse,image);
 
                     // Vérification avant insertion
                     if (userService.validateUser(user)) {
@@ -113,6 +115,8 @@ public class Main {
                         System.out.print("Nouveau mot de passe : ");
                         userToUpdate.setMotdepasse(scanner.nextLine());
 
+                        userService.update(userToUpdate);
+
                     } else {
                         System.out.println(" Utilisateur non trouvé.");
                     }
@@ -144,10 +148,14 @@ public class Main {
             System.out.println("5. Retour au menu principal");
             System.out.print("Choix : ");
             int choix = scanner.nextInt();
+            scanner.nextLine();
 
             switch (choix) {
                 case 1:
+                    System.out.print("ID de l'utilisateur associé : ");
+                    int userId = scanner.nextInt();
                     scanner.nextLine();
+
                     System.out.print("Nom de l'activité : ");
                     String nomActivite = scanner.nextLine();
                     System.out.print("Description : ");
@@ -155,22 +163,19 @@ public class Main {
                     System.out.print("Lien de la facture : ");
                     String lienFacture = scanner.nextLine();
 
-                    Notedefrait notedefrait = new Notedefrait(0, nomActivite, description, lienFacture);
-
-                    // Vérification avant insertion
+                    Notedefrait notedefrait = new Notedefrait(0, nomActivite, description, lienFacture, userId);
                     if (notedefraitService.validateNotedefrait(notedefrait)) {
                         notedefraitService.insert(notedefrait);
-                        System.out.println("Note de frais ajoutée avec succès !");
+                        System.out.println("Utilisateur ajouté avec succès !");
                     } else {
-                        System.out.println("Échec de l'ajout de la note de frais. Vérifiez les erreurs !");
+                        System.out.println("Échec de l'ajout de l'utilisateur. Vérifiez les erreurs !");
+
                     }
                     break;
-
                 case 2:
                     System.out.print("ID de la note de frais à modifier : ");
                     int idUpdate = scanner.nextInt();
                     scanner.nextLine();
-
                     Notedefrait notedefraitToUpdate = notedefraitService.getById(idUpdate);
 
                     if (notedefraitToUpdate != null) {
@@ -183,19 +188,30 @@ public class Main {
                         System.out.print("Nouveau lien de facture : ");
                         notedefraitToUpdate.setLienfacture(scanner.nextLine());
 
+                        notedefraitService.update(notedefraitToUpdate);
                     } else {
-                        System.out.println(" Note de frais non trouvée.");
+                        System.out.println("Note de frais introuvable.");
                     }
-    
-
                     break;
                 case 3:
                     System.out.print("ID de la note de frais à supprimer : ");
                     int idDelete = scanner.nextInt();
                     notedefraitService.deleteById(idDelete);
                     break;
+
                 case 4:
-                    afficherNotedefraits(notedefraitService.getAll());
+                    List<Notedefrait> notes = notedefraitService.getAll();
+
+                    // Ajout du test pour voir combien d'éléments sont récupérés
+                    System.out.println("Nombre de notes récupérées : " + notes.size());
+
+                    if (notes.isEmpty()) {
+                        System.out.println("Aucune note de frais trouvée.");
+                    } else {
+                        for (Notedefrait nf : notes) {
+                            System.out.println(nf);
+                        }
+                    }
                     break;
                 case 5:
                     return;
@@ -211,9 +227,8 @@ public class Main {
         }
     }
 
-    private static void afficherNotedefraits(List<Notedefrait> notedefraits) {
-        for (Notedefrait n : notedefraits) {
-            System.out.println(n);
-        }
-    }
+
+
+
+
 }

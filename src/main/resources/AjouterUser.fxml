@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="500.0" prefWidth="700.0" stylesheets="/style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AjouterUser">
+
+   <!-- Image de fond -->
+   <ImageView fitHeight="500.0" fitWidth="700.0" preserveRatio="false">
+      <image>
+         <Image url="@img/background.png" />
+      </image>
+   </ImageView>
+
+   <!-- Partie droite avec formulaire centralisé -->
+   <AnchorPane layoutX="254.0" prefHeight="500.0" prefWidth="445.0" styleClass="form-container">
+      <children>
+
+         <Text layoutX="204.0" layoutY="47.0" styleClass="text-title" text="Create Account" />
+
+         <!-- Champs du formulaire -->
+         <TextField fx:id="TFId" layoutX="179.0" layoutY="65.0" promptText="ID" styleClass="text-field" />
+         <TextField fx:id="TFNom" layoutX="179.0" layoutY="105.0" promptText="Your name" styleClass="text-field" />
+         <TextField fx:id="TFPrenom" layoutX="179.0" layoutY="145.0" promptText="Your surname" styleClass="text-field" />
+         <TextField fx:id="TFIdentifiant" layoutX="179.0" layoutY="185.0" promptText="Ientifiant" styleClass="text-field" />
+         <TextField fx:id="TFRole" layoutX="179.0" layoutY="225.0" promptText="Your role" styleClass="text-field" />
+         <TextField fx:id="TFGmail" layoutX="179.0" layoutY="265.0" promptText="Your e-mail" styleClass="text-field" />
+         <TextField fx:id="TFMotdepasse" layoutX="179.0" layoutY="305.0" promptText="Create password" styleClass="text-field" />
+
+         <!-- Boutons -->
+         <VBox alignment="CENTER" layoutX="179.0" layoutY="349.0" spacing="15">
+            <Button onAction="#onImageSelect" styleClass="button-image" text="Select Image" />
+            <Button onAction="#Ajouter" styleClass="button-create" text="Create account" />
+            <Hyperlink onAction="#handleSignIn" text="Sign in" />
+
+         </VBox>
+
+
+      </children>
+   </AnchorPane>
+</AnchorPane>

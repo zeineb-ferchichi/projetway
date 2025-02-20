@@ -1,6 +1,7 @@
 package Service;
 
 import Entitie.User;
+import javafx.scene.control.Alert;
 import util.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,10 +15,13 @@ public class UserService implements IService<User> {
         cnx = DataSource.getInstance().getConnection();
     }
 
+
     @Override
     public void insert(User user) {
-        String requete = "INSERT INTO user (Nom, Prenom, Gmail, Identifiant, Role, Motdepasse) VALUES (?, ?, ?, ?, ?, ?)";
-
+        if (!validateUser(user)) {
+            return;
+        }
+        String requete = "INSERT INTO user (Nom, Prenom, Gmail, Identifiant, Role, Motdepasse, Image) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pst = cnx.prepareStatement(requete)) {
             pst.setString(1, user.getNom());
             pst.setString(2, user.getPrenom());
@@ -25,7 +29,7 @@ public class UserService implements IService<User> {
             pst.setString(4, user.getIdentifiant());
             pst.setString(5, user.getRole());
             pst.setString(6, user.getMotdepasse());
-
+            pst.setString(7, user.getImage());
             pst.executeUpdate();
             System.out.println("User inséré avec succès !");
         } catch (SQLException e) {
@@ -34,11 +38,12 @@ public class UserService implements IService<User> {
         }
     }
 
-
-
     @Override
     public void update(User user) {
-        String requete = "UPDATE user SET Nom = ?, Prenom = ?, Gmail = ?, Identifiant = ?, Role = ?, Motdepasse = ? WHERE id = ?";
+        if (!validateUser(user)) {
+            return;
+        }
+        String requete = "UPDATE user SET Nom = ?, Prenom = ?, Gmail = ?, Identifiant = ?, Role = ?, Motdepasse = ?, Image = ? WHERE id = ?";
         try (PreparedStatement pst = cnx.prepareStatement(requete)) {
             pst.setString(1, user.getNom());
             pst.setString(2, user.getPrenom());
@@ -46,14 +51,15 @@ public class UserService implements IService<User> {
             pst.setString(4, user.getIdentifiant());
             pst.setString(5, user.getRole());
             pst.setString(6, user.getMotdepasse());
-            pst.setInt(7, user.getId()); // L'ID doit être le dernier paramètre (WHERE id = ?)
-
+            pst.setString(7, user.getImage());
+            pst.setInt(8, user.getId());
             pst.executeUpdate();
             System.out.println("User mis à jour avec succès !");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
 
 
@@ -72,8 +78,8 @@ public class UserService implements IService<User> {
                         rs.getString("Gmail"),
                         rs.getString("Identifiant"),
                         rs.getString("Role"),
-                        rs.getString("Motdepasse")
-
+                        rs.getString("Motdepasse"),
+                        rs.getString("Image")
                 );
                 listeUsers.add(p);
             }
@@ -97,7 +103,8 @@ public class UserService implements IService<User> {
                             rs.getString("Gmail"),
                             rs.getString("Identifiant"),
                             rs.getString("Role"),
-                            rs.getString("Motdepasse")
+                            rs.getString("Motdepasse"),
+                            rs.getString("Image")
                     );
                 }
             }
@@ -120,7 +127,8 @@ public class UserService implements IService<User> {
                         rs.getString("Gmail"),
                         rs.getString("Identifiant"),
                         rs.getString("Role"),
-                        rs.getString("Motdepasse")
+                        rs.getString("Motdepasse"),
+                        rs.getString("Image")
                 );
                 listeUsers.add(p);
             }
@@ -133,7 +141,7 @@ public class UserService implements IService<User> {
         try (PreparedStatement pst = cnx.prepareStatement(requete , Statement.RETURN_GENERATED_KEYS)) {
             pst.setInt(1, id);
             ResultSet rs = pst.getGeneratedKeys();
-            
+
             int rowsAffected = pst.executeUpdate();
 
             if (rowsAffected > 0) {
@@ -146,54 +154,61 @@ public class UserService implements IService<User> {
         }
     }
 
+
     public boolean validateUser(User user) {
         // Vérifier que le nom est rempli et ne contient que des lettres et espaces
         if (user.getNom() == null || user.getNom().trim().isEmpty()) {
-            System.out.println("Erreur : Le nom est obligatoire !");
+            afficherAlerte("Erreur de validation", "Le nom est obligatoire !");
             return false;
         }
         if (!user.getNom().matches("^[a-zA-ZÀ-ÿ\\s]+$")) {
-            System.out.println("Erreur : Le nom ne doit contenir que des lettres et des espaces !");
+            afficherAlerte("Erreur de validation", "Le nom ne doit contenir que des lettres et des espaces !");
             return false;
         }
 
         // Vérifier que le prénom est rempli et ne contient que des lettres et espaces
         if (user.getPrenom() == null || user.getPrenom().trim().isEmpty()) {
-            System.out.println("Erreur : Le prénom est obligatoire !");
+            afficherAlerte("Erreur de validation", "Le prénom est obligatoire !");
             return false;
         }
         if (!user.getPrenom().matches("^[a-zA-ZÀ-ÿ\\s]+$")) {
-            System.out.println("Erreur : Le prénom ne doit contenir que des lettres et des espaces !");
+            afficherAlerte("Erreur de validation", "Le prénom ne doit contenir que des lettres et des espaces !");
             return false;
         }
 
         // Vérifier que l'email est valide
         if (user.getGmail() == null || !user.getGmail().matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")) {
-            System.out.println("Erreur : L'adresse Gmail est invalide !");
+            afficherAlerte("Erreur de validation", "L'adresse email est invalide !");
             return false;
         }
 
         // Vérifier que l'identifiant est rempli
         if (user.getIdentifiant() == null || user.getIdentifiant().trim().isEmpty()) {
-            System.out.println("Erreur : L'identifiant est obligatoire !");
+            afficherAlerte("Erreur de validation", "L'identifiant est obligatoire !");
             return false;
         }
 
-        // Vérifier unicité de l'identifiant
-        if (!isUniqueIdentifiant(user.getIdentifiant())) {
-            System.out.println("Erreur : Cet identifiant est déjà utilisé !");
+        if (!isUniqueIdentifiant(user.getIdentifiant(), user.getId())) {
+            afficherAlerte("Erreur de validation", "Cet identifiant est déjà utilisé !");
             return false;
         }
+
 
         // Vérifier que le rôle est valide
         if (user.getRole() == null || !(user.getRole().equalsIgnoreCase("directeur") || user.getRole().equalsIgnoreCase("employe"))) {
-            System.out.println("Erreur : Le rôle doit être 'directeur' ou 'employé' !");
+            afficherAlerte("Erreur de validation", "Le rôle doit être 'directeur' ou 'employé' !");
             return false;
         }
 
         // Vérifier que le mot de passe contient au moins 6 caractères
         if (user.getMotdepasse() == null || user.getMotdepasse().length() < 6) {
-            System.out.println("Erreur : Le mot de passe doit contenir au moins 6 caractères !");
+            afficherAlerte("Erreur de validation", "Le mot de passe doit contenir au moins 6 caractères !");
+            return false;
+        }
+
+        // Vérifier que l'image est valide
+        if (user.getImage() == null || !user.getImage().matches(".*\\.(jpg|jpeg|png|gif)$")) {
+            afficherAlerte("Erreur de validation", "L'image doit être au format JPG, JPEG, PNG ou GIF !");
             return false;
         }
 
@@ -201,21 +216,73 @@ public class UserService implements IService<User> {
     }
 
 
-
-    public boolean isUniqueIdentifiant(String identifiant) {
-        String requete = "SELECT * FROM user WHERE Identifiant = ?";
+    public boolean isUniqueIdentifiant(String identifiant, int userId) {
+        String requete = "SELECT COUNT(*) FROM user WHERE Identifiant = ? AND Id != ?";
         try (PreparedStatement pst = cnx.prepareStatement(requete)) {
             pst.setString(1, identifiant);
+            pst.setInt(2, userId);
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt(1) == 0; // Retourne vrai si l'identifiant n'existe pas
+                    return rs.getInt(1) == 0; // Retourne vrai si aucun autre utilisateur n'a cet identifiant
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false; // Par défaut, considérer que l'identifiant n'est pas unique en cas d'erreur
+        return false; // En cas d'erreur, considère que l'identifiant n'est pas unique
     }
+
+
+
+    private void afficherAlerte(String titre, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(titre);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    public boolean validateCredentials(String identifiant, String password) {
+        String requete = "SELECT COUNT(*) FROM user WHERE Identifiant = ? AND MotDePasse = ?";
+        try (PreparedStatement pst = cnx.prepareStatement(requete)) {
+            pst.setString(1, identifiant);
+            pst.setString(2, password);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Retourne vrai si un compte existe avec ces identifiants
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // En cas d'erreur, retour faux
+    }
+
+
+    public User getUserByIdentifiant(String identifiant) {
+        String requete = "SELECT * FROM user WHERE Identifiant = ?";
+        try (PreparedStatement pst = cnx.prepareStatement(requete)) {
+            pst.setString(1, identifiant);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return new User(
+                            rs.getInt("Id"),
+                            rs.getString("Nom"),
+                            rs.getString("Prenom"),
+                            rs.getString("Gmail"),
+                            rs.getString("Identifiant"),
+                            rs.getString("Role"),
+                            rs.getString("Motdepasse"),
+                            rs.getString("Image")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
 
 
