@@ -1,14 +1,12 @@
 package models;
 
-import java.time.LocalDate;
-
 public class AbonnementTransportDTO {
     // Champs pour l'abonnement
     private int idAbonnem;
-    private String typeAbonnem;
+    private TypeAbonnement typeAbonnem; // ✅ Enum pour la liste déroulante
     private double montant;
-    private LocalDate dateDebut;
-    private LocalDate dateFin;
+    private int dureeValable; // ✅ Durée en jours
+    private StatusAbonnement status; // ✅ Enum pour la liste déroulante
 
     // Champs pour le transport
     private int idTransp;
@@ -18,13 +16,13 @@ public class AbonnementTransportDTO {
     public AbonnementTransportDTO() {}
 
     // Constructeur avec paramètres
-    public AbonnementTransportDTO(int idAbonnem, String typeAbonnem, double montant, LocalDate dateDebut, LocalDate dateFin,
+    public AbonnementTransportDTO(int idAbonnem, TypeAbonnement typeAbonnem, double montant, int dureeValable, StatusAbonnement status,
                                   int idTransp, String typeTransport) {
         this.idAbonnem = idAbonnem;
         this.typeAbonnem = typeAbonnem;
         this.montant = montant;
-        this.dateDebut = dateDebut;
-        this.dateFin = dateFin;
+        this.dureeValable = dureeValable;
+        this.status = status;
         this.idTransp = idTransp;
         this.typeTransport = typeTransport;
     }
@@ -38,11 +36,11 @@ public class AbonnementTransportDTO {
         this.idAbonnem = idAbonnem;
     }
 
-    public String getTypeAbonnem() {
+    public TypeAbonnement getTypeAbonnem() {
         return typeAbonnem;
     }
 
-    public void setTypeAbonnem(String typeAbonnem) {
+    public void setTypeAbonnem(TypeAbonnement typeAbonnem) {
         this.typeAbonnem = typeAbonnem;
     }
 
@@ -54,20 +52,20 @@ public class AbonnementTransportDTO {
         this.montant = montant;
     }
 
-    public LocalDate getDateDebut() {
-        return dateDebut;
+    public int getDureeValable() {
+        return dureeValable;
     }
 
-    public void setDateDebut(LocalDate dateDebut) {
-        this.dateDebut = dateDebut;
+    public void setDureeValable(int dureeValable) {
+        this.dureeValable = dureeValable;
     }
 
-    public LocalDate getDateFin() {
-        return dateFin;
+    public StatusAbonnement getStatus() {
+        return status;
     }
 
-    public void setDateFin(LocalDate dateFin) {
-        this.dateFin = dateFin;
+    public void setStatus(StatusAbonnement status) {
+        this.status = status;
     }
 
     public int getIdTransp() {
@@ -90,10 +88,10 @@ public class AbonnementTransportDTO {
     public String toString() {
         return "AbonnementTransportDTO{" +
                 "idAbonnem=" + idAbonnem +
-                ", typeAbonnem='" + typeAbonnem + '\'' +
+                ", typeAbonnem=" + typeAbonnem +
                 ", montant=" + montant +
-                ", dateDebut=" + dateDebut +
-                ", dateFin=" + dateFin +
+                ", dureeValable=" + dureeValable + " jours" +
+                ", status=" + status +
                 ", idTransp=" + idTransp +
                 ", typeTransport='" + typeTransport + '\'' +
                 '}';
