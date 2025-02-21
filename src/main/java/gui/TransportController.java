@@ -18,10 +18,9 @@ import java.util.Optional;
 
 public class TransportController {
 
-    @FXML private ComboBox<String> cmbType; // ✅ Liste déroulante pour le type de transport
+    @FXML private ComboBox<String> cmbType;
     @FXML private TextField txtNomStation, txtZone;
     @FXML private VBox transportDisplay;
-    @FXML private Button btnModifier, btnSupprimer, btnAnnuler;
 
     private final TransportService service = new TransportService();
     private Transport selectedTransport = null;
@@ -29,16 +28,14 @@ public class TransportController {
     @FXML
     public void initialize() {
         loadTransports();
-        initializeComboBox(); // ✅ Initialisation de la liste déroulante
+        initializeComboBox();
     }
 
-    // 🔹 Initialiser la liste déroulante avec 3 types prédéfinis
     private void initializeComboBox() {
         cmbType.getItems().addAll("Bus", "Train", "Taxi");
-        cmbType.setValue("Bus"); // ✅ Définir une valeur par défaut
+        cmbType.setValue("Bus");
     }
 
-    // 🔹 Charger les transports depuis la base de données
     private void loadTransports() {
         transportDisplay.getChildren().clear();
         List<Transport> transports = service.getAll();
@@ -47,12 +44,10 @@ public class TransportController {
         }
     }
 
-    // 🔹 Création des cartes d'affichage des transports
     private HBox createTransportCard(Transport transp) {
         HBox card = new HBox(10);
         card.setStyle("-fx-padding: 10; -fx-background-color: #BBDEFB; -fx-border-color: #0D47A1; -fx-border-radius: 5; -fx-border-width: 2;");
 
-        // ✅ Affichage de l'ID et du nouveau champ `nom_station`
         Text info = new Text(
                 "ID: " + transp.getId_transp() +
                         " | Type: " + transp.getType_transp() +
@@ -61,7 +56,7 @@ public class TransportController {
         );
 
         Button btnDelete = new Button("❌");
-        btnDelete.setOnAction(e -> deleteTransport(transp));
+        btnDelete.setOnAction(e -> deleteTransport());
 
         Button btnEdit = new Button("✏️");
         btnEdit.setOnAction(e -> selectTransportForEdit(transp));
@@ -70,7 +65,6 @@ public class TransportController {
         return card;
     }
 
-    // 🔹 Ajouter un transport
     @FXML
     private void addTransport() {
         if (validateFields()) {
@@ -82,15 +76,14 @@ public class TransportController {
             service.add(transp);
             loadTransports();
             clearFields();
-            showAlert("Succès", "Transport ajouté avec succès!", Alert.AlertType.INFORMATION);
+            showAlert("Succès", "🚀 Transport ajouté avec succès !", Alert.AlertType.INFORMATION);
         }
     }
 
-    // 🔹 Modifier un transport existant
     @FXML
     private void updateTransport() {
         if (selectedTransport == null) {
-            showAlert("Erreur", "Veuillez sélectionner un transport à modifier !", Alert.AlertType.ERROR);
+            showAlert("Erreur", "⚠ Veuillez sélectionner un transport à modifier !", Alert.AlertType.ERROR);
             return;
         }
 
@@ -102,27 +95,33 @@ public class TransportController {
             service.update(selectedTransport);
             loadTransports();
             clearFields();
-            showAlert("Succès", "Transport modifié avec succès!", Alert.AlertType.INFORMATION);
+            showAlert("Succès", "✅ Transport modifié avec succès !", Alert.AlertType.INFORMATION);
             selectedTransport = null;
         }
     }
 
-    // 🔹 Supprimer un transport
     @FXML
-    private void deleteTransport(Transport transp) {
-        if (transp == null) {
+    private void deleteTransport() {
+        if (selectedTransport == null) {
+            showAlert("Erreur", "⚠ Aucun transport sélectionné !", Alert.AlertType.ERROR);
             return;
         }
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Voulez-vous vraiment supprimer ce transport ?", ButtonType.YES, ButtonType.NO);
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "🚨 Voulez-vous vraiment supprimer ce transport ?", ButtonType.YES, ButtonType.NO);
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.isPresent() && result.get() == ButtonType.YES) {
-            service.delete(transp);
+            service.delete(selectedTransport);
             loadTransports();
+            showAlert("Suppression", "🚮 Transport supprimé avec succès !", Alert.AlertType.INFORMATION);
         }
     }
 
-    // 🔹 Sélectionner un transport pour modification
+    /**
+     * 🔹 Corrige l'erreur "Cannot resolve method 'selectTransportForEdit'"
+     * Cette méthode est appelée lorsqu'on clique sur Modifier pour remplir les champs.
+     */
+    @FXML
     private void selectTransportForEdit(Transport transp) {
         selectedTransport = transp;
         cmbType.setValue(transp.getType_transp());
@@ -130,7 +129,6 @@ public class TransportController {
         txtZone.setText(transp.getZone_geographique());
     }
 
-    // 🔹 Effacer les champs du formulaire
     @FXML
     private void clearFields() {
         cmbType.setValue("Bus");
@@ -139,34 +137,34 @@ public class TransportController {
         selectedTransport = null;
     }
 
-    // 🔹 Vérifier que tous les champs sont remplis avant d'ajouter/modifier un transport
-    private boolean validateFields() {
-        if (cmbType.getValue().isEmpty() || txtNomStation.getText().isEmpty() || txtZone.getText().isEmpty()) {
-            showAlert("Erreur", "Veuillez remplir tous les champs!", Alert.AlertType.ERROR);
-            return false;
+    /**
+     * 🔹 Correction de l'erreur "getClass().getResource('/gui/Home.fxml') might be null"
+     * Vérifiez que `Home.fxml` est bien placé dans `src/main/resources/gui/`.
+     */
+    @FXML
+    private void goBack() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/gui/Home.fxml"));
+            if (root == null) {
+                throw new IOException("Fichier Home.fxml introuvable. Vérifiez son emplacement.");
+            }
+            Stage stage = (Stage) transportDisplay.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "❌ Impossible de retourner à la page d'accueil. Vérifiez que Home.fxml est bien dans `src/main/resources/gui/`.", Alert.AlertType.ERROR);
         }
-        return true;
     }
 
-    // 🔹 Afficher une alerte
+    private boolean validateFields() {
+        return !(cmbType.getValue() == null || txtNomStation.getText().isEmpty() || txtZone.getText().isEmpty());
+    }
+
     private void showAlert(String title, String message, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-
-    // 🔹 Retour à l'écran d'accueil
-    @FXML
-    private void goBack() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/gui/Home.fxml"));
-            Stage stage = (Stage) transportDisplay.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            showAlert("Erreur", "Impossible de retourner à la page d'accueil!", Alert.AlertType.ERROR);
-        }
     }
 }
