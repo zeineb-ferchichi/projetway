@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.ScrollPane?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="gui.AbonnementController"
+      spacing="20"
+      style="-fx-padding: 20; -fx-background-color: #E3F2FD;">
+
+    <!-- Flèche de retour -->
+    <HBox spacing="10">
+        <Button text="←" onAction="#goBack"
+                style="-fx-font-size: 18px; -fx-background-color: transparent; -fx-text-fill: #0D47A1; -fx-border-color: transparent;"/>
+        <Label text="Gestion des Abonnements"
+               style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #0D47A1;"/>
+    </HBox>
+
+    <!-- Formulaire -->
+    <GridPane hgap="10" vgap="10">
+        <Label text="Type :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtType" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="Ex: Standard"/>
+
+        <Label text="Montant :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtMontant" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="Ex: 150.0"/>
+
+        <Label text="Date Début :" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <DatePicker fx:id="dateDebut" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Date Fin :" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <DatePicker fx:id="dateFin" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <Label text="Transport ID :" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtTransportId" GridPane.rowIndex="4" GridPane.columnIndex="1" promptText="Ex: 2"/>
+    </GridPane>
+
+    <!-- Boutons CRUD -->
+    <HBox spacing="10">
+        <Button fx:id="btnAjouter" text="Ajouter" onAction="#addAbonnement"
+                style="-fx-background-color: #42A5F5; -fx-text-fill: white;"/>
+        <Button fx:id="btnModifier" text="Modifier" onAction="#updateAbonnement"
+                style="-fx-background-color: #FFC107; -fx-text-fill: white;"/>
+        <Button fx:id="btnSupprimer" text="Supprimer" onAction="#deleteAbonnement"
+                style="-fx-background-color: #E53935; -fx-text-fill: white;"/>
+        <Button fx:id="btnAnnuler" text="Annuler" onAction="#clearFields"
+                style="-fx-background-color: #B0BEC5; -fx-text-fill: white;"/>
+    </HBox>
+
+    <!-- Zone d'affichage des abonnements -->
+    <Label text="Liste des Abonnements"
+           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #0D47A1;"/>
+
+    <ScrollPane fx:id="scrollPane" fitToWidth="true" fitToHeight="true">
+        <VBox fx:id="abonDisplay" spacing="10" style="-fx-padding: 10;"/>
+    </ScrollPane>
+
+</VBox>

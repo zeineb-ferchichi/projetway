@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="gui.Main"
+      spacing="15"
+      alignment="CENTER"
+      style="-fx-padding: 30;">
+
+    <Button fx:id="btnAjouterTransport" text="➕ Ajouter un Transport" onAction="#AjouterTransport"/>
+    <Button fx:id="btnAfficherTransport" text="📋 Afficher les Transports" onAction="#AfficherTransport"/>
+    <Button fx:id="btnModifierTransport" text="✏ Modifier un Transport" onAction="#ModifierTransport"/>
+    <Button fx:id="btnSupprimerTransport" text="🗑 Supprimer un Transport" onAction="#SupprimerTransport"/>
+
+    <Button fx:id="btnAjouterAbonnement" text="➕ Ajouter un Abonnement" onAction="#AjouterAbonnement"/>
+    <Button fx:id="btnAfficherAbonnement" text="📋 Afficher les Abonnements" onAction="#AfficherAbonnement"/>
+    <Button fx:id="btnModifierAbonnement" text="✏ Modifier un Abonnement" onAction="#ModifierAbonnement"/>
+    <Button fx:id="btnSupprimerAbonnement" text="🗑 Supprimer un Abonnement" onAction="#SupprimerAbonnement"/>
+
+    <Button fx:id="btnQuitter" text="❌ Quitter" onAction="#quitter"/>
+</VBox>

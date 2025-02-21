@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="gui.AfficherTransport"
+      spacing="10" alignment="CENTER"
+      style="-fx-padding: 20;">
+
+    <TableView fx:id="tableView">
+        <columns>
+            <!-- La colonne ID -->
+            <TableColumn fx:id="idCol" text="ID" />
+            <TableColumn fx:id="typeCol" text="Type" />
+            <TableColumn fx:id="dateCol" text="Date" />
+            <TableColumn fx:id="zoneCol" text="Zone" />
+        </columns>
+    </TableView>
+</VBox>
