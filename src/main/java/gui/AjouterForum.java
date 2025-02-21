@@ -1,6 +1,7 @@
 package gui;
 
 import models.Forum;
+import org.json.JSONObject;
 import services.ForumService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,12 +18,14 @@ import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import okhttp3.*;
+
 
 public class AjouterForum {
 
     private final ForumService forumService = new ForumService();  // Création de l'objet ForumService
     private static List<Forum> forumsList = new ArrayList<>(); // Liste statique pour stocker les forums ajoutés
-
+    private static final String API_KEY = "AIzaSyChr4M6I2yRTS3hArYsm4DjJTEi1wYi2Xc";
     @FXML
     private TextField TFcontenue;
 
@@ -34,7 +37,7 @@ public class AjouterForum {
 
     @FXML
     private Button btnAfficherForum; // Bouton pour afficher les forums
-private String imagePath ="";
+    private String imagePath ="";
     @FXML
     void ajouter(ActionEvent event) {
         String titre = TFtitre.getText().trim();
@@ -63,11 +66,18 @@ private String imagePath ="";
             showAlert(Alert.AlertType.WARNING, "Image manquante", "Veuillez sélectionner une image.");
             return;
         }
+        String sanitizedTitre = isContentInappropriate(titre);
+        String sanitizedContenu = isContentInappropriate(contenu);
+        if (sanitizedTitre.contains("*") || sanitizedContenu.contains("*") ) {
+            showAlert(Alert.AlertType.ERROR, "Contenu interdit", "Votre message contient des propos inappropriés.");
 
+        }
+        TFtitre.setText(sanitizedTitre);
+         TFcontenue.setText(sanitizedContenu);
         // Récupérer l'image depuis ImageView
 
         try {
-            Forum forum = new Forum(titre, contenu, imagePath, new Date(System.currentTimeMillis()));
+            Forum forum = new Forum(sanitizedTitre, sanitizedContenu, imagePath, new Date(System.currentTimeMillis()));
 
             forumService.add(forum); // Utilisation de ForumService pour l'ajout
 
@@ -98,6 +108,7 @@ private String imagePath ="";
     }
 
     /**
+     *
      * Sélectionner une image à l'aide de FileChooser
      */
     @FXML
@@ -107,7 +118,7 @@ private String imagePath ="";
 
         File file = fileChooser.showOpenDialog(null);
         if (file != null) {
-             imagePath = file.toURI().toString();
+            imagePath = file.toURI().toString();
 
             TFimage.setImage(new Image(imagePath));  // Afficher l'image sélectionnée dans l'ImageView
             imagePath=  file.toPath().toString();
@@ -132,6 +143,54 @@ private String imagePath ="";
             btnAfficherForum.getScene().setRoot(root);
         } catch (IOException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    private String isContentInappropriate(String text) {
+        OkHttpClient client = new OkHttpClient();
+        String apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + API_KEY;
+
+        JSONObject requestBody = new JSONObject();
+        JSONObject content = new JSONObject();
+        String prompt = "Analyze the following text and replace any hate speech, profanity, or offensive words with '*****'. "
+                + "Ensure that only harmful words are censored while keeping the sentence structure intact. "
+                + "Return only the modified text.\n\n"
+                + "Text: " + text;
+        content.put("text", prompt);
+
+        JSONObject contents = new JSONObject();
+        contents.put("parts", new org.json.JSONArray().put(content));
+
+        requestBody.put("contents", new org.json.JSONArray().put(contents));
+
+        RequestBody body = RequestBody.create(
+                requestBody.toString(),
+                MediaType.get("application/json; charset=utf-8")
+        );
+
+        Request request = new Request.Builder()
+                .url(apiUrl)
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
+            JSONObject jsonResponse = new JSONObject(response.body().string());
+            String sanitizedText = jsonResponse
+                    .getJSONArray("candidates")
+                    .getJSONObject(0)
+                    .getJSONObject("content")
+                    .getJSONArray("parts")
+                    .getJSONObject(0)
+                    .getString("text")
+                    .trim();
+
+            return sanitizedText;
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur de vérification AI : " + e.getMessage());
+            return text;
         }
     }
 }

@@ -136,4 +136,9 @@ public class ForumService {
         }
         return forum;
     }
+    public Forum getForumById(int forumId) {
+        // Simulate fetching forum from database
+        return new Forum(forumId, "Titre du forum", "Contenu du forum", "path_to_image.jpg", new java.sql.Date(System.currentTimeMillis()));
+    }
+
 }

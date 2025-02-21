@@ -1,35 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.ScrollPane?>
 
 <ScrollPane fx:id="messageScrollPane" prefHeight="600.0" prefWidth="600.0"
-            xmlns="http://javafx.com/javafx/17.0.2"
+            xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="gui.AfficherMessage">
+
     <content>
-        <TilePane fx:id="messageTilePane" hgap="10" vgap="10" prefColumns="3"
-                  style="-fx-padding: 10;">
+        <VBox spacing="15" style="-fx-padding: 15; -fx-alignment: center;">
 
-            <VBox fx:id="messageCard" spacing="10" style="-fx-background-color: #FFFFFF;
-                                                          -fx-padding: 10;
-                                                          -fx-background-radius: 10;
-                                                          -fx-border-radius: 10;
-                                                          -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0.5, 0, 0);">
+            <!-- Forums Section -->
+            <TilePane fx:id="tilePane" hgap="15" vgap="15" prefColumns="2"
+                      style="-fx-padding: 10; -fx-alignment: center;">
+                <!-- Forums will be added dynamically via Java -->
+            </TilePane>
 
-                <Label fx:id="messageLabel" text="Contenu du message 1" wrapText="true" />
+            <!-- Messages Section -->
+            <TilePane fx:id="messageTilePane" hgap="15" vgap="15" prefColumns="2"
+                      style="-fx-padding: 10; -fx-alignment: center;">
 
-                <HBox fx:id="buttonBox" spacing="10">
-                    <Button fx:id="modifyButton" text="Modifier" style="-fx-background-color: #62B9CB; -fx-text-fill: white;"/>
+                <!-- Message Card Template -->
+                <VBox fx:id="messageCard" spacing="10"
+                      style="-fx-background-color: #FFFFFF;
+                             -fx-padding: 15;
+                             -fx-background-radius: 10;
+                             -fx-border-radius: 10;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0.5, 0, 0);">
 
-                    <Button fx:id="deleteButton" text="Supprimer" style="-fx-background-color: #D9534F; -fx-text-fill: white;"/>
-                </HBox>
+                    <Label fx:id="messageLabel" text="Contenu du message 1" wrapText="true" />
 
-            </VBox>
+                    <HBox fx:id="buttonBox" spacing="10">
+                        <Button fx:id="modifyButton" text="Modifier"
+                                style="-fx-background-color: #62B9CB;
+                                       -fx-text-fill: white;
+                                       -fx-padding: 8 15;
+                                       -fx-background-radius: 5;"/>
 
-        </TilePane>
+                        <Button fx:id="deleteButton" text="Supprimer"
+                                style="-fx-background-color: #D9534F;
+                                       -fx-text-fill: white;
+                                       -fx-padding: 8 15;
+                                       -fx-background-radius: 5;"/>
+                    </HBox>
+                </VBox>
+
+            </TilePane>
+
+            <!-- Back Button (Centered at Bottom) -->
+            <Button fx:id="btnRetour" text="Retour"
+                    style="-fx-background-color: #6C757D;
+                           -fx-text-fill: white;
+                           -fx-font-size: 14px;
+                           -fx-padding: 10 20;
+                           -fx-background-radius: 5;
+                           -fx-alignment: center;"/>
+
+        </VBox>
     </content>
 </ScrollPane>

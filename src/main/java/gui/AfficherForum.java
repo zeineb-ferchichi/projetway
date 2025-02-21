@@ -17,12 +17,15 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import javafx.scene.control.TextField;
 
 public class AfficherForum {
 
-    private final ForumService forumService = new ForumService(); // Service pour interagir avec la BDD
+    private final ForumService forumService = new ForumService();
 
     @FXML
     private Button btnModifier, btnSupprimer;
@@ -34,28 +37,57 @@ public class AfficherForum {
     private ImageView forumImageView;
 
     @FXML
+    private TextField searchField;
+
+    @FXML
     private ScrollPane scrollPane;
 
     @FXML
     private TilePane tilePane;
 
     @FXML
-    private TextField TFtitre; // Vérification si ce champ existe bien dans ModifierForum.fxml
-
+    private Button searchButton;
     @FXML
-    private Button btnAjouterforum; // Bouton pour afficher les forums
+    private ImageView sideImageView;
+    private List<VBox> allForums = new ArrayList<>();
 
     @FXML
     void initialize() {
+        Image image = new Image(getClass().getResource("/images/main.jpg").toExternalForm());
+        sideImageView.setImage(image);
         refreshForums();
+        searchButton.setOnAction(event -> filterForums());
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> filterForums());
+    }
+
+    private void filterForums() {
+        String searchText = searchField.getText().toLowerCase().trim();
+
+        if (searchText.isEmpty()) {
+            tilePane.getChildren().setAll(allForums);
+            return;
+        }
+
+
+        List<VBox> filteredForums = allForums.stream()
+                .filter(forumBox -> {
+                    Label titleLabel = (Label) forumBox.lookup("#forumTitle");
+                    return titleLabel.getText().toLowerCase().contains(searchText);
+                })
+                .collect(Collectors.toList());
+
+        tilePane.getChildren().setAll(filteredForums);
     }
 
     private void refreshForums() {
         tilePane.getChildren().clear();
+        allForums.clear();
+
         Button btnAjouterInterface = new Button("Ajouter Forum");
         btnAjouterInterface.setStyle("-fx-background-color:#1B4B65; -fx-text-fill: white;");
         btnAjouterInterface.setOnAction(e -> ajouter(btnAjouterInterface));
         tilePane.getChildren().add(btnAjouterInterface);
+
         try {
             List<Forum> forums = forumService.getAll();
 
@@ -82,6 +114,7 @@ public class AfficherForum {
                 forumBox.getChildren().add(imageView);
 
                 Label titleLabel = new Label(forum.getTitre());
+                titleLabel.setId("forumTitle");
                 titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
                 forumBox.getChildren().add(titleLabel);
 
@@ -105,6 +138,7 @@ public class AfficherForum {
                 forumBox.getChildren().add(buttonContainer);
 
                 tilePane.getChildren().add(forumBox);
+                allForums.add(forumBox);
             }
         } catch (Exception e) {
             showError("Erreur lors du chargement des forums", e);
@@ -149,7 +183,6 @@ public class AfficherForum {
 
             AjouterMessage controller = loader.getController();
             controller.initData(forum);
-
             Stage stage = (Stage) tilePane.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
@@ -166,13 +199,11 @@ public class AfficherForum {
         alert.showAndWait();
         e.printStackTrace();
     }
+
     @FXML
     void ajouter(Button btnAjouterInterface) {
         try {
-            // Charge le fichier FXML de l'écran des forums
             Parent root = FXMLLoader.load(getClass().getResource("/Ajouterforum.fxml"));
-            // Change la scène pour afficher la nouvelle interface
-
             btnAjouterInterface.getScene().setRoot(root);
         } catch (IOException e) {
             System.out.println(e.getMessage());

@@ -31,7 +31,7 @@ public class ModifierMessage {
     private final MessageService messageService = new MessageService();
 
     // Méthode pour initialiser les données du message à modifier
-    public void initData(Message message) {
+    public void initData(Message message, int forumid) {
         if (message == null) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Message non trouvé", "Impossible de charger le message.");
             return;
@@ -68,7 +68,6 @@ public class ModifierMessage {
             stage.close();
 
             // Recharger la liste des messages
-            retournerAListeMessages();
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur", "Une erreur est survenue", "Impossible de modifier le message.");

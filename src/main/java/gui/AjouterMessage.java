@@ -1,11 +1,17 @@
 package gui;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.Parent;
 import javafx.fxml.FXMLLoader;
 import javafx.event.ActionEvent;
+
+import java.io.File;
 import java.io.IOException;
 import models.Forum;
 import models.Message;
@@ -27,10 +33,15 @@ public class AjouterMessage {
     private Button btnEnvoyer;
 
     @FXML
+    private TilePane tilePane;
+
+    @FXML
     private Button btnAfficherMessages; // Bouton pour afficher les messages
 
     @FXML
     private ScrollPane scrollPane;
+    @FXML
+    private Button btnAfficherForum;
 
     private final MessageService messageService = new MessageService();
     private final ForumService forumService = new ForumService();
@@ -38,6 +49,7 @@ public class AjouterMessage {
 
     @FXML
     public void initialize() {
+
         // Action sur le bouton d'envoi
         btnEnvoyer.setOnAction(event -> ajouterMessage());
     }
@@ -45,6 +57,11 @@ public class AjouterMessage {
     // Méthode pour initialiser les données avec le forum sélectionné
     public void initData(Forum forum) {
         this.forumId = forum.getIdForum(); // ✅ Récupérer l'ID du forum
+        System.out.println(forum);
+        Platform.runLater(() -> {
+            afficherForum(forum);
+        });
+
         afficherMessages(); // Affiche les messages du forum au démarrage
     }
 
@@ -151,7 +168,8 @@ public class AjouterMessage {
             AfficherMessage controller = loader.getController();
 
             // Passer l'ID du forum à l'interface AfficherMessage
-            controller.initData(forumId);
+            System.out.println(this.forumId);
+            controller.initData( this.forumId);
 
             // Changer la scène actuelle pour afficher l'interface de messages
             messageInput.getScene().setRoot(root);
@@ -161,6 +179,47 @@ public class AjouterMessage {
             System.out.println("Erreur lors du chargement du FXML : " + e.getMessage());
         }
     }
+    @FXML
+    void afficher(ActionEvent event) {
+        try {
+            // Charge le fichier FXML de l'écran des forums
+            Parent root = FXMLLoader.load(getClass().getResource("/AfficherForum.fxml"));
+            // Change la scène pour afficher la nouvelle interface
+            btnAfficherForum.getScene().setRoot(root);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+ void afficherForum(Forum forum){
+        if(tilePane == null){
+            System.out.println("tilePane is NULL! Cannot display forum.");
+            return;
+        }
+     tilePane.getChildren().clear();
+     VBox forumBox = new VBox();
+     forumBox.setSpacing(10);
+     forumBox.setStyle("-fx-background-color: #FFFFFF; -fx-padding: 10; -fx-background-radius: 10; -fx-border-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0.5, 0, 0);");
+     String imagePath = forum.getImage();
+     File imageFile = new File(imagePath);
+     Image image;
+     if (imageFile.exists() && imageFile.isFile()) {
+         image = new Image("file:" + imagePath);
+     } else {
+         image = new Image("file:/chemin/vers/image/empty.png");
+     }
+     ImageView imageView = new ImageView(image);
+     imageView.setFitWidth(200);
+     imageView.setFitHeight(150);
+     imageView.setPreserveRatio(true);
+     forumBox.getChildren().add(imageView);
+     Label titleLabel = new Label(forum.getTitre());
+     titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+     forumBox.getChildren().add(titleLabel);
 
+     Label contentLabel = new Label(forum.getContenu());
+     contentLabel.setWrapText(true);
+     forumBox.getChildren().add(contentLabel);
+     tilePane.getChildren().add(forumBox);
+ }
 
 }
