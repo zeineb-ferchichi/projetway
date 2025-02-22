@@ -28,15 +28,18 @@ public class AbonnementService implements IService<Abonnement> {
             stmt.setInt(5, abonnement.getTransport_id());
 
             int rowsAffected = stmt.executeUpdate();
+            System.out.println("Nombre de lignes insérées : " + rowsAffected);
             if (rowsAffected > 0) {
                 System.out.println("✅ Abonnement ajouté avec succès.");
             } else {
-                System.out.println("❌ Échec de l'ajout de l'abonnement.");
+                System.out.println("❌ Échec de l'ajout.");
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erreur lors de l'ajout d'un abonnement", e);
+            System.out.println("Erreur SQL : " + e.getMessage());
+            e.printStackTrace();
         }
     }
+
 
     @Override
     public boolean delete(int id) { // ✅ Correction ici

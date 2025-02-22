@@ -50,6 +50,7 @@ public class AbonnementController {
 
     @FXML
     private void addAbonnement() {
+        System.out.println("Méthode addAbonnement() appelée !");
         if (validateFields()) {
             try {
                 Abonnement abo = new Abonnement(
@@ -60,12 +61,16 @@ public class AbonnementController {
                         comboStatus.getValue()
                 );
                 service.add(abo);
+                System.out.println("✅ Abonnement ajouté : " + abo);
                 loadAbonnements();
                 clearFields();
                 showAlert("Succès", "✅ Abonnement ajouté avec succès!", Alert.AlertType.INFORMATION);
             } catch (Exception e) {
                 showAlert("Erreur", "Vérifiez les valeurs saisies !", Alert.AlertType.ERROR);
+                e.printStackTrace();
             }
+        } else {
+            showAlert("Erreur", "Veuillez remplir tous les champs !", Alert.AlertType.ERROR);
         }
     }
 
@@ -83,15 +88,11 @@ public class AbonnementController {
                 selectedAbonnement.setTransport_id(Integer.parseInt(txtTransportId.getText()));
                 selectedAbonnement.setStatus_abonnem(comboStatus.getValue());
 
-                boolean success = service.update(selectedAbonnement);
-                if (success) {
-                    loadAbonnements();
-                    clearFields();
-                    showAlert("Succès", "✅ Abonnement modifié avec succès!", Alert.AlertType.INFORMATION);
-                    selectedAbonnement = null;
-                } else {
-                    showAlert("Erreur", "❌ Échec de la modification de l'abonnement!", Alert.AlertType.ERROR);
-                }
+                service.update(selectedAbonnement);
+                loadAbonnements();
+                clearFields();
+                showAlert("Succès", "✅ Abonnement modifié avec succès!", Alert.AlertType.INFORMATION);
+                selectedAbonnement = null;
             } catch (Exception e) {
                 showAlert("Erreur", "Impossible de modifier l'abonnement!", Alert.AlertType.ERROR);
             }
@@ -111,14 +112,10 @@ public class AbonnementController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            boolean success = service.delete(selectedAbonnement.getId_abonnem());
-            if (success) {
-                loadAbonnements();
-                showAlert("Succès", "✅ Abonnement supprimé avec succès!", Alert.AlertType.INFORMATION);
-                selectedAbonnement = null;
-            } else {
-                showAlert("Erreur", "❌ Échec de la suppression de l'abonnement!", Alert.AlertType.ERROR);
-            }
+            service.delete(selectedAbonnement.getId_abonnem());
+            loadAbonnements();
+            showAlert("Succès", "✅ Abonnement supprimé avec succès!", Alert.AlertType.INFORMATION);
+            selectedAbonnement = null;
         }
     }
 
@@ -155,7 +152,7 @@ public class AbonnementController {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            showAlert("Erreur", "Impossible de charger la page d'accueil!", Alert.AlertType.ERROR);
+            showAlert("Erreur", "Impossible de retourner à la page d'accueil!", Alert.AlertType.ERROR);
         }
     }
 
