@@ -4,11 +4,11 @@ public class Abonnement {
     private int id_abonnem;
     private String type_abonnem;
     private double montant;
-    private int duree_valable; // ✅ Durée valable en jours
+    private int duree_valable;
     private int transport_id;
-    private String status_abonnem; // ✅ Ajout du statut (Actif, Expiré, Suspendu)
+    private String status_abonnem;
 
-    // ✅ Constructeur avec le champ `status_abonnem`
+    // ✅ Constructeur avec tous les paramètres
     public Abonnement(int id_abonnem, String type_abonnem, double montant, int duree_valable, int transport_id, String status_abonnem) {
         this.id_abonnem = id_abonnem;
         this.type_abonnem = type_abonnem;
@@ -18,8 +18,14 @@ public class Abonnement {
         this.status_abonnem = status_abonnem;
     }
 
-    // ✅ Constructeur par défaut
-    public Abonnement() {}
+    // ✅ Constructeur sans ID (pour les ajouts)
+    public Abonnement(String type_abonnem, double montant, int duree_valable, int transport_id, String status_abonnem) {
+        this.type_abonnem = type_abonnem;
+        this.montant = montant;
+        this.duree_valable = duree_valable;
+        this.transport_id = transport_id;
+        this.status_abonnem = status_abonnem;
+    }
 
     // ✅ Getters et Setters
     public int getId_abonnem() {
@@ -76,7 +82,7 @@ public class Abonnement {
                 "id_abonnem=" + id_abonnem +
                 ", type_abonnem='" + type_abonnem + '\'' +
                 ", montant=" + montant +
-                ", duree_valable=" + duree_valable + " jours" +
+                ", duree_valable=" + duree_valable +
                 ", transport_id=" + transport_id +
                 ", status_abonnem='" + status_abonnem + '\'' +
                 '}';

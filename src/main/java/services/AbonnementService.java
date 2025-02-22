@@ -39,12 +39,11 @@ public class AbonnementService implements IService<Abonnement> {
     }
 
     @Override
-    public boolean delete(Abonnement abonnement) {
+    public boolean delete(int id) { // ✅ Correction ici
         String sql = "DELETE FROM abonnement WHERE id_abonnem = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, abonnement.getId_abonnem());
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
+            stmt.setInt(1, id);
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Erreur lors de la suppression d'un abonnement", e);
             return false;
@@ -52,7 +51,9 @@ public class AbonnementService implements IService<Abonnement> {
     }
 
     @Override
-    public boolean update(Abonnement abonnement) {
+    public boolean update(Abonnement abonnement) { // ✅ Correction pour respecter `IService`
+        if (abonnement == null || abonnement.getId_abonnem() == 0) return false;
+
         String sql = "UPDATE abonnement SET type_abonnem = ?, montant = ?, duree_valable = ?, status_abonnem = ?, transport_id = ? WHERE id_abonnem = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, abonnement.getType_abonnem());
@@ -62,8 +63,7 @@ public class AbonnementService implements IService<Abonnement> {
             stmt.setInt(5, abonnement.getTransport_id());
             stmt.setInt(6, abonnement.getId_abonnem());
 
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Erreur lors de la mise à jour de l'abonnement", e);
             return false;
@@ -100,14 +100,14 @@ public class AbonnementService implements IService<Abonnement> {
         return null;
     }
 
-    private Abonnement extractAbonnement(ResultSet rs) throws SQLException {
+    private Abonnement extractAbonnement(ResultSet rs) throws SQLException { // ✅ Correction ici
         return new Abonnement(
                 rs.getInt("id_abonnem"),
                 rs.getString("type_abonnem"),
                 rs.getDouble("montant"),
                 rs.getInt("duree_valable"),
-                rs.getString("status_abonnem"),
-                rs.getInt("transport_id")
+                rs.getInt("transport_id"), // ✅ Transport ID avant Status
+                rs.getString("status_abonnem") // ✅ Status à la fin
         );
     }
 }

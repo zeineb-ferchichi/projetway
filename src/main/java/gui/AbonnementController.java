@@ -32,9 +32,6 @@ public class AbonnementController {
         loadAbonnements();
     }
 
-    /**
-     * Remplit les listes déroulantes (Type d'Abonnement et Statut).
-     */
     private void loadComboBoxes() {
         comboType.getItems().addAll("Mensuel", "Annuel", "Hebdomadaire");
         comboType.setValue("Mensuel");
@@ -43,9 +40,6 @@ public class AbonnementController {
         comboStatus.setValue("Actif");
     }
 
-    /**
-     * Charge et affiche tous les abonnements.
-     */
     private void loadAbonnements() {
         abonDisplay.getChildren().clear();
         List<Abonnement> abonnements = service.getAll();
@@ -59,7 +53,6 @@ public class AbonnementController {
         if (validateFields()) {
             try {
                 Abonnement abo = new Abonnement(
-                        0,
                         comboType.getValue(),
                         Double.parseDouble(txtMontant.getText()),
                         Integer.parseInt(txtDureeValable.getText()),
@@ -90,11 +83,15 @@ public class AbonnementController {
                 selectedAbonnement.setTransport_id(Integer.parseInt(txtTransportId.getText()));
                 selectedAbonnement.setStatus_abonnem(comboStatus.getValue());
 
-                service.update(selectedAbonnement);
-                loadAbonnements();
-                clearFields();
-                showAlert("Succès", "✅ Abonnement modifié avec succès!", Alert.AlertType.INFORMATION);
-                selectedAbonnement = null;
+                boolean success = service.update(selectedAbonnement);
+                if (success) {
+                    loadAbonnements();
+                    clearFields();
+                    showAlert("Succès", "✅ Abonnement modifié avec succès!", Alert.AlertType.INFORMATION);
+                    selectedAbonnement = null;
+                } else {
+                    showAlert("Erreur", "❌ Échec de la modification de l'abonnement!", Alert.AlertType.ERROR);
+                }
             } catch (Exception e) {
                 showAlert("Erreur", "Impossible de modifier l'abonnement!", Alert.AlertType.ERROR);
             }
@@ -114,10 +111,14 @@ public class AbonnementController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            service.delete(selectedAbonnement);
-            loadAbonnements();
-            showAlert("Succès", "✅ Abonnement supprimé avec succès!", Alert.AlertType.INFORMATION);
-            selectedAbonnement = null;
+            boolean success = service.delete(selectedAbonnement.getId_abonnem());
+            if (success) {
+                loadAbonnements();
+                showAlert("Succès", "✅ Abonnement supprimé avec succès!", Alert.AlertType.INFORMATION);
+                selectedAbonnement = null;
+            } else {
+                showAlert("Erreur", "❌ Échec de la suppression de l'abonnement!", Alert.AlertType.ERROR);
+            }
         }
     }
 
@@ -131,18 +132,12 @@ public class AbonnementController {
         selectedAbonnement = null;
     }
 
-    /**
-     * Vérifie si tous les champs sont remplis.
-     */
     private boolean validateFields() {
         return !txtMontant.getText().isEmpty() &&
                 !txtDureeValable.getText().isEmpty() &&
                 !txtTransportId.getText().isEmpty();
     }
 
-    /**
-     * Affiche une alerte avec un message personnalisé.
-     */
     private void showAlert(String title, String message, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
@@ -151,9 +146,6 @@ public class AbonnementController {
         alert.showAndWait();
     }
 
-    /**
-     * Retour à la page d'accueil.
-     */
     @FXML
     private void goBack() {
         try {
@@ -167,9 +159,6 @@ public class AbonnementController {
         }
     }
 
-    /**
-     * Sélectionne un abonnement pour modification.
-     */
     private void selectAbonnementForEdit(Abonnement abo) {
         selectedAbonnement = abo;
         comboType.setValue(abo.getType_abonnem());
@@ -179,9 +168,6 @@ public class AbonnementController {
         comboStatus.setValue(abo.getStatus_abonnem());
     }
 
-    /**
-     * Crée une "carte" pour afficher un abonnement avec un bouton de suppression et de modification.
-     */
     private HBox createAbonnementCard(Abonnement abo) {
         HBox card = new HBox(10);
         card.setStyle("-fx-padding: 10; -fx-border-color: gray; -fx-border-radius: 5; -fx-border-width: 1;");

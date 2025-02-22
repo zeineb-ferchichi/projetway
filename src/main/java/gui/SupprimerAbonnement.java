@@ -2,7 +2,6 @@ package gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import models.Abonnement;
 import services.AbonnementService;
 
 import java.util.Optional;
@@ -26,9 +25,8 @@ public class SupprimerAbonnement {
 
         try {
             int id = Integer.parseInt(idText);
-            Abonnement abonnement = service.getById(id);
 
-            if (abonnement == null) {
+            if (service.getById(id) == null) {
                 showAlert("Erreur", "⚠ Aucun abonnement trouvé avec cet ID!", Alert.AlertType.ERROR);
                 return;
             }
@@ -40,9 +38,13 @@ public class SupprimerAbonnement {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                service.delete(abonnement);
-                showAlert("Succès", "✅ Abonnement supprimé avec succès!", Alert.AlertType.INFORMATION);
-                clearFields();
+                boolean success = service.delete(id);
+                if (success) {
+                    showAlert("Succès", "✅ Abonnement supprimé avec succès!", Alert.AlertType.INFORMATION);
+                    clearFields();
+                } else {
+                    showAlert("Erreur", "❌ Échec de la suppression de l'abonnement!", Alert.AlertType.ERROR);
+                }
             }
 
         } catch (NumberFormatException e) {
