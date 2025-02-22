@@ -13,17 +13,14 @@ import models.Abonnement;
 import services.AbonnementService;
 
 import java.io.IOException;
-import java.sql.Date;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
 public class AbonnementController {
 
-    @FXML private TextField txtType, txtMontant, txtTransportId;
-    @FXML private DatePicker dateDebut, dateFin;
+    @FXML private ComboBox<String> comboType;
+    @FXML private TextField txtMontant, txtDureeValable, txtTransportId;
+    @FXML private ComboBox<String> comboStatus;
     @FXML private VBox abonDisplay;
 
     private final AbonnementService service = new AbonnementService();
@@ -31,7 +28,19 @@ public class AbonnementController {
 
     @FXML
     public void initialize() {
+        loadComboBoxes();
         loadAbonnements();
+    }
+
+    /**
+     * Remplit les listes déroulantes (Type d'Abonnement et Statut).
+     */
+    private void loadComboBoxes() {
+        comboType.getItems().addAll("Mensuel", "Annuel", "Hebdomadaire");
+        comboType.setValue("Mensuel");
+
+        comboStatus.getItems().addAll("Actif", "Expiré", "Suspendu");
+        comboStatus.setValue("Actif");
     }
 
     /**
@@ -50,16 +59,17 @@ public class AbonnementController {
         if (validateFields()) {
             try {
                 Abonnement abo = new Abonnement(
-                        txtType.getText(),
+                        0,
+                        comboType.getValue(),
                         Double.parseDouble(txtMontant.getText()),
-                        Date.valueOf(dateDebut.getValue()),
-                        Date.valueOf(dateFin.getValue()),
-                        Integer.parseInt(txtTransportId.getText())
+                        Integer.parseInt(txtDureeValable.getText()),
+                        Integer.parseInt(txtTransportId.getText()),
+                        comboStatus.getValue()
                 );
                 service.add(abo);
                 loadAbonnements();
                 clearFields();
-                showAlert("Succès", "Abonnement ajouté avec succès!", Alert.AlertType.INFORMATION);
+                showAlert("Succès", "✅ Abonnement ajouté avec succès!", Alert.AlertType.INFORMATION);
             } catch (Exception e) {
                 showAlert("Erreur", "Vérifiez les valeurs saisies !", Alert.AlertType.ERROR);
             }
@@ -74,16 +84,16 @@ public class AbonnementController {
         }
         if (validateFields()) {
             try {
-                selectedAbonnement.setType_abonnem(txtType.getText());
+                selectedAbonnement.setType_abonnem(comboType.getValue());
                 selectedAbonnement.setMontant(Double.parseDouble(txtMontant.getText()));
-                selectedAbonnement.setDate_debut(Date.valueOf(dateDebut.getValue()));
-                selectedAbonnement.setDate_fin(Date.valueOf(dateFin.getValue()));
+                selectedAbonnement.setDuree_valable(Integer.parseInt(txtDureeValable.getText()));
                 selectedAbonnement.setTransport_id(Integer.parseInt(txtTransportId.getText()));
+                selectedAbonnement.setStatus_abonnem(comboStatus.getValue());
 
                 service.update(selectedAbonnement);
                 loadAbonnements();
                 clearFields();
-                showAlert("Succès", "Abonnement modifié avec succès!", Alert.AlertType.INFORMATION);
+                showAlert("Succès", "✅ Abonnement modifié avec succès!", Alert.AlertType.INFORMATION);
                 selectedAbonnement = null;
             } catch (Exception e) {
                 showAlert("Erreur", "Impossible de modifier l'abonnement!", Alert.AlertType.ERROR);
@@ -106,18 +116,18 @@ public class AbonnementController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             service.delete(selectedAbonnement);
             loadAbonnements();
-            showAlert("Succès", "Abonnement supprimé avec succès!", Alert.AlertType.INFORMATION);
+            showAlert("Succès", "✅ Abonnement supprimé avec succès!", Alert.AlertType.INFORMATION);
             selectedAbonnement = null;
         }
     }
 
     @FXML
     private void clearFields() {
-        txtType.clear();
+        comboType.setValue("Mensuel");
         txtMontant.clear();
+        txtDureeValable.clear();
         txtTransportId.clear();
-        dateDebut.setValue(null);
-        dateFin.setValue(null);
+        comboStatus.setValue("Actif");
         selectedAbonnement = null;
     }
 
@@ -125,13 +135,9 @@ public class AbonnementController {
      * Vérifie si tous les champs sont remplis.
      */
     private boolean validateFields() {
-        if (txtType.getText().isEmpty() || txtMontant.getText().isEmpty() ||
-                dateDebut.getValue() == null || dateFin.getValue() == null ||
-                txtTransportId.getText().isEmpty()) {
-            showAlert("Erreur", "Veuillez remplir tous les champs!", Alert.AlertType.ERROR);
-            return false;
-        }
-        return true;
+        return !txtMontant.getText().isEmpty() &&
+                !txtDureeValable.getText().isEmpty() &&
+                !txtTransportId.getText().isEmpty();
     }
 
     /**
@@ -166,22 +172,11 @@ public class AbonnementController {
      */
     private void selectAbonnementForEdit(Abonnement abo) {
         selectedAbonnement = abo;
-        txtType.setText(abo.getType_abonnem());
+        comboType.setValue(abo.getType_abonnem());
         txtMontant.setText(String.valueOf(abo.getMontant()));
-
-        if (abo.getDate_debut() != null) {
-            Instant instantDebut = abo.getDate_debut().toInstant();
-            LocalDate localDateDebut = instantDebut.atZone(ZoneId.systemDefault()).toLocalDate();
-            dateDebut.setValue(localDateDebut);
-        }
-
-        if (abo.getDate_fin() != null) {
-            Instant instantFin = abo.getDate_fin().toInstant();
-            LocalDate localDateFin = instantFin.atZone(ZoneId.systemDefault()).toLocalDate();
-            dateFin.setValue(localDateFin);
-        }
-
+        txtDureeValable.setText(String.valueOf(abo.getDuree_valable()));
         txtTransportId.setText(String.valueOf(abo.getTransport_id()));
+        comboStatus.setValue(abo.getStatus_abonnem());
     }
 
     /**
@@ -189,13 +184,13 @@ public class AbonnementController {
      */
     private HBox createAbonnementCard(Abonnement abo) {
         HBox card = new HBox(10);
-        card.setStyle("-fx-padding: 10; -fx-background-color: #BBDEFB; -fx-border-color: #0D47A1; -fx-border-radius: 5; -fx-border-width: 2;");
+        card.setStyle("-fx-padding: 10; -fx-border-color: gray; -fx-border-radius: 5; -fx-border-width: 1;");
 
         Text info = new Text(
                 "Type: " + abo.getType_abonnem() +
                         " | Montant: " + abo.getMontant() +
-                        " | Début: " + abo.getDate_debut() +
-                        " | Fin: " + abo.getDate_fin() +
+                        " | Durée: " + abo.getDuree_valable() + " jours" +
+                        " | Statut: " + abo.getStatus_abonnem() +
                         " | Transport ID: " + abo.getTransport_id()
         );
 

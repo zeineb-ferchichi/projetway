@@ -29,8 +29,8 @@ public class AfficherAbonnement {
             String details = "ID: " + abo.getId_abonnem() +
                     " | Type: " + abo.getType_abonnem() +
                     " | Montant: " + abo.getMontant() +
-                    " | Date Début: " + abo.getDate_debut() +
-                    " | Date Fin: " + abo.getDate_fin() +
+                    " | Durée: " + abo.getDuree_valable() + " jours" +
+                    " | Statut: " + abo.getStatus_abonnem() +
                     " | Transport ID: " + abo.getTransport_id();
             listAbonnements.getItems().add(details);
         }

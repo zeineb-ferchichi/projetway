@@ -5,34 +5,43 @@ import javafx.scene.control.*;
 import models.Abonnement;
 import services.AbonnementService;
 
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.ZoneId;
-
 public class ModifierAbonnement {
 
-    @FXML private TextField txtType;
+    @FXML private ComboBox<String> comboType;
     @FXML private TextField txtMontant;
+    @FXML private TextField txtDureeValable;
+    @FXML private ComboBox<String> comboStatus;
     @FXML private TextField txtTransportId;
-    @FXML private DatePicker dateDebut;
-    @FXML private DatePicker dateFin;
     @FXML private Button btnModifier;
 
     private final AbonnementService service = new AbonnementService();
     private Abonnement selectedAbonnement;
 
+    @FXML
+    public void initialize() {
+        loadComboBoxes();
+    }
+
+    /**
+     * Remplit les listes déroulantes (Type d'Abonnement et Statut).
+     */
+    private void loadComboBoxes() {
+        comboType.getItems().addAll("Mensuel", "Annuel", "Hebdomadaire");
+        comboType.setValue("Mensuel");
+
+        comboStatus.getItems().addAll("Actif", "Expiré", "Suspendu");
+        comboStatus.setValue("Actif");
+    }
+
+    /**
+     * Remplit les champs avec les informations de l'abonnement sélectionné.
+     */
     public void setSelectedAbonnement(Abonnement abonnement) {
         this.selectedAbonnement = abonnement;
-        txtType.setText(abonnement.getType_abonnem());
+        comboType.setValue(abonnement.getType_abonnem());
         txtMontant.setText(String.valueOf(abonnement.getMontant()));
-
-        if (abonnement.getDate_debut() != null) {
-            dateDebut.setValue(abonnement.getDate_debut().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-        }
-        if (abonnement.getDate_fin() != null) {
-            dateFin.setValue(abonnement.getDate_fin().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-        }
-
+        txtDureeValable.setText(String.valueOf(abonnement.getDuree_valable()));
+        comboStatus.setValue(abonnement.getStatus_abonnem());
         txtTransportId.setText(String.valueOf(abonnement.getTransport_id()));
     }
 
@@ -44,29 +53,30 @@ public class ModifierAbonnement {
         }
 
         if (validateFields()) {
-            selectedAbonnement.setType_abonnem(txtType.getText());
+            selectedAbonnement.setType_abonnem(comboType.getValue());
             selectedAbonnement.setMontant(Double.parseDouble(txtMontant.getText()));
-            selectedAbonnement.setDate_debut(Date.valueOf(dateDebut.getValue()));
-            selectedAbonnement.setDate_fin(Date.valueOf(dateFin.getValue()));
+            selectedAbonnement.setDuree_valable(Integer.parseInt(txtDureeValable.getText()));
             selectedAbonnement.setTransport_id(Integer.parseInt(txtTransportId.getText()));
+            selectedAbonnement.setStatus_abonnem(comboStatus.getValue());
 
             service.update(selectedAbonnement);
-            showAlert("Succès", "Abonnement modifié avec succès!", Alert.AlertType.INFORMATION);
+            showAlert("Succès", "✅ Abonnement modifié avec succès!", Alert.AlertType.INFORMATION);
         }
     }
 
     private boolean validateFields() {
-        if (txtType.getText().isEmpty() || txtMontant.getText().isEmpty() ||
-                dateDebut.getValue() == null || dateFin.getValue() == null ||
+        if (comboType.getValue() == null || txtMontant.getText().isEmpty() ||
+                txtDureeValable.getText().isEmpty() || comboStatus.getValue() == null ||
                 txtTransportId.getText().isEmpty()) {
-            showAlert("Erreur", "Veuillez remplir tous les champs!", Alert.AlertType.ERROR);
+            showAlert("Erreur", "⚠ Veuillez remplir tous les champs!", Alert.AlertType.ERROR);
             return false;
         }
         try {
             Double.parseDouble(txtMontant.getText());
+            Integer.parseInt(txtDureeValable.getText());
             Integer.parseInt(txtTransportId.getText());
         } catch (NumberFormatException e) {
-            showAlert("Erreur", "Montant et Transport ID doivent être numériques!", Alert.AlertType.ERROR);
+            showAlert("Erreur", "⚠ Montant, Durée et Transport ID doivent être numériques!", Alert.AlertType.ERROR);
             return false;
         }
         return true;

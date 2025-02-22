@@ -4,20 +4,24 @@ public class Abonnement {
     private int id_abonnem;
     private String type_abonnem;
     private double montant;
-    private int duree_valable; // 🔹 Remplace date_debut et date_fin (ex: 30 jours)
+    private int duree_valable; // ✅ Durée valable en jours
     private int transport_id;
-    private String statut_abonnement; // 🔹 Ajout d'un statut : "Actif" ou "Expiré"
+    private String status_abonnem; // ✅ Ajout du statut (Actif, Expiré, Suspendu)
 
-    public Abonnement(int id_abonnem, String type_abonnem, double montant, int duree_valable, int transport_id, String statut_abonnement) {
+    // ✅ Constructeur avec le champ `status_abonnem`
+    public Abonnement(int id_abonnem, String type_abonnem, double montant, int duree_valable, int transport_id, String status_abonnem) {
         this.id_abonnem = id_abonnem;
         this.type_abonnem = type_abonnem;
         this.montant = montant;
         this.duree_valable = duree_valable;
         this.transport_id = transport_id;
-        this.statut_abonnement = statut_abonnement;
+        this.status_abonnem = status_abonnem;
     }
 
-    // 🔹 Getters et Setters
+    // ✅ Constructeur par défaut
+    public Abonnement() {}
+
+    // ✅ Getters et Setters
     public int getId_abonnem() {
         return id_abonnem;
     }
@@ -58,12 +62,12 @@ public class Abonnement {
         this.transport_id = transport_id;
     }
 
-    public String getStatut_abonnement() {
-        return statut_abonnement;
+    public String getStatus_abonnem() {
+        return status_abonnem;
     }
 
-    public void setStatut_abonnement(String statut_abonnement) {
-        this.statut_abonnement = statut_abonnement;
+    public void setStatus_abonnem(String status_abonnem) {
+        this.status_abonnem = status_abonnem;
     }
 
     @Override
@@ -74,7 +78,7 @@ public class Abonnement {
                 ", montant=" + montant +
                 ", duree_valable=" + duree_valable + " jours" +
                 ", transport_id=" + transport_id +
-                ", statut_abonnement='" + statut_abonnement + '\'' +
+                ", status_abonnem='" + status_abonnem + '\'' +
                 '}';
     }
 }

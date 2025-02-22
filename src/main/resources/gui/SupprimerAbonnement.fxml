@@ -10,16 +10,15 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="gui.SupprimerAbonnement"
       spacing="20"
-      style="-fx-padding: 20; -fx-alignment: center; -fx-background-color: #E3F2FD;">
+      style="-fx-padding: 20; -fx-alignment: center;">
 
     <Label text="Supprimer un Abonnement"
-           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #0D47A1;"/>
+           style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
 
     <GridPane hgap="10" vgap="10">
         <Label text="ID Abonnement :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <TextField fx:id="txtId" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="Ex: 1"/>
     </GridPane>
 
-    <Button text="Supprimer" fx:id="btnSupprimer" onAction="#supprimerAbonnement"
-            style="-fx-background-color: #E53935; -fx-text-fill: white;"/>
+    <Button text="Supprimer" fx:id="btnSupprimer" onAction="#supprimerAbonnement"/>
 </VBox>

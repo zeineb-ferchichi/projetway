@@ -5,37 +5,39 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.ComboBox?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="gui.ModifierAbonnement"
       spacing="20"
-      style="-fx-padding: 20; -fx-alignment: center; -fx-background-color: #E3F2FD;">
+      style="-fx-padding: 20; -fx-alignment: center;">
 
     <Label text="Modifier un Abonnement"
-           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #0D47A1;"/>
+           style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
 
-    <GridPane hgap="10" vgap="10">
+    <GridPane hgap="10" vgap="10" alignment="CENTER_LEFT">
         <Label text="ID Abonnement :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <TextField fx:id="txtId" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="Ex: 1" editable="false"/>
 
-        <Label text="Type :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtType" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="Ex: Standard"/>
+        <Label text="Type d'Abonnement :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="comboType" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="200"/>
 
         <Label text="Montant :" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtMontant" GridPane.rowIndex="2" GridPane.columnIndex="1" promptText="Ex: 150.0"/>
+        <TextField fx:id="txtMontant" GridPane.rowIndex="2" GridPane.columnIndex="1" prefWidth="200"
+                   promptText="Ex: 150.0"/>
 
-        <Label text="Date Début :" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <DatePicker fx:id="dateDebut" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        <Label text="Durée Valable (jours) :" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtDureeValable" GridPane.rowIndex="3" GridPane.columnIndex="1" prefWidth="200"
+                   promptText="Ex: 30"/>
 
-        <Label text="Date Fin :" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-        <DatePicker fx:id="dateFin" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+        <Label text="Statut :" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="comboStatus" GridPane.rowIndex="4" GridPane.columnIndex="1" prefWidth="200"/>
 
         <Label text="Transport ID :" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtTransportId" GridPane.rowIndex="5" GridPane.columnIndex="1" promptText="Ex: 2"/>
+        <TextField fx:id="txtTransportId" GridPane.rowIndex="5" GridPane.columnIndex="1" prefWidth="200"
+                   promptText="Ex: 2"/>
     </GridPane>
 
-    <Button text="Modifier" fx:id="btnModifier" onAction="#modifierAbonnement"
-            style="-fx-background-color: #FFC107; -fx-text-fill: white;"/>
+    <Button text="Modifier" fx:id="btnModifier" onAction="#modifierAbonnement"/>
 </VBox>

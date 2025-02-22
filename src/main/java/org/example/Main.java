@@ -7,7 +7,6 @@ import services.TransportService;
 
 import java.util.List;
 import java.util.Scanner;
-import java.util.Date;
 
 public class Main {
     public static void main(String[] args) {
@@ -26,96 +25,157 @@ public class Main {
             System.out.println("7️⃣ Quitter");
             System.out.print("➡️ Choisissez une option : ");
 
-            int choix = scanner.nextInt();
-            scanner.nextLine(); // Pour éviter les bugs d'entrée
+            try {
+                int choix = Integer.parseInt(scanner.nextLine().trim());
 
-            switch (choix) {
-                case 1:
-                    System.out.print("🚍 Entrez le type de transport : ");
-                    String typeTransport = scanner.nextLine();
-                    System.out.print("🌍 Entrez la zone géographique : ");
-                    String zoneGeographique = scanner.nextLine();
+                switch (choix) {
+                    case 1:
+                        ajouterTransport(scanner, transportService);
+                        break;
+                    case 2:
+                        afficherTransports(transportService);
+                        break;
+                    case 3:
+                        ajouterAbonnement(scanner, abonnementService, transportService);
+                        break;
+                    case 4:
+                        afficherAbonnements(abonnementService);
+                        break;
+                    case 5:
+                        supprimerAbonnement(scanner, abonnementService);
+                        break;
+                    case 6:
+                        mettreAJourAbonnement(scanner, abonnementService);
+                        break;
+                    case 7:
+                        System.out.println("👋 Au revoir !");
+                        scanner.close();
+                        System.exit(0);
+                        break;
+                    default:
+                        System.out.println("❌ Choix invalide, essayez encore !");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Entrée invalide ! Veuillez entrer un chiffre.");
+            }
+        }
+    }
 
-                    // Création d'un transport
-                    // Constructeur : Transport(String type_transp, Date date_transp, String zone_geographique)
-                    Transport transport = new Transport(typeTransport, new Date(), zoneGeographique);
-                    transportService.add(transport);
-                    System.out.println("✅ Transport ajouté avec succès !");
-                    break;
+    // ✅ Ajouter un transport
+    private static void ajouterTransport(Scanner scanner, TransportService transportService) {
+        System.out.print("🚍 Entrez le type de transport (Bus, Train, Taxi) : ");
+        String typeTransport = scanner.nextLine();
+        System.out.print("🚏 Entrez le nom de la station : ");
+        String nomStation = scanner.nextLine();
+        System.out.print("🌍 Entrez la zone géographique : ");
+        String zoneGeographique = scanner.nextLine();
 
-                case 2:
-                    System.out.println("📜 Liste des transports : ");
-                    List<Transport> transports = transportService.getAll();
-                    for (Transport t : transports) {
-                        System.out.println(t);
-                    }
-                    break;
+        Transport transport = new Transport(typeTransport, nomStation, zoneGeographique);
+        transportService.add(transport);
+        System.out.println("✅ Transport ajouté avec succès !");
+    }
 
-                case 3:
-                    System.out.print("📜 Type d'abonnement : ");
-                    String typeAbonnement = scanner.nextLine();
-                    System.out.print("💰 Montant : ");
-                    double montant = scanner.nextDouble();
-                    System.out.print("🆔 ID du transport : ");
-                    int transportId = scanner.nextInt();
+    // ✅ Afficher les transports
+    private static void afficherTransports(TransportService transportService) {
+        System.out.println("📜 Liste des transports : ");
+        List<Transport> transports = transportService.getAll();
+        if (transports.isEmpty()) {
+            System.out.println("❌ Aucun transport trouvé !");
+        } else {
+            transports.forEach(System.out::println);
+        }
+    }
 
-                    // Création d'un abonnement
-                    // Constructeur : Abonnement(String type_abonnem, double montant, Date date_debut, Date date_fin, int transport_id)
-                    Abonnement abonnement = new Abonnement(typeAbonnement, montant, new Date(), new Date(), transportId);
+    // ✅ Ajouter un abonnement
+    private static void ajouterAbonnement(Scanner scanner, AbonnementService abonnementService, TransportService transportService) {
+        System.out.print("📜 Type d'abonnement (Mensuel, Annuel, Semaine) : ");
+        String typeAbonnement = scanner.nextLine();
 
-                    abonnementService.add(abonnement);
-                    System.out.println("✅ Abonnement ajouté avec succès !");
-                    break;
+        double montant = lireDouble(scanner, "💰 Montant : ");
+        int transportId = lireInt(scanner, "🆔 ID du transport : ");
 
-                case 4:
-                    System.out.println("📜 Liste des abonnements : ");
-                    List<Abonnement> abonnements = abonnementService.getAll();
-                    for (Abonnement a : abonnements) {
-                        System.out.println(a);
-                    }
-                    break;
+        if (transportService.getById(transportId) == null) {
+            System.out.println("❌ Transport ID invalide !");
+            return;
+        }
 
-                case 5:
-                    System.out.print("❌ Entrez l'ID de l'abonnement à supprimer : ");
-                    int idAbonnement = scanner.nextInt();
-                    Abonnement abonnementToDelete = abonnementService.getById(idAbonnement);
-                    if (abonnementToDelete != null) {
-                        abonnementService.delete(abonnementToDelete); // Supprime l'objet Abonnement
-                        System.out.println("✅ Abonnement supprimé !");
-                    } else {
-                        System.out.println("❌ Abonnement introuvable !");
-                    }
-                    break;
+        int dureeValable = lireInt(scanner, "📆 Durée valable (en jours) : ");
+        System.out.print("🔄 Statut de l'abonnement (Actif, Expiré, Suspendu) : ");
+        String statusAbonnem = scanner.nextLine();
 
-                case 6:
-                    System.out.print("✏️ Entrez l'ID de l'abonnement à mettre à jour : ");
-                    int idUpdate = scanner.nextInt();
-                    scanner.nextLine(); // éviter le problème de saut de ligne
+        Abonnement abonnement = new Abonnement(0, typeAbonnement, montant, dureeValable, transportId, statusAbonnem);
+        abonnementService.add(abonnement);
+        System.out.println("✅ Abonnement ajouté avec succès !");
+    }
 
-                    Abonnement abonnementToUpdate = abonnementService.getById(idUpdate);
-                    if (abonnementToUpdate != null) {
-                        System.out.print("🆕 Nouveau type d'abonnement : ");
-                        String newType = scanner.nextLine();
-                        System.out.print("💰 Nouveau montant : ");
-                        double newMontant = scanner.nextDouble();
+    // ✅ Afficher les abonnements
+    private static void afficherAbonnements(AbonnementService abonnementService) {
+        System.out.println("📜 Liste des abonnements : ");
+        List<Abonnement> abonnements = abonnementService.getAll();
+        if (abonnements.isEmpty()) {
+            System.out.println("❌ Aucun abonnement trouvé !");
+        } else {
+            abonnements.forEach(System.out::println);
+        }
+    }
 
-                        abonnementToUpdate.setType_abonnem(newType);
-                        abonnementToUpdate.setMontant(newMontant);
-                        abonnementService.update(abonnementToUpdate);
-                        System.out.println("✅ Abonnement mis à jour !");
-                    } else {
-                        System.out.println("❌ Abonnement introuvable !");
-                    }
-                    break;
+    // ✅ Supprimer un abonnement
+    private static void supprimerAbonnement(Scanner scanner, AbonnementService abonnementService) {
+        int idAbonnement = lireInt(scanner, "❌ Entrez l'ID de l'abonnement à supprimer : ");
+        Abonnement abonnementToDelete = abonnementService.getById(idAbonnement);
+        if (abonnementToDelete != null) {
+            abonnementService.delete(abonnementToDelete);
+            System.out.println("✅ Abonnement supprimé !");
+        } else {
+            System.out.println("❌ Abonnement introuvable !");
+        }
+    }
 
-                case 7:
-                    System.out.println("👋 Au revoir !");
-                    scanner.close();
-                    System.exit(0);
-                    break;
+    // ✅ Mettre à jour un abonnement
+    private static void mettreAJourAbonnement(Scanner scanner, AbonnementService abonnementService) {
+        int idUpdate = lireInt(scanner, "✏️ Entrez l'ID de l'abonnement à mettre à jour : ");
 
-                default:
-                    System.out.println("❌ Choix invalide, essayez encore !");
+        Abonnement abonnementToUpdate = abonnementService.getById(idUpdate);
+        if (abonnementToUpdate != null) {
+            System.out.print("🆕 Nouveau type d'abonnement : ");
+            String newType = scanner.nextLine();
+            double newMontant = lireDouble(scanner, "💰 Nouveau montant : ");
+            int newDuree = lireInt(scanner, "📆 Nouvelle durée valable (en jours) : ");
+            System.out.print("🔄 Nouveau statut (Actif, Expiré, Suspendu) : ");
+            String newStatus = scanner.nextLine();
+
+            abonnementToUpdate.setType_abonnem(newType);
+            abonnementToUpdate.setMontant(newMontant);
+            abonnementToUpdate.setDuree_valable(newDuree);
+            abonnementToUpdate.setStatus_abonnem(newStatus);
+
+            abonnementService.update(abonnementToUpdate);
+            System.out.println("✅ Abonnement mis à jour !");
+        } else {
+            System.out.println("❌ Abonnement introuvable !");
+        }
+    }
+
+    // ✅ Méthode pour lire un entier avec gestion des erreurs
+    private static int lireInt(Scanner scanner, String message) {
+        while (true) {
+            try {
+                System.out.print(message);
+                return Integer.parseInt(scanner.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Entrée invalide ! Veuillez entrer un nombre entier.");
+            }
+        }
+    }
+
+    // ✅ Méthode pour lire un double avec gestion des erreurs
+    private static double lireDouble(Scanner scanner, String message) {
+        while (true) {
+            try {
+                System.out.print(message);
+                return Double.parseDouble(scanner.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Entrée invalide ! Veuillez entrer un nombre décimal.");
             }
         }
     }

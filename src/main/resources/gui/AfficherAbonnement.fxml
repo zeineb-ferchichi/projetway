@@ -9,13 +9,12 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="gui.AfficherAbonnement"
       spacing="20"
-      style="-fx-padding: 20; -fx-alignment: center; -fx-background-color: #E3F2FD;">
+      style="-fx-padding: 20; -fx-alignment: center;">
 
     <Label text="Liste des Abonnements"
-           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #0D47A1;"/>
+           style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
 
     <ListView fx:id="listAbonnements" style="-fx-pref-height: 300px;"/>
 
-    <Button text="Retour" fx:id="btnRetour" onAction="#handleRetour"
-            style="-fx-background-color: #64B5F6; -fx-text-fill: white;"/>
+    <Button text="Retour" fx:id="btnRetour" onAction="#handleRetour"/>
 </VBox>

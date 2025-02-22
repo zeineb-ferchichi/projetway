@@ -6,7 +6,6 @@ import util.DBConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,9 +43,19 @@ public class AbonnementService implements IService<Abonnement> {
             return;
         }
 
-        String sql = "INSERT INTO abonnement (type_abonnem, montant, date_debut, date_fin, transport_id) VALUES (?, ?, ?, ?, ?)";
+        // Vérification de la validité de la durée
+        if (!isDureeValableValid(abonnement.getDuree_valable(), abonnement.getTransport_id())) {
+            System.out.println("❌ Erreur : La durée valable dépasse la durée du transport !");
+            return;
+        }
+
+        String sql = "INSERT INTO abonnement (type_abonnem, montant, duree_valable, status_abonnem, transport_id) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            setAbonnementParams(stmt, abonnement);
+            stmt.setString(1, abonnement.getType_abonnem());
+            stmt.setDouble(2, abonnement.getMontant());
+            stmt.setInt(3, abonnement.getDuree_valable());
+            stmt.setString(4, abonnement.getStatus_abonnem());
+            stmt.setInt(5, abonnement.getTransport_id());
             stmt.executeUpdate();
             System.out.println("✅ Abonnement ajouté avec succès.");
         } catch (SQLException e) {
@@ -55,12 +64,12 @@ public class AbonnementService implements IService<Abonnement> {
     }
 
     public void update(Abonnement abonnement) {
-        String sql = "UPDATE abonnement SET type_abonnem = ?, montant = ?, date_debut = ?, date_fin = ?, transport_id = ? WHERE id_abonnem = ?";
+        String sql = "UPDATE abonnement SET type_abonnem = ?, montant = ?, duree_valable = ?, status_abonnem = ?, transport_id = ? WHERE id_abonnem = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, abonnement.getType_abonnem());
             stmt.setDouble(2, abonnement.getMontant());
-            stmt.setDate(3, new java.sql.Date(abonnement.getDate_debut().getTime()));
-            stmt.setDate(4, new java.sql.Date(abonnement.getDate_fin().getTime()));
+            stmt.setInt(3, abonnement.getDuree_valable());
+            stmt.setString(4, abonnement.getStatus_abonnem());
             stmt.setInt(5, abonnement.getTransport_id());
             stmt.setInt(6, abonnement.getId_abonnem());
 
@@ -74,7 +83,6 @@ public class AbonnementService implements IService<Abonnement> {
             e.printStackTrace();
         }
     }
-
 
     @Override
     public void delete(Abonnement abonnement) {
@@ -119,62 +127,32 @@ public class AbonnementService implements IService<Abonnement> {
     }
 
     /**
-     * Récupère la liste des abonnements avec leur transport associé.
+     * Vérifie que la durée valable d’un abonnement ne dépasse pas la durée du transport associé.
      */
-    public List<AbonnementTransportDTO> getAbonnementTransport() {
-        String sql = "SELECT a.id_abonnem, a.type_abonnem, a.montant, a.date_debut, a.date_fin, " +
-                "t.id_transp, t.type_transp " +
-                "FROM abonnement a " +
-                "JOIN transport t ON a.transport_id = t.id_transp";
-
-        List<AbonnementTransportDTO> resultList = new ArrayList<>();
-        try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                resultList.add(extractAbonnementTransport(rs));
+    public boolean isDureeValableValid(int dureeValable, int transportId) {
+        String sql = "SELECT duree_max FROM transport WHERE id_transp = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, transportId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int dureeMax = rs.getInt("duree_max");
+                    return dureeValable <= dureeMax;
+                }
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Erreur lors de la récupération des abonnements avec transport", e);
+            logger.log(Level.SEVERE, "Erreur lors de la vérification de la durée valable", e);
         }
-        return resultList;
+        return false;
     }
 
-    /**
-     * Factorisation pour extraire un abonnement depuis un ResultSet.
-     */
     private Abonnement extractAbonnement(ResultSet rs) throws SQLException {
         Abonnement abonnement = new Abonnement();
         abonnement.setId_abonnem(rs.getInt("id_abonnem"));
         abonnement.setType_abonnem(rs.getString("type_abonnem"));
         abonnement.setMontant(rs.getDouble("montant"));
-        abonnement.setDate_debut(rs.getDate("date_debut"));
-        abonnement.setDate_fin(rs.getDate("date_fin"));
+        abonnement.setDuree_valable(rs.getInt("duree_valable"));
+        abonnement.setStatus_abonnem(rs.getString("status_abonnem"));
         abonnement.setTransport_id(rs.getInt("transport_id"));
         return abonnement;
-    }
-
-    /**
-     * Factorisation pour extraire un DTO d'abonnement transport.
-     */
-    private AbonnementTransportDTO extractAbonnementTransport(ResultSet rs) throws SQLException {
-        AbonnementTransportDTO dto = new AbonnementTransportDTO();
-        dto.setIdAbonnem(rs.getInt("id_abonnem"));
-        dto.setTypeAbonnem(rs.getString("type_abonnem"));
-        dto.setMontant(rs.getDouble("montant"));
-        dto.setDateDebut(rs.getDate("date_debut"));
-        dto.setDateFin(rs.getDate("date_fin"));
-        dto.setIdTransp(rs.getInt("id_transp"));
-        dto.setTypeTransport(rs.getString("type_transp"));
-        return dto;
-    }
-
-    /**
-     * Factorisation pour définir les paramètres communs à un abonnement.
-     */
-    private void setAbonnementParams(PreparedStatement stmt, Abonnement abonnement) throws SQLException {
-        stmt.setString(1, abonnement.getType_abonnem());
-        stmt.setDouble(2, abonnement.getMontant());
-        stmt.setDate(3, new java.sql.Date(abonnement.getDate_debut().getTime()));
-        stmt.setDate(4, new java.sql.Date(abonnement.getDate_fin().getTime()));
-        stmt.setInt(5, abonnement.getTransport_id());
     }
 }
