@@ -39,15 +39,34 @@ public class TransportService {
         }
     }
 
-    public boolean delete(int id) { // Changed method signature to accept int
+    public boolean delete(int id) {
         String sql = "DELETE FROM transport WHERE id_transp = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
-            return stmt.executeUpdate() > 0; // Returns true if deletion is successful
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public Transport getById(int id) {
+        String sql = "SELECT * FROM transport WHERE id_transp = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Transport(
+                        rs.getInt("id_transp"),
+                        rs.getString("type_transp"),
+                        rs.getString("nom_station"),
+                        rs.getString("zone_geographique")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public List<Transport> getAll() {

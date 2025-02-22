@@ -40,8 +40,8 @@
     <!-- Buttons -->
     <HBox spacing="10" alignment="CENTER">
         <Button text="➕ Ajouter" onAction="#addTransport"/>
-        <Button text="✏️ Modifier" onAction="#modifyTransport"/> <!-- Corrected method name -->
-        <Button text="🗑️ Supprimer" onAction="#deleteSelectedTransport"/> <!-- Corrected method name -->
+        <Button text="✏️ Modifier" onAction="#updateTransport"/> <!-- Correction ici -->
+        <Button text="🗑️ Supprimer" onAction="#deleteSelectedTransport"/>
         <Button text="🔄 Annuler" onAction="#clearFields"/>
     </HBox>
 

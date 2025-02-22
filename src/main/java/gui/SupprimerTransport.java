@@ -2,7 +2,6 @@ package gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import models.Transport;
 import services.TransportService;
 
 import java.util.Optional;
@@ -19,26 +18,31 @@ public class SupprimerTransport {
 
     @FXML
     private void deleteTransport() {
-        int id = spinnerIdTransport.getValue();
-        Transport transport = service.getById(id);
-
-        if (transport == null) {
-            showAlert("Erreur", "Aucun transport trouvé avec cet ID!", Alert.AlertType.ERROR);
+        Integer id = spinnerIdTransport.getValue();
+        if (id == null || id <= 0) {
+            showAlert("Erreur", "⚠ Veuillez entrer un ID valide !", Alert.AlertType.ERROR);
             return;
         }
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation");
-        alert.setHeaderText("Supprimer ce transport?");
-        alert.setContentText("Voulez-vous vraiment supprimer ce transport?");
+        alert.setHeaderText("Supprimer le transport ?");
+        alert.setContentText("Êtes-vous sûr de vouloir supprimer ce transport ?");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            service.delete(transport);
-            showAlert("Succès", "Transport supprimé avec succès!", Alert.AlertType.INFORMATION);
+            boolean isDeleted = service.delete(id); // ✅ Appel correct de `delete(int id)`
+            if (isDeleted) {
+                showAlert("Succès", "✅ Transport supprimé avec succès !", Alert.AlertType.INFORMATION);
+            } else {
+                showAlert("Erreur", "❌ Échec de la suppression du transport !", Alert.AlertType.ERROR);
+            }
         }
     }
 
+    /**
+     * Méthode pour afficher des alertes.
+     */
     private void showAlert(String title, String message, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);

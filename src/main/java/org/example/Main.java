@@ -61,7 +61,6 @@ public class Main {
         }
     }
 
-    // ✅ Ajouter un transport
     private static void ajouterTransport(Scanner scanner, TransportService transportService) {
         System.out.print("🚍 Entrez le type de transport (Bus, Train, Taxi) : ");
         String typeTransport = scanner.nextLine();
@@ -75,7 +74,6 @@ public class Main {
         System.out.println("✅ Transport ajouté avec succès !");
     }
 
-    // ✅ Afficher les transports
     private static void afficherTransports(TransportService transportService) {
         System.out.println("📜 Liste des transports : ");
         List<Transport> transports = transportService.getAll();
@@ -86,7 +84,6 @@ public class Main {
         }
     }
 
-    // ✅ Ajouter un abonnement
     private static void ajouterAbonnement(Scanner scanner, AbonnementService abonnementService, TransportService transportService) {
         System.out.print("📜 Type d'abonnement (Mensuel, Annuel, Semaine) : ");
         String typeAbonnement = scanner.nextLine();
@@ -94,7 +91,8 @@ public class Main {
         double montant = lireDouble(scanner, "💰 Montant : ");
         int transportId = lireInt(scanner, "🆔 ID du transport : ");
 
-        if (transportService.getById(transportId) == null) {
+        Transport transport = transportService.getById(transportId);
+        if (transport == null) {
             System.out.println("❌ Transport ID invalide !");
             return;
         }
@@ -108,7 +106,6 @@ public class Main {
         System.out.println("✅ Abonnement ajouté avec succès !");
     }
 
-    // ✅ Afficher les abonnements
     private static void afficherAbonnements(AbonnementService abonnementService) {
         System.out.println("📜 Liste des abonnements : ");
         List<Abonnement> abonnements = abonnementService.getAll();
@@ -119,19 +116,18 @@ public class Main {
         }
     }
 
-    // ✅ Supprimer un abonnement
     private static void supprimerAbonnement(Scanner scanner, AbonnementService abonnementService) {
         int idAbonnement = lireInt(scanner, "❌ Entrez l'ID de l'abonnement à supprimer : ");
-        Abonnement abonnementToDelete = abonnementService.getById(idAbonnement);
-        if (abonnementToDelete != null) {
-            abonnementService.delete(abonnementToDelete);
+        boolean success = abonnementService.delete(idAbonnement);
+
+        if (success) {
             System.out.println("✅ Abonnement supprimé !");
         } else {
-            System.out.println("❌ Abonnement introuvable !");
+            System.out.println("❌ Échec de la suppression !");
         }
     }
 
-    // ✅ Mettre à jour un abonnement
+
     private static void mettreAJourAbonnement(Scanner scanner, AbonnementService abonnementService) {
         int idUpdate = lireInt(scanner, "✏️ Entrez l'ID de l'abonnement à mettre à jour : ");
 
@@ -149,14 +145,19 @@ public class Main {
             abonnementToUpdate.setDuree_valable(newDuree);
             abonnementToUpdate.setStatus_abonnem(newStatus);
 
-            abonnementService.update(abonnementToUpdate);
-            System.out.println("✅ Abonnement mis à jour !");
+            // ✅ Correction : Appel correct de `update()` au lieu de `delete()`
+            boolean success = abonnementService.update(abonnementToUpdate);
+            if (success) {
+                System.out.println("✅ Abonnement mis à jour !");
+            } else {
+                System.out.println("❌ Échec de la mise à jour !");
+            }
         } else {
             System.out.println("❌ Abonnement introuvable !");
         }
     }
 
-    // ✅ Méthode pour lire un entier avec gestion des erreurs
+
     private static int lireInt(Scanner scanner, String message) {
         while (true) {
             try {
@@ -168,7 +169,6 @@ public class Main {
         }
     }
 
-    // ✅ Méthode pour lire un double avec gestion des erreurs
     private static double lireDouble(Scanner scanner, String message) {
         while (true) {
             try {

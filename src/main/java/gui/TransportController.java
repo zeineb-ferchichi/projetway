@@ -9,9 +9,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import models.Transport;
 import services.TransportService;
-
+import models.Transport;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -56,7 +55,7 @@ public class TransportController {
         );
 
         Button btnDelete = new Button("❌");
-        btnDelete.setOnAction(e -> deleteSelectedTransport(transp)); // Correction de la méthode
+        btnDelete.setOnAction(e -> deleteTransport(transp));
 
         Button btnEdit = new Button("✏️");
         btnEdit.setOnAction(e -> selectTransportForEdit(transp));
@@ -103,22 +102,19 @@ public class TransportController {
     }
 
     @FXML
-    private void deleteSelectedTransport(Transport transp) { // Correction du nom de la méthode
-        if (transp == null || transp.getId_transp() <= 0) {
-            showAlert("Erreur", "⚠ Aucun transport sélectionné ou ID invalide !", Alert.AlertType.ERROR);
+    private void deleteTransport(Transport transp) {  // ✅ Ajout du paramètre
+        if (transp == null) {
+            showAlert("Erreur", "⚠ Aucun transport sélectionné !", Alert.AlertType.ERROR);
             return;
         }
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation de suppression");
-        alert.setHeaderText("🚨 Voulez-vous vraiment supprimer ce transport ?");
-        alert.setContentText("Cette action est irréversible.");
-
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "🚨 Voulez-vous vraiment supprimer ce transport ?", ButtonType.YES, ButtonType.NO);
         Optional<ButtonType> result = alert.showAndWait();
+
         if (result.isPresent() && result.get() == ButtonType.YES) {
-            boolean success = service.delete(transp); // Correction pour retourner un boolean
+            boolean success = service.delete(transp.getId_transp()); // ✅ Suppression via ID
             if (success) {
-                loadTransports();
+                loadTransports(); // ✅ Recharger la liste
                 showAlert("Succès", "🚮 Transport supprimé avec succès !", Alert.AlertType.INFORMATION);
             } else {
                 showAlert("Erreur", "❌ Échec de la suppression du transport !", Alert.AlertType.ERROR);
@@ -156,7 +152,7 @@ public class TransportController {
     }
 
     private boolean validateFields() {
-        return !(cmbType.getValue().isEmpty() || txtNomStation.getText().isEmpty() || txtZone.getText().isEmpty());
+        return !(cmbType.getValue() == null || txtNomStation.getText().isEmpty() || txtZone.getText().isEmpty());
     }
 
     private void showAlert(String title, String message, Alert.AlertType type) {
@@ -166,4 +162,13 @@ public class TransportController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+    @FXML
+    private void deleteSelectedTransport() {
+        if (selectedTransport != null) {
+            deleteTransport(selectedTransport);
+        } else {
+            showAlert("Erreur", "⚠ Sélectionnez un transport avant de supprimer.", Alert.AlertType.ERROR);
+        }
+    }
+
 }
