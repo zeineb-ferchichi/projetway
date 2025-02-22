@@ -19,6 +19,34 @@
         <Label text="Gestion des Abonnements"/>
     </HBox>
 
+    <GridPane hgap="10" vgap="10" alignment="CENTER_LEFT" style="-fx-padding: 10;">
+        <Label text="Type d'Abonnement :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="comboType" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="200"/>
+
+        <Label text="Montant :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtMontant" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="200"
+                   promptText="Ex: 150.0"/>
+
+        <Label text="Durée Valable (jours) :" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtDureeValable" GridPane.rowIndex="2" GridPane.columnIndex="1" prefWidth="200"
+                   promptText="Ex: 30"/>
+
+        <Label text="Transport ID :" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtTransportId" GridPane.rowIndex="3" GridPane.columnIndex="1" prefWidth="200"
+                   promptText="Ex: 2"/>
+
+        <Label text="Statut :" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="comboStatus" GridPane.rowIndex="4" GridPane.columnIndex="1" prefWidth="200"/>
+    </GridPane>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Ajouter" onAction="#addAbonnement"/>
+        <Button text="Modifier" onAction="#updateAbonnement"/>
+        <Button text="Supprimer" onAction="#deleteAbonnement"/>
+        <Button text="Annuler" onAction="#clearFields"/>
+    </HBox>
+
+    <Label text="Liste des Abonnements"/>
     <ScrollPane fitToWidth="true" fitToHeight="true">
         <VBox fx:id="abonDisplay"/>
     </ScrollPane>
