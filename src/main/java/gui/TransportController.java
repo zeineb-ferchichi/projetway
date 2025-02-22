@@ -56,7 +56,7 @@ public class TransportController {
         );
 
         Button btnDelete = new Button("❌");
-        btnDelete.setOnAction(e -> deleteSelectedTransport(transp)); // Corrected method name
+        btnDelete.setOnAction(e -> deleteSelectedTransport(transp)); // Correction de la méthode
 
         Button btnEdit = new Button("✏️");
         btnEdit.setOnAction(e -> selectTransportForEdit(transp));
@@ -83,7 +83,7 @@ public class TransportController {
     }
 
     @FXML
-    private void modifyTransport() { // Corrected method name
+    private void updateTransport() {
         if (selectedTransport == null) {
             showAlert("Erreur", "⚠ Veuillez sélectionner un transport à modifier !", Alert.AlertType.ERROR);
             return;
@@ -103,7 +103,7 @@ public class TransportController {
     }
 
     @FXML
-    private void deleteSelectedTransport(Transport transp) { // Corrected method name
+    private void deleteSelectedTransport(Transport transp) { // Correction du nom de la méthode
         if (transp == null || transp.getId_transp() <= 0) {
             showAlert("Erreur", "⚠ Aucun transport sélectionné ou ID invalide !", Alert.AlertType.ERROR);
             return;
@@ -115,8 +115,8 @@ public class TransportController {
         alert.setContentText("Cette action est irréversible.");
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            boolean success = service.delete(transp.getId_transp()); // Changed delete method to accept int
+        if (result.isPresent() && result.get() == ButtonType.YES) {
+            boolean success = service.delete(transp); // Correction pour retourner un boolean
             if (success) {
                 loadTransports();
                 showAlert("Succès", "🚮 Transport supprimé avec succès !", Alert.AlertType.INFORMATION);
@@ -156,7 +156,7 @@ public class TransportController {
     }
 
     private boolean validateFields() {
-        return !(cmbType.getValue() == null || txtNomStation.getText().isEmpty() || txtZone.getText().isEmpty());
+        return !(cmbType.getValue().isEmpty() || txtNomStation.getText().isEmpty() || txtZone.getText().isEmpty());
     }
 
     private void showAlert(String title, String message, Alert.AlertType type) {

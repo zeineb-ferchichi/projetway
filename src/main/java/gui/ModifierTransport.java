@@ -7,50 +7,40 @@ import services.TransportService;
 
 public class ModifierTransport {
 
-    @FXML private ComboBox<String> comboType;
-    @FXML private TextField txtStation;
+    @FXML private TextField txtNomStation;
     @FXML private TextField txtZone;
-    private Transport selectedTransport;
-    private final TransportService service = new TransportService();
+    @FXML private ComboBox<String> cmbType;
+    @FXML private Button btnModifier;
 
-    @FXML
-    public void initialize() {
-        // Initialiser la ComboBox avec les types de transport disponibles
-        comboType.getItems().addAll("Bus", "Train", "Taxi");
-    }
+    private final TransportService service = new TransportService();
+    private Transport selectedTransport;
 
     public void setSelectedTransport(Transport transport) {
         this.selectedTransport = transport;
-        if (transport != null) {
-            comboType.setValue(transport.getType_transp());
-            txtStation.setText(transport.getNom_station());
-            txtZone.setText(transport.getZone_geographique());
-        }
+        cmbType.setValue(transport.getType_transp());
+        txtNomStation.setText(transport.getNom_station());
+        txtZone.setText(transport.getZone_geographique());
     }
 
     @FXML
     private void updateTransport() {
         if (selectedTransport == null) {
-            showAlert("Erreur", "Veuillez sélectionner un transport à modifier !", Alert.AlertType.ERROR);
+            showAlert("Erreur", "Aucun transport sélectionné!", Alert.AlertType.ERROR);
             return;
         }
 
         if (validateFields()) {
-            selectedTransport.setType_transp(comboType.getValue());
-            selectedTransport.setNom_station(txtStation.getText());
+            selectedTransport.setType_transp(cmbType.getValue());
+            selectedTransport.setNom_station(txtNomStation.getText());
             selectedTransport.setZone_geographique(txtZone.getText());
 
             service.update(selectedTransport);
-            showAlert("Succès", "🚀 Transport modifié avec succès !", Alert.AlertType.INFORMATION);
+            showAlert("Succès", "Transport mis à jour avec succès!", Alert.AlertType.INFORMATION);
         }
     }
 
     private boolean validateFields() {
-        if (comboType.getValue() == null || txtStation.getText().isEmpty() || txtZone.getText().isEmpty()) {
-            showAlert("Erreur", "⚠ Veuillez remplir tous les champs !", Alert.AlertType.ERROR);
-            return false;
-        }
-        return true;
+        return !(cmbType.getValue().isEmpty() || txtNomStation.getText().isEmpty() || txtZone.getText().isEmpty());
     }
 
     private void showAlert(String title, String message, Alert.AlertType type) {
