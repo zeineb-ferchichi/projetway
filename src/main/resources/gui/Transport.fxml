@@ -13,7 +13,7 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="gui.TransportController"
       spacing="20"
-      style="-fx-padding: 20; -fx-background-color: #E3F2FD;">
+      style="-fx-padding: 20; -fx-background-color: #E3F2FD; -fx-pref-width: 800; -fx-pref-height: 500;">
 
     <HBox spacing="10" style="-fx-background-color: #0D47A1; -fx-padding: 10;">
         <Button text="← Retour" onAction="#goBack"
@@ -37,9 +37,9 @@
         <Button text="Ajouter" onAction="#addTransport"
                 style="-fx-background-color: #64B5F6; -fx-text-fill: white;"/>
         <Button text="Modifier" onAction="#updateTransport"
-                style="-fx-background-color: #FFA000; -fx-text-fill: white;"/>
+                style="-fx-background-color: #64B5F6; -fx-text-fill: white;"/>
         <Button text="Supprimer" onAction="#deleteTransport"
-                style="-fx-background-color: #D32F2F; -fx-text-fill: white;"/>
+                style="-fx-background-color: #64B5F6; -fx-text-fill: white;"/>
         <Button text="Annuler" onAction="#clearFields"
                 style="-fx-background-color: #757575; -fx-text-fill: white;"/>
     </HBox>

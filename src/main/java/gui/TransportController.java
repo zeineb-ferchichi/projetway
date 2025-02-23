@@ -149,4 +149,38 @@ public class TransportController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+    @FXML
+    private void goBack() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Home.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) transportDisplay.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Impossible de retourner à la page d'accueil!", Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void deleteTransport() {
+        if (selectedTransport == null) {
+            showAlert("Erreur", "Veuillez sélectionner un transport à supprimer!", Alert.AlertType.ERROR);
+            return;
+        }
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation de suppression");
+        alert.setHeaderText("Supprimer le transport ?");
+        alert.setContentText("Voulez-vous vraiment supprimer ce transport ?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            service.delete(selectedTransport.getId_transp());
+            loadTransports();
+            showAlert("Succès", "Transport supprimé avec succès!", Alert.AlertType.INFORMATION);
+            selectedTransport = null;
+        }
+    }
+
+
 }
