@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.GridPane?>
@@ -12,43 +13,44 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="gui.AbonnementController"
       spacing="20"
-      style="-fx-padding: 20; -fx-font-family: Arial;">
+      style="-fx-padding: 20; -fx-background-color: #E3F2FD;">
 
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <Button text="← Retour" onAction="#goBack"/>
-        <Label text="Gestion des Abonnements"/>
+    <HBox spacing="10" style="-fx-background-color: #0D47A1; -fx-padding: 10;">
+        <Button text="← Retour" onAction="#goBack"
+                style="-fx-background-color: #64B5F6; -fx-text-fill: white;"/>
+        <Label text="Gestion des Abonnements"
+               style="-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;"/>
     </HBox>
 
-    <GridPane hgap="10" vgap="10" alignment="CENTER_LEFT" style="-fx-padding: 10;">
+    <GridPane hgap="10" vgap="10" style="-fx-padding: 10;">
         <Label text="Type d'Abonnement :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <ComboBox fx:id="comboType" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="200"/>
 
         <Label text="Montant :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtMontant" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="200"
-                   promptText="Ex: 150.0"/>
+        <TextField fx:id="txtMontant" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="Ex: 150.0"/>
 
-        <Label text="Durée Valable (jours) :" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtDureeValable" GridPane.rowIndex="2" GridPane.columnIndex="1" prefWidth="200"
-                   promptText="Ex: 30"/>
+        <Label text="Durée Valable :" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtDureeValable" GridPane.rowIndex="2" GridPane.columnIndex="1" promptText="Ex: 30 jours"/>
 
         <Label text="Transport ID :" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtTransportId" GridPane.rowIndex="3" GridPane.columnIndex="1" prefWidth="200"
-                   promptText="Ex: 2"/>
+        <TextField fx:id="txtTransportId" GridPane.rowIndex="3" GridPane.columnIndex="1" promptText="Ex: 2"/>
 
         <Label text="Statut :" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
         <ComboBox fx:id="comboStatus" GridPane.rowIndex="4" GridPane.columnIndex="1" prefWidth="200"/>
     </GridPane>
 
-    <HBox spacing="10" alignment="CENTER">
-        <Button text="Ajouter" onAction="#addAbonnement"/>
-        <Button text="Modifier" onAction="#updateAbonnement"/>
-        <Button text="Supprimer" onAction="#deleteAbonnement"/>
-        <Button text="Annuler" onAction="#clearFields"/>
+    <HBox spacing="10">
+        <Button text="Ajouter" onAction="#addAbonnement"
+                style="-fx-background-color: #64B5F6; -fx-text-fill: white;"/>
+        <Button text="Modifier" onAction="#updateAbonnement"
+                style="-fx-background-color: #FFA000; -fx-text-fill: white;"/>
+        <Button text="Supprimer" onAction="#deleteAbonnement"
+                style="-fx-background-color: #D32F2F; -fx-text-fill: white;"/>
+        <Button text="Annuler" onAction="#clearFields"
+                style="-fx-background-color: #757575; -fx-text-fill: white;"/>
     </HBox>
 
-    <Label text="Liste des Abonnements"/>
     <ScrollPane fitToWidth="true" fitToHeight="true">
         <VBox fx:id="abonDisplay"/>
     </ScrollPane>
-
 </VBox>

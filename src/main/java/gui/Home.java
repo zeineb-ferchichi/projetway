@@ -1,32 +1,29 @@
 package gui;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.fxml.FXMLLoader;
 
 import java.io.IOException;
 import java.util.Objects;
 
 public class Home {
 
-    @FXML
-    private ImageView logoImageView;
-    @FXML
-    private Button btnAbonnement, btnTransport;
+    @FXML private ImageView sidebarImage;
+    @FXML private Button btnAbonnement, btnTransport;
 
     @FXML
     public void initialize() {
-        // Chargement du logo
         try {
-            Image logo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/gui/logo.png")));
-            logoImageView.setImage(logo);
+            Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/gui/sidebar.jpg")));
+            sidebarImage.setImage(image);
         } catch (Exception e) {
-            System.out.println("Erreur : Impossible de charger le logo.");
+            System.out.println("Erreur: Impossible de charger l'image du sidebar.");
         }
     }
 
@@ -48,8 +45,7 @@ public class Home {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Erreur de chargement du fichier FXML : " + fxmlFile);
+            System.out.println("Erreur de chargement du fichier : " + fxmlFile);
         }
     }
 }

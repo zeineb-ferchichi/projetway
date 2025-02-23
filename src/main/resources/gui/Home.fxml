@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.Label?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="gui.Home"
-      spacing="20"
-      style="-fx-padding: 50; -fx-alignment: center; -fx-background-color: #E3F2FD;">
+      spacing="10"
+      style="-fx-padding: 20; -fx-background-color: #E3F2FD;">
 
-    <ImageView fx:id="logoImageView" fitWidth="150" fitHeight="150"/>
+    <HBox spacing="20" style="-fx-padding: 10; -fx-background-color: #0D47A1;">
+        <Button text="Gérer Abonnements" fx:id="btnAbonnement" onAction="#goAbonnement"
+                style="-fx-background-color: #64B5F6; -fx-text-fill: white;"/>
+        <Button text="Gérer Transports" fx:id="btnTransport" onAction="#goTransport"
+                style="-fx-background-color: #64B5F6; -fx-text-fill: white;"/>
+    </HBox>
 
-    <Button fx:id="btnAbonnement" text="Gérer les Abonnements" onAction="#goAbonnement"
-            style="-fx-font-size: 14px; -fx-background-color: #42A5F5; -fx-text-fill: white;"/>
-
-    <Button fx:id="btnTransport" text="Gérer les Transports" onAction="#goTransport"
-            style="-fx-font-size: 14px; -fx-background-color: #66BB6A; -fx-text-fill: white;"/>
+    <Label text="Bienvenue dans la gestion des Transports et Abonnements"
+           style="-fx-font-size: 22px; -fx-text-fill: #0D47A1; -fx-font-weight: bold;"/>
 
 </VBox>

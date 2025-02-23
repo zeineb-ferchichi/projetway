@@ -189,4 +189,27 @@ public class AbonnementController {
         card.getChildren().addAll(info, btnEdit, btnDelete);
         return card;
     }
+    @FXML
+    private void goAbonnement() {
+        loadScene("Abonnement.fxml");
+    }
+
+    @FXML
+    private void goTransport() {
+        loadScene("Transport.fxml");
+    }
+
+    private void loadScene(String fxmlFile) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/" + fxmlFile));
+            Parent root = loader.load();
+            Stage stage = (Stage) abonDisplay.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur de chargement du fichier : " + fxmlFile, Alert.AlertType.ERROR);
+        }
+    }
+
 }

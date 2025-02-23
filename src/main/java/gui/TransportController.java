@@ -102,7 +102,7 @@ public class TransportController {
     }
 
     @FXML
-    private void deleteTransport(Transport transp) {  // ✅ Ajout du paramètre
+    private void deleteTransport(Transport transp) {
         if (transp == null) {
             showAlert("Erreur", "⚠ Aucun transport sélectionné !", Alert.AlertType.ERROR);
             return;
@@ -112,9 +112,9 @@ public class TransportController {
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.isPresent() && result.get() == ButtonType.YES) {
-            boolean success = service.delete(transp.getId_transp()); // ✅ Suppression via ID
+            boolean success = service.delete(transp.getId_transp());
             if (success) {
-                loadTransports(); // ✅ Recharger la liste
+                loadTransports();
                 showAlert("Succès", "🚮 Transport supprimé avec succès !", Alert.AlertType.INFORMATION);
             } else {
                 showAlert("Erreur", "❌ Échec de la suppression du transport !", Alert.AlertType.ERROR);
@@ -138,19 +138,6 @@ public class TransportController {
         selectedTransport = null;
     }
 
-    @FXML
-    private void goBack() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Home.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) transportDisplay.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            showAlert("Erreur", "❌ Impossible de retourner à la page d'accueil !", Alert.AlertType.ERROR);
-        }
-    }
-
     private boolean validateFields() {
         return !(cmbType.getValue() == null || txtNomStation.getText().isEmpty() || txtZone.getText().isEmpty());
     }
@@ -162,13 +149,4 @@ public class TransportController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-    @FXML
-    private void deleteSelectedTransport() {
-        if (selectedTransport != null) {
-            deleteTransport(selectedTransport);
-        } else {
-            showAlert("Erreur", "⚠ Sélectionnez un transport avant de supprimer.", Alert.AlertType.ERROR);
-        }
-    }
-
 }
