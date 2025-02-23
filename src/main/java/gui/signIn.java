@@ -10,8 +10,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import Service.UserService;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
+import java.util.List;
 
 import static Entitie.User.currentUser;
 
@@ -22,12 +24,13 @@ public class signIn {
 
     @FXML
     private PasswordField passwordField;
-
     @FXML
-    private Button signInButton;
-
+    private TextField passwordFieldVisible;
+    private boolean passwordVisible = false;
     @FXML
-    private Hyperlink createAccountLink;
+    private Button btnTogglePassword;
+
+
 
     private final UserService userService = new UserService();
 
@@ -54,24 +57,66 @@ public class signIn {
     }
 
     @FXML
+    void togglePasswordVisibility(ActionEvent event) {
+        passwordVisible = !passwordVisible;
+
+        if (passwordVisible) {
+            passwordFieldVisible.setText(passwordField.getText());
+            passwordFieldVisible.setVisible(true);
+            passwordField.setVisible(false);
+            btnTogglePassword.setText("👁");
+        } else {
+            passwordField.setText(passwordFieldVisible.getText());
+            passwordFieldVisible.setVisible(false);
+            passwordField.setVisible(true);
+            btnTogglePassword.setText("🙈");
+        }
+    }
+
+
+    @FXML
     private void handleSignIn(ActionEvent event) {
-        String identifiant = identifiantField.getText();
-        String password = passwordField.getText();
+        String identifiant = identifiantField.getText().trim();
+        String password = passwordField.getText().trim();
 
         if (identifiant.isEmpty() || password.isEmpty()) {
             showAlert(Alert.AlertType.ERROR, "Échec de connexion", "Veuillez entrer l'identifiant et le mot de passe.");
             return;
         }
 
-        User user = userService.getUserByIdentifiant(identifiant);
+        // Fetch all users from the database
+        List<User> users = userService.getAll();
+        User user = null;
 
-        if (user != null && user.getMotdepasse().equals(password)) {
-            // Vérifier le rôle et ouvrir l'interface correspondante
+        // Find the user with the provided identifiant
+        for (User u : users) {
+            if (u.getIdentifiant().equals(identifiant)) {
+                user = u;
+                break;
+            }
+        }
+
+        if (user == null) {
+            showAlert(Alert.AlertType.ERROR, "Échec de connexion", "Identifiant ou mot de passe invalide.");
+            return;
+        }
+
+        System.out.println("Ban status: " + user.getBan()); // For debugging
+        if ("true".equals(user.getBan())) {
+            showAlert(Alert.AlertType.ERROR, "Accès refusé", "Votre compte a été banni. Veuillez contacter l'administrateur.");
+            return;
+        }
+
+        // Vérifier le mot de passe
+        if (BCrypt.checkpw(password, user.getMotdepasse())) {
+            // Si la vérification est réussie, vérifier le rôle et ouvrir l'interface correspondante
             ouvrirInterfaceSelonRole(event, user);
         } else {
             showAlert(Alert.AlertType.ERROR, "Échec de connexion", "Identifiant ou mot de passe invalide.");
         }
     }
+
+
 
 
 
@@ -93,7 +138,7 @@ public class signIn {
             }
 
             System.out.println("Utilisateur connecté: " + user.getNom()
-                    + " ID: " + user.getId()
+                    + " ID: " + user.getIdentifiant()
                     + " Rôle: " + user.getRole());
 
             FXMLLoader loader;

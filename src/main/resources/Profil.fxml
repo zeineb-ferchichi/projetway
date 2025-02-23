@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="gui.AdminController" stylesheets="/style.css">
+
+    <HBox spacing="30" styleClass="root">
+
+        <!-- Sidebar -->
+        <VBox alignment="CENTER" prefWidth="300" styleClass="sidebar">
+            <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="300">
+                <!-- Contenu éventuel -->
+            </VBox>
+
+            <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="300">
+
+            </VBox>
+
+            <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="300">
+                <ImageView fx:id="currentUserImage" fitHeight="100" fitWidth="100" styleClass="user-image"/>
+                <Label fx:id="currentUserName" text="Nom Admin" styleClass="user-name"/>
+                <Label fx:id="currentUserRole" text="Rôle Employe" styleClass="user-role"/>
+                <Button text="Log out" onAction="#handleSignIn" styleClass="logout-button"/>
+            </VBox>
+        </VBox>
+
+
+
+    </HBox>
+</VBox>

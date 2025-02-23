@@ -37,7 +37,7 @@ public class AdminController implements Initializable {
     @FXML
     private ImageView userImage;
     @FXML
-    private TextField userName, userPrenom, userGmail, userIdentifiant, userRole;
+    private TextField userName, userBan,userPrenom, userGmail, userIdentifiant, userRole;
     @FXML
     private PasswordField userMotdepasse;
     @FXML
@@ -54,7 +54,7 @@ public class AdminController implements Initializable {
         this.currentUser = user;
 
         if (user != null) {
-            System.out.println("AdminController - Current User Set: " + user.getId());
+            System.out.println("AdminController - Current User Set: " + user.getIdentifiant());
             if (currentUserImage != null && user.getImage() != null && !user.getImage().isEmpty()) {
                 currentUserImage.setImage(new Image("file:" + user.getImage()));
             }
@@ -152,15 +152,15 @@ public class AdminController implements Initializable {
         MenuButton menuButton = new MenuButton("⋮");
         menuButton.getItems().add(new MenuItem("Voir Détails"));
         menuButton.getItems().add(new MenuItem("Modifier"));
-        menuButton.getItems().add(new MenuItem("Supprimer"));
+        menuButton.getItems().add(new MenuItem("Ban"));
 
         menuButton.getItems().get(0).setOnAction(e -> showUserDetails(user));
         menuButton.getItems().get(1).setOnAction(e -> {
             selectUser(user);  // Sélectionne l'utilisateur pour modification
         });
         menuButton.getItems().get(2).setOnAction(e -> {
-            if (confirmDelete(user)) {  // Demande confirmation avant suppression
-                handleDeleteUser();
+            if (confirmBan(user)) {
+                handleBanUser();
             }
         });
 
@@ -171,28 +171,40 @@ public class AdminController implements Initializable {
     }
 
     private void showUserDetails(User user) {
+        if (user == null) {
+            showAlert( "Aucun utilisateur sélectionné !");
+            return;
+        }
+
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Détails de l'utilisateur");
-
-        // Par exemple, on affiche en entête : Nom + Prénom
         alert.setHeaderText(user.getNom() + " " + user.getPrenom());
 
-        // On prépare le contenu avec toutes les infos
         StringBuilder sb = new StringBuilder();
         sb.append("ID: ").append(user.getId()).append("\n")
-                .append("Nom: ").append(user.getNom()).append("\n")
-                .append("Prénom: ").append(user.getPrenom()).append("\n")
-                .append("Email: ").append(user.getGmail()).append("\n")
-                .append("Identifiant: ").append(user.getIdentifiant()).append("\n")
-                .append("Rôle: ").append(user.getRole()).append("\n")
-                .append("Mot de passe: ").append(user.getMotdepasse()).append("\n")
-                .append("Image: ").append(user.getImage());
+                .append("Nom: ").append(user.getNom() != null ? user.getNom() : "Non défini").append("\n")
+                .append("Prénom: ").append(user.getPrenom() != null ? user.getPrenom() : "Non défini").append("\n")
+                .append("Email: ").append(user.getGmail() != null ? user.getGmail() : "Non défini").append("\n")
+                .append("Identifiant: ").append(user.getIdentifiant() != null ? user.getIdentifiant() : "Non défini").append("\n")
+                .append("Rôle: ").append(user.getRole() != null ? user.getRole() : "Non défini").append("\n")
+                .append("Mot de passe: ").append(user.getMotdepasse() != null ? "********" : "Non défini").append("\n")
+                .append("Image: ").append(user.getImage() != null ? user.getImage() : "Non définie").append("\n")
+                .append("Ban: ").append(user.getBan() != null ? user.getBan() : "Non défini");
 
-        // Assigne le texte au contenu de l'alerte
         alert.setContentText(sb.toString());
+
+        // Rafraîchir la liste après la fermeture de l'alerte
+        alert.setOnHidden(e -> refreshUserList());
 
         alert.showAndWait();
     }
+
+    private void refreshUserList() {
+        userListContainer.getChildren().clear();
+        afficherUsers();
+    }
+
+
 
 
     private void selectUser(User user) {
@@ -201,6 +213,7 @@ public class AdminController implements Initializable {
             return;
         }
         selectedUser = user;
+
         if (userName != null) {
             userName.setText(user.getNom());
         }
@@ -219,11 +232,19 @@ public class AdminController implements Initializable {
         if (userMotdepasse != null) {
             userMotdepasse.setText(user.getMotdepasse());
         }
+
+        // Affichage de l'image
         if (user.getImage() != null && !user.getImage().isEmpty()) {
             Image image = new Image("file:" + user.getImage());
             userImage.setImage(image);
         }
+
+        // Mise à jour du champ ban (par exemple dans un Label ou un TextField nommé userBan)
+        if (userBan != null) {
+            userBan.setText(user.getBan());
+        }
     }
+
 
     @FXML
     private void handleEditUser() {
@@ -231,30 +252,24 @@ public class AdminController implements Initializable {
             System.out.println("Aucun utilisateur sélectionné !");
             return;
         }
-        selectedUser.setNom(userName.getText());
-        selectedUser.setPrenom(userPrenom.getText());
-        selectedUser.setGmail(userGmail.getText());
-        selectedUser.setIdentifiant(userIdentifiant.getText());
-        selectedUser.setRole(userRole.getText());
-        selectedUser.setMotdepasse(userMotdepasse.getText());
 
-        // Vérifier l'unicité de l'identifiant (en excluant l'utilisateur en cours)
-        if (!userService.isUniqueIdentifiant(selectedUser.getIdentifiant(), selectedUser.getId())) {
-            showAlert("Cet identifiant est déjà utilisé par un autre utilisateur !");
-            return;
-        }
-        if (userImage.getImage() != null) {
-            selectedUser.setImage(userImage.getImage().getUrl().replace("file:", ""));
-        }
+
+        selectedUser.setRole(userRole.getText());
+        selectedUser.setBan(userBan.getText()); // Par exemple "true" ou "false"
+
+
 
         userService.update(selectedUser);
-        // Rafraîchir la liste affichée
+
+        // Rafraîchir la liste affichée (selon le rôle actuel, ici on suppose admin ou autres)
         if (selectedUser.getRole().equalsIgnoreCase("admin")) {
             afficherAdmins();
         } else {
             afficherUsers();
         }
+
         showAlert("Utilisateur mis à jour avec succès !");
+        clearFields();
     }
 
     @FXML
@@ -276,38 +291,64 @@ public class AdminController implements Initializable {
         }
     }
 
-    private boolean confirmDelete(User user) {
+    private boolean confirmBan(User user) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation de suppression");
+        alert.setTitle("Confirmer le bannissement");
         alert.setHeaderText(null);
-        alert.setContentText("Voulez-vous vraiment supprimer " + user.getNom() + " ?");
-        ButtonType yesButton = new ButtonType("Oui", ButtonBar.ButtonData.OK_DONE);
-        ButtonType noButton = new ButtonType("Non", ButtonBar.ButtonData.CANCEL_CLOSE);
-        alert.getButtonTypes().setAll(yesButton, noButton);
-        return alert.showAndWait().orElse(noButton) == yesButton;
+        alert.setContentText("Êtes-vous sûr de vouloir bannir l'utilisateur " + user.getNom() + " " + user.getPrenom() + " ?");
+
+        ButtonType okButton = new ButtonType("Oui", ButtonBar.ButtonData.YES);
+        ButtonType cancelButton = new ButtonType("Non", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(okButton, cancelButton);
+
+        return alert.showAndWait().orElse(cancelButton) == okButton;
     }
 
+
     @FXML
-    private void handleDeleteUser() {
+    private void handleBanUser() {
         if (selectedUser == null) {
             showAlert("Veuillez sélectionner un utilisateur !");
             return;
         }
+
         if (currentUser != null && selectedUser.getId() == currentUser.getId()) {
-            showAlert("Vous ne pouvez pas vous supprimer vous-même !");
+            showAlert("Vous ne pouvez pas vous bannir vous-même !");
             return;
         }
-        if (confirmDelete(selectedUser)) {
-            userService.deleteById(selectedUser.getId());
-            // Rafraîchir la liste affichée en fonction du rôle de l'utilisateur supprimé
+
+        if ("true".equalsIgnoreCase(selectedUser.getBan())) {
+            showAlert("Cet utilisateur est déjà banni !");
+            return;
+        }
+
+        if (confirmBan(selectedUser)) {
+            userService.banUser(selectedUser.getIdentifiant());
+
+
+            List<User> updatedUsers = userService.getAll();
+            for (User user : updatedUsers) {
+                if (user.getIdentifiant() == selectedUser.getIdentifiant()) {
+                    selectedUser = user;  // Mettre à jour les données locales
+                    break;
+                }
+            }
+
+            // Rafraîchir l'affichage
             if (selectedUser.getRole().equalsIgnoreCase("admin")) {
                 afficherAdmins();
             } else {
                 afficherUsers();
             }
-            showAlert("Utilisateur supprimé avec succès !");
+
+
         }
+
+        clearFields();
     }
+
+
+
 
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -342,5 +383,16 @@ public class AdminController implements Initializable {
             System.out.println("User set: " + user.getNom());
         }
     }
+    private void clearFields() {
+
+
+
+
+         userRole.clear();
+         userBan.clear();
+         userImage.setImage(null);
+        selectedUser = null;
+    }
+
 
 }

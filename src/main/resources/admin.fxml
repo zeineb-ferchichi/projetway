@@ -41,42 +41,56 @@
             </VBox>
         </VBox>
 
-        <StackPane fx:id="listContainer" prefWidth="407.0" prefHeight="556.0">
-            <!-- Liste des utilisateurs (visible par défaut) -->
-            <VBox fx:id="userListContainer" visible="true">
-                <Label text="Liste des utilisateurs" styleClass="text-title"/>
-                <ScrollPane fitToWidth="true" prefHeight="556.0" prefWidth="407.0">
-                    <GridPane fx:id="gridUsers" hgap="20" vgap="20">
-                        <padding>
-                            <Insets bottom="10" left="10" right="10" top="10"/>
-                        </padding>
-                    </GridPane>
-                </ScrollPane>
-            </VBox>
-            <!-- Liste des administrateurs (invisible par défaut) -->
-            <VBox fx:id="adminListContainer" visible="false">
-                <Label text="Liste des administrateurs" styleClass="text-title"/>
-                <ScrollPane fitToWidth="true" prefHeight="556.0" prefWidth="407.0">
-                    <GridPane fx:id="gridAdmins" hgap="20" vgap="20">
-                        <padding>
-                            <Insets bottom="10" left="10" right="10" top="10"/>
-                        </padding>
-                    </GridPane>
-                </ScrollPane>
-            </VBox>
-        </StackPane>
 
+        <VBox alignment="CENTER" prefWidth="300" spacing="20" >
+
+            <!-- Espace réservé (premier VBox) -->
+            <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="300">
+                <!-- Contenu éventuel -->
+            </VBox>
+
+            <!-- Liens de navigation -->
+            <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="300">
+                <StackPane fx:id="listContainer" prefWidth="407.0" prefHeight="556.0">
+                    <!-- Liste des utilisateurs (visible par défaut) -->
+                    <VBox fx:id="userListContainer" visible="true">
+                        <Label text="Liste des utilisateurs" styleClass="text-title"/>
+                        <ScrollPane fitToWidth="true" prefHeight="556.0" prefWidth="407.0">
+                            <GridPane fx:id="gridUsers" hgap="20" vgap="20">
+                                <padding>
+                                    <Insets bottom="10" left="10" right="10" top="10"/>
+                                </padding>
+                            </GridPane>
+                        </ScrollPane>
+                    </VBox>
+                    <!-- Liste des administrateurs (invisible par défaut) -->
+                    <VBox fx:id="adminListContainer" visible="false">
+                        <Label text="Liste des administrateurs" styleClass="text-title"/>
+                        <ScrollPane fitToWidth="true" prefHeight="556.0" prefWidth="407.0">
+                            <GridPane fx:id="gridAdmins" hgap="20" vgap="20">
+                                <padding>
+                                    <Insets bottom="10" left="10" right="10" top="10"/>
+                                </padding>
+                            </GridPane>
+                        </ScrollPane>
+                    </VBox>
+                </StackPane>
+            </VBox>
+
+            <!-- Informations et actions sur l'utilisateur courant -->
+            <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="300">
+
+            </VBox>
+        </VBox>
 
         <!-- VBox de modification (détails de l'utilisateur/admin sélectionné) -->
         <VBox alignment="CENTER" prefWidth="350" spacing="15" styleClass="user-details">
             <ImageView fx:id="userImage" fitHeight="90" fitWidth="90" styleClass="user-profile-image"/>
-            <TextField fx:id="userName" promptText="Nom" styleClass="input-field"/>
-            <TextField fx:id="userPrenom" promptText="Prénom" styleClass="input-field"/>
-            <TextField fx:id="userGmail" promptText="Gmail" styleClass="input-field"/>
-            <TextField fx:id="userIdentifiant" promptText="Identifiant" styleClass="input-field"/>
-            <TextField fx:id="userRole" promptText="Rôle" styleClass="input-field"/>
-            <PasswordField fx:id="userMotdepasse" promptText="Mot de passe" styleClass="input-field"/>
-            <Button onAction="#handleChangeImage" text="Changer l'image" styleClass="button-modify"/>
+            <TextField fx:id="userRole" promptText="Rôle" styleClass="input-field" layoutX="20" layoutY="20" />
+
+
+            <TextField fx:id="userBan" promptText="Ban (true/false)" styleClass="input-field" layoutX="20" layoutY="70" />
+
             <Button onAction="#handleEditUser" text="Modifier" styleClass="button-modify"/>
         </VBox>
     </HBox>

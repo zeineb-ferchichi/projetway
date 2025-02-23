@@ -77,7 +77,7 @@ public class Main {
                     System.out.print("Mot de passe : ");
                     String image = scanner.nextLine();
 
-                    User user = new User(0, nom, prenom, email, identifiant, role, motDePasse,image);
+                    User user = new User( nom, prenom, email, identifiant, role, motDePasse,image);
 
                     // Vérification avant insertion
                     if (userService.validateUser(user)) {

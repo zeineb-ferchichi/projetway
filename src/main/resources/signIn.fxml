@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.scene.layout.StackPane?>
 <AnchorPane prefHeight="500.0" prefWidth="700.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.signIn">
 
     <!-- Image de fond -->
@@ -20,8 +21,24 @@
     </ImageView>
    <Text layoutX="480.0" layoutY="143.0" styleClass="text-title" text="Sign In" />
    <TextField fx:id="identifiantField" layoutX="414.0" layoutY="164.0" promptText="Enter your Identifiant" styleClass="text-field" />
-   <PasswordField fx:id="passwordField" layoutX="414.0" layoutY="210.0" promptText="Enter your Password" styleClass="text-field" />
-   <VBox alignment="CENTER" layoutX="392.0" layoutY="261.0" spacing="15">
+    <StackPane layoutX="414.0" layoutY="210.0">
+        <!-- Champ de mot de passe masqué -->
+        <PasswordField fx:id="passwordField" promptText="Mot de passe" prefWidth="200"/>
+
+        <!-- Champ de texte visible (affiché quand on veut voir le mot de passe) -->
+        <TextField fx:id="passwordFieldVisible" promptText="Mot de passe" prefWidth="200" visible="false"/>
+
+        <!-- Bouton visibilité -->
+        <Button fx:id="btnTogglePassword" text="🙈" onAction="#togglePasswordVisibility"
+                style="-fx-background-radius: 50%; -fx-min-width: 30px; -fx-min-height: 30px;
+               -fx-max-width: 30px; -fx-max-height: 30px;
+               -fx-background-color: lightgray; -fx-translate-x: -10;"
+                StackPane.alignment="CENTER_RIGHT"/>
+
+
+    </StackPane>
+
+    <VBox alignment="CENTER" layoutX="392.0" layoutY="261.0" spacing="15">
       <children>
          <Button onAction="#handleSignIn" styleClass="button-signin" text="Sign In" />
          <Hyperlink fx:id="createAccountLink" onAction="#handleCreateAccount" styleClass="text-button" text="Don't have an account? Create one" />

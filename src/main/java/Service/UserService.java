@@ -30,6 +30,7 @@ public class UserService implements IService<User> {
             pst.setString(5, user.getRole());
             pst.setString(6, user.getMotdepasse());
             pst.setString(7, user.getImage());
+
             pst.executeUpdate();
             System.out.println("User inséré avec succès !");
         } catch (SQLException e) {
@@ -43,7 +44,8 @@ public class UserService implements IService<User> {
         if (!validateUser(user)) {
             return;
         }
-        String requete = "UPDATE user SET Nom = ?, Prenom = ?, Gmail = ?, Identifiant = ?, Role = ?, Motdepasse = ?, Image = ? WHERE id = ?";
+        // Requête mise à jour avec l'attribut ban
+        String requete = "UPDATE user SET Nom = ?, Prenom = ?, Gmail = ?, Identifiant = ?, Role = ?, Motdepasse = ?, Image = ?, ban = ? WHERE id = ?";
         try (PreparedStatement pst = cnx.prepareStatement(requete)) {
             pst.setString(1, user.getNom());
             pst.setString(2, user.getPrenom());
@@ -52,13 +54,15 @@ public class UserService implements IService<User> {
             pst.setString(5, user.getRole());
             pst.setString(6, user.getMotdepasse());
             pst.setString(7, user.getImage());
-            pst.setInt(8, user.getId());
+            pst.setString(8, user.getBan());  // Nouveau paramètre pour ban
+            pst.setInt(9, user.getId());
             pst.executeUpdate();
             System.out.println("User mis à jour avec succès !");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
 
 
@@ -72,7 +76,6 @@ public class UserService implements IService<User> {
              ResultSet rs = ste.executeQuery(requete)) {
             while (rs.next()) {
                 User p = new User(
-                        rs.getInt("Id"),
                         rs.getString("Nom"),
                         rs.getString("Prenom"),
                         rs.getString("Gmail"),
@@ -80,7 +83,10 @@ public class UserService implements IService<User> {
                         rs.getString("Role"),
                         rs.getString("Motdepasse"),
                         rs.getString("Image")
+
                 );
+                p.setId(rs.getInt("id"));
+                p.setBan(rs.getString("ban"));
                 listeUsers.add(p);
             }
         } catch (SQLException e) {
@@ -97,7 +103,6 @@ public class UserService implements IService<User> {
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
                     return new User(
-                            rs.getInt("Id"),
                             rs.getString("Nom"),
                             rs.getString("Prenom"),
                             rs.getString("Gmail"),
@@ -121,7 +126,7 @@ public class UserService implements IService<User> {
              ResultSet rs = ste.executeQuery(requete)) {
             while (rs.next()) {
                 User p = new User(
-                        rs.getInt("Id"),
+
                         rs.getString("Nom"),
                         rs.getString("Prenom"),
                         rs.getString("Gmail"),
@@ -138,12 +143,9 @@ public class UserService implements IService<User> {
     @Override
     public void deleteById(int id) {
         String requete = "DELETE FROM user WHERE id = ?";
-        try (PreparedStatement pst = cnx.prepareStatement(requete , Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement pst = cnx.prepareStatement(requete)) {
             pst.setInt(1, id);
-            ResultSet rs = pst.getGeneratedKeys();
-
             int rowsAffected = pst.executeUpdate();
-
             if (rowsAffected > 0) {
                 System.out.println("Utilisateur avec l'ID " + id + " supprimé avec succès !");
             } else {
@@ -266,7 +268,6 @@ public class UserService implements IService<User> {
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
                     return new User(
-                            rs.getInt("Id"),
                             rs.getString("Nom"),
                             rs.getString("Prenom"),
                             rs.getString("Gmail"),
@@ -282,6 +283,28 @@ public class UserService implements IService<User> {
         }
         return null;
     }
+
+
+
+
+
+
+    public void banUser(String Identifiant) {
+        String requete = "UPDATE user SET ban = ? WHERE Identifiant = ?";
+        try (PreparedStatement pst = cnx.prepareStatement(requete)) {
+            pst.setString(1, "true");
+            pst.setString(2, Identifiant);
+            pst.executeUpdate();
+            System.out.println("Utilisateur banni avec succès !");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
 
 
 

@@ -1,7 +1,7 @@
 package Entitie;
 
 public class User {
-    private int Id;
+    private int Id = 0;
     private String Nom;
     private String Prenom;
     private String Gmail;
@@ -9,11 +9,19 @@ public class User {
     private String Role;
     private String Motdepasse;
     private String Image;
-
+    private String ban = "false"; // Ajout de l'attribut ban sous forme de String
 
     public static User currentUser;
+
     // Constructeur par défaut
+    public User() {
+        this.Id = 0;
+        this.ban = "false"; // Valeur par défaut
+    }
+
+    // Constructeur avec paramètres
     public User(String nom, String prenom, String gmail, String identifiant, String role, String motdepasse, String image) {
+        this(); // Appelle le constructeur par défaut
         this.Nom = nom;
         this.Prenom = prenom;
         this.Gmail = gmail;
@@ -21,21 +29,19 @@ public class User {
         this.Role = role;
         this.Motdepasse = motdepasse;
         this.Image = image;
+
     }
 
-    // Constructeur avec tous les attributs
-    public User(int id, String nom, String prenom, String gmail, String identifiant, String role, String motdepasse, String image) {
-        this.Id = id;
-        this.Nom = nom;
-        this.Prenom = prenom;
-        this.Gmail = gmail;
-        this.Identifiant = identifiant;
-        this.Role = role;
-        this.Motdepasse = motdepasse;
-        this.Image = image;
+    // Getters et Setters pour ban
+    public String getBan() {
+        return ban;
     }
 
-    // Getters et Setters
+    public void setBan(String ban) {
+        this.ban = ban;
+    }
+
+    // Getters et Setters pour les autres attributs
     public int getId() {
         return Id;
     }
@@ -99,6 +105,7 @@ public class User {
     public void setImage(String image) {
         this.Image = image;
     }
+
     public static User getCurrentUser() {
         return currentUser;
     }
@@ -107,9 +114,11 @@ public class User {
         currentUser = user;
     }
 
-    // Redéfinition de toString pour afficher les infos facilement
+    // Mise à jour du toString pour afficher l'attribut ban
     @Override
     public String toString() {
-        return "User{id=" + Id + ", nom='" + Nom + "', prenom='" + Prenom + "', gmail='" + Gmail + "', identifiant='" + Identifiant + "', role='" + Role + "', motdepasse='" + Motdepasse + "', image='" + Image + "'}";
+        return "User{id=" + Id + ", nom='" + Nom + "', prenom='" + Prenom + "', gmail='" + Gmail +
+                "', identifiant='" + Identifiant + "', role='" + Role + "', motdepasse='" + Motdepasse +
+                "', image='" + Image + "', ban='" + ban + "'}";
     }
 }
