@@ -27,14 +27,14 @@
 
     <!-- Contenu principal -->
     <center>
-        <AnchorPane prefHeight="800.0" prefWidth="500.0">
+        <AnchorPane prefHeight="500.0" prefWidth="200.0">
             <children>
                 <!-- Boutons avec fx:id et action -->
-                <Button fx:id="btnTransport" layoutX="181.0" layoutY="186.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="374.0" styleClass="button" text="Gérer Transport" onAction="#openTransport"/>
-                <Button fx:id="btnAbonnement" layoutX="181.0" layoutY="258.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="374.0" styleClass="button" text="Gérer Abonnement" onAction="#openAbonnement"/>
+                <Button fx:id="btnTransport" layoutX="181.0" layoutY="186.0" mnemonicParsing="false" onAction="#openTransport" prefHeight="40.0" prefWidth="374.0" styleClass="button" text="Gérer Transport" />
+                <Button fx:id="btnAbonnement" layoutX="181.0" layoutY="258.0" mnemonicParsing="false" onAction="#openAbonnement" prefHeight="40.0" prefWidth="374.0" styleClass="button" text="Gérer Abonnement" />
 
                 <!-- Titre -->
-                <Text layoutX="181.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title" text="BIENVENUE DANS LA GESTION DES TRANSPORTS &amp; ABONNEMENTS" wrappingWidth="5000.0">
+                <Text layoutX="127.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title" text="BIENVENUE DANS LA GESTION DES TRANSPORTS &amp; ABONNEMENTS" wrappingWidth="559.999755859375">
                     <fill>
                         <LinearGradient endX="1.0" endY="1.0">
                             <stops>

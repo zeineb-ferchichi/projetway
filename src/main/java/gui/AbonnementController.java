@@ -1,5 +1,7 @@
 package gui;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,11 +21,11 @@ import java.util.Optional;
 public class AbonnementController {
 
     @FXML private ComboBox<String> comboType;
-    @FXML private TextField txtMontant, txtDureeValable, txtTransportId;
+    @FXML private TextField txtMontant, txtDureeValable, txtTransportId, searchAbonnement;
     @FXML private ComboBox<String> comboStatus;
     @FXML private VBox abonDisplay;
 
-    private final AbonnementService service = new AbonnementService();
+    private final AbonnementService service = new AbonnementService(); // ✅ Ajout de la déclaration
     private Abonnement selectedAbonnement = null;
 
     @FXML
@@ -48,9 +50,76 @@ public class AbonnementController {
         }
     }
 
+    // Méthode pour filtrer les abonnements
+    @FXML
+    private void filterAbonnements() {
+        String keyword = searchAbonnement.getText().toLowerCase().trim();
+        ObservableList<Abonnement> filteredList = FXCollections.observableArrayList();
+
+        for (Abonnement abo : service.getAll()) {
+            if (abo.getType_abonnem().toLowerCase().contains(keyword) ||
+                    String.valueOf(abo.getMontant()).contains(keyword) ||
+                    String.valueOf(abo.getDuree_valable()).contains(keyword) ||
+                    String.valueOf(abo.getTransport_id()).contains(keyword) ||
+                    abo.getStatus_abonnem().toLowerCase().contains(keyword)) {
+                filteredList.add(abo);
+            }
+        }
+
+        abonDisplay.getChildren().clear();
+        for (Abonnement abo : filteredList) {
+            abonDisplay.getChildren().add(createAbonnementCard(abo));
+        }
+    }
+
+    private HBox createAbonnementCard(Abonnement abo) {
+        HBox card = new HBox(10);
+        card.setStyle("-fx-padding: 10; -fx-border-color: gray; -fx-border-radius: 5; -fx-border-width: 1;");
+
+        Text info = new Text(
+                "Type: " + abo.getType_abonnem() +
+                        " | Montant: " + abo.getMontant() +
+                        " | Durée: " + abo.getDuree_valable() + " jours" +
+                        " | Statut: " + abo.getStatus_abonnem() +
+                        " | Transport ID: " + abo.getTransport_id()
+        );
+
+        Button btnDelete = new Button("❌");
+        btnDelete.setOnAction(e -> {
+            selectedAbonnement = abo;
+            deleteAbonnement();
+        });
+
+        Button btnEdit = new Button("✏️");
+        btnEdit.setOnAction(e -> selectAbonnementForEdit(abo));
+
+        card.getChildren().addAll(info, btnEdit, btnDelete);
+        return card;
+    }
+
+    @FXML
+    private void goBack() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Home.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) abonDisplay.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Impossible de retourner à la page d'accueil!", Alert.AlertType.ERROR);
+        }
+    }
+
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     @FXML
     private void addAbonnement() {
-        System.out.println("Méthode addAbonnement() appelée !");
         if (validateFields()) {
             try {
                 Abonnement abo = new Abonnement(
@@ -61,13 +130,11 @@ public class AbonnementController {
                         comboStatus.getValue()
                 );
                 service.add(abo);
-                System.out.println("✅ Abonnement ajouté : " + abo);
                 loadAbonnements();
                 clearFields();
                 showAlert("Succès", "✅ Abonnement ajouté avec succès!", Alert.AlertType.INFORMATION);
             } catch (Exception e) {
-                showAlert("Erreur", "Vérifiez les valeurs saisies !", Alert.AlertType.ERROR);
-                e.printStackTrace();
+                showAlert("Erreur", "Vérifiez les valeurs saisies!", Alert.AlertType.ERROR);
             }
         } else {
             showAlert("Erreur", "Veuillez remplir tous les champs !", Alert.AlertType.ERROR);
@@ -80,22 +147,19 @@ public class AbonnementController {
             showAlert("Erreur", "Veuillez sélectionner un abonnement à modifier!", Alert.AlertType.ERROR);
             return;
         }
-        if (validateFields()) {
-            try {
-                selectedAbonnement.setType_abonnem(comboType.getValue());
-                selectedAbonnement.setMontant(Double.parseDouble(txtMontant.getText()));
-                selectedAbonnement.setDuree_valable(Integer.parseInt(txtDureeValable.getText()));
-                selectedAbonnement.setTransport_id(Integer.parseInt(txtTransportId.getText()));
-                selectedAbonnement.setStatus_abonnem(comboStatus.getValue());
 
-                service.update(selectedAbonnement);
-                loadAbonnements();
-                clearFields();
-                showAlert("Succès", "✅ Abonnement modifié avec succès!", Alert.AlertType.INFORMATION);
-                selectedAbonnement = null;
-            } catch (Exception e) {
-                showAlert("Erreur", "Impossible de modifier l'abonnement!", Alert.AlertType.ERROR);
-            }
+        if (validateFields()) {
+            selectedAbonnement.setType_abonnem(comboType.getValue());
+            selectedAbonnement.setMontant(Double.parseDouble(txtMontant.getText()));
+            selectedAbonnement.setDuree_valable(Integer.parseInt(txtDureeValable.getText()));
+            selectedAbonnement.setTransport_id(Integer.parseInt(txtTransportId.getText()));
+            selectedAbonnement.setStatus_abonnem(comboStatus.getValue());
+
+            service.update(selectedAbonnement);
+            loadAbonnements();
+            clearFields();
+            showAlert("Succès", "✅ Abonnement modifié avec succès!", Alert.AlertType.INFORMATION);
+            selectedAbonnement = null;
         }
     }
 
@@ -105,6 +169,7 @@ public class AbonnementController {
             showAlert("Erreur", "Veuillez sélectionner un abonnement à supprimer!", Alert.AlertType.ERROR);
             return;
         }
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation de suppression");
         alert.setHeaderText("Supprimer l'abonnement ?");
@@ -135,27 +200,6 @@ public class AbonnementController {
                 !txtTransportId.getText().isEmpty();
     }
 
-    private void showAlert(String title, String message, Alert.AlertType type) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    @FXML
-    private void goBack() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Home.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) abonDisplay.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            showAlert("Erreur", "Impossible de retourner à la page d'accueil!", Alert.AlertType.ERROR);
-        }
-    }
-
     private void selectAbonnementForEdit(Abonnement abo) {
         selectedAbonnement = abo;
         comboType.setValue(abo.getType_abonnem());
@@ -164,52 +208,4 @@ public class AbonnementController {
         txtTransportId.setText(String.valueOf(abo.getTransport_id()));
         comboStatus.setValue(abo.getStatus_abonnem());
     }
-
-    private HBox createAbonnementCard(Abonnement abo) {
-        HBox card = new HBox(10);
-        card.setStyle("-fx-padding: 10; -fx-border-color: gray; -fx-border-radius: 5; -fx-border-width: 1;");
-
-        Text info = new Text(
-                "Type: " + abo.getType_abonnem() +
-                        " | Montant: " + abo.getMontant() +
-                        " | Durée: " + abo.getDuree_valable() + " jours" +
-                        " | Statut: " + abo.getStatus_abonnem() +
-                        " | Transport ID: " + abo.getTransport_id()
-        );
-
-        Button btnDelete = new Button("❌");
-        btnDelete.setOnAction(e -> {
-            selectedAbonnement = abo;
-            deleteAbonnement();
-        });
-
-        Button btnEdit = new Button("✏️");
-        btnEdit.setOnAction(e -> selectAbonnementForEdit(abo));
-
-        card.getChildren().addAll(info, btnEdit, btnDelete);
-        return card;
-    }
-    @FXML
-    private void goAbonnement() {
-        loadScene("Abonnement.fxml");
-    }
-
-    @FXML
-    private void goTransport() {
-        loadScene("Transport.fxml");
-    }
-
-    private void loadScene(String fxmlFile) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/" + fxmlFile));
-            Parent root = loader.load();
-            Stage stage = (Stage) abonDisplay.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert("Erreur", "Erreur de chargement du fichier : " + fxmlFile, Alert.AlertType.ERROR);
-        }
-    }
-
 }

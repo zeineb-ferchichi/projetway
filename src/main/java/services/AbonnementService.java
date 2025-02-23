@@ -28,21 +28,18 @@ public class AbonnementService implements IService<Abonnement> {
             stmt.setInt(5, abonnement.getTransport_id());
 
             int rowsAffected = stmt.executeUpdate();
-            System.out.println("Nombre de lignes insérées : " + rowsAffected);
             if (rowsAffected > 0) {
                 System.out.println("✅ Abonnement ajouté avec succès.");
             } else {
                 System.out.println("❌ Échec de l'ajout.");
             }
         } catch (SQLException e) {
-            System.out.println("Erreur SQL : " + e.getMessage());
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Erreur SQL lors de l'ajout d'un abonnement", e);
         }
     }
 
-
     @Override
-    public boolean delete(int id) { // ✅ Correction ici
+    public boolean delete(int id) {
         String sql = "DELETE FROM abonnement WHERE id_abonnem = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -54,7 +51,7 @@ public class AbonnementService implements IService<Abonnement> {
     }
 
     @Override
-    public boolean update(Abonnement abonnement) { // ✅ Correction pour respecter `IService`
+    public boolean update(Abonnement abonnement) {
         if (abonnement == null || abonnement.getId_abonnem() == 0) return false;
 
         String sql = "UPDATE abonnement SET type_abonnem = ?, montant = ?, duree_valable = ?, status_abonnem = ?, transport_id = ? WHERE id_abonnem = ?";
@@ -103,14 +100,45 @@ public class AbonnementService implements IService<Abonnement> {
         return null;
     }
 
-    private Abonnement extractAbonnement(ResultSet rs) throws SQLException { // ✅ Correction ici
+    /**
+     * 🔍 **Méthode pour rechercher des abonnements dans la base de données**
+     * @param keyword Le mot-clé recherché (dans type, montant, durée, statut ou transport ID)
+     * @return Une liste des abonnements correspondant à la recherche
+     */
+    public List<Abonnement> searchAbonnements(String keyword) {
+        List<Abonnement> list = new ArrayList<>();
+        String sql = "SELECT * FROM abonnement WHERE " +
+                "LOWER(type_abonnem) LIKE ? OR " +
+                "CAST(montant AS CHAR) LIKE ? OR " +
+                "CAST(duree_valable AS CHAR) LIKE ? OR " +
+                "CAST(transport_id AS CHAR) LIKE ? OR " +
+                "LOWER(status_abonnem) LIKE ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            String searchPattern = "%" + keyword.toLowerCase() + "%";
+            for (int i = 1; i <= 5; i++) {
+                stmt.setString(i, searchPattern);
+            }
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    list.add(extractAbonnement(rs));
+                }
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Erreur lors de la recherche des abonnements", e);
+        }
+        return list;
+    }
+
+    private Abonnement extractAbonnement(ResultSet rs) throws SQLException {
         return new Abonnement(
                 rs.getInt("id_abonnem"),
                 rs.getString("type_abonnem"),
                 rs.getDouble("montant"),
                 rs.getInt("duree_valable"),
-                rs.getInt("transport_id"), // ✅ Transport ID avant Status
-                rs.getString("status_abonnem") // ✅ Status à la fin
+                rs.getInt("transport_id"),
+                rs.getString("status_abonnem")
         );
     }
 }
