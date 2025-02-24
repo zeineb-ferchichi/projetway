@@ -1,5 +1,7 @@
 package gui;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,7 +20,7 @@ import java.util.Optional;
 public class TransportController {
 
     @FXML private ComboBox<String> cmbType;
-    @FXML private TextField txtNomStation, txtZone;
+    @FXML private TextField txtNomStation, txtZone, searchTransport;
     @FXML private VBox transportDisplay;
 
     private final TransportService service = new TransportService();
@@ -43,13 +45,33 @@ public class TransportController {
         }
     }
 
+    // Fonction de recherche
+    @FXML
+    private void filterTransports() {
+        String keyword = searchTransport.getText().toLowerCase().trim();
+        ObservableList<Transport> filteredList = FXCollections.observableArrayList();
+
+        for (Transport transport : service.getAll()) {
+            if (transport.getType_transp().toLowerCase().contains(keyword) ||
+                    transport.getNom_station().toLowerCase().contains(keyword) ||
+                    transport.getZone_geographique().toLowerCase().contains(keyword)) {
+                filteredList.add(transport);
+            }
+        }
+
+        // Mise à jour de l'affichage
+        transportDisplay.getChildren().clear();
+        for (Transport transport : filteredList) {
+            transportDisplay.getChildren().add(createTransportCard(transport));
+        }
+    }
+
     private HBox createTransportCard(Transport transp) {
         HBox card = new HBox(10);
-        card.setStyle("-fx-padding: 10; -fx-border-color: #0D47A1; -fx-border-radius: 5; -fx-border-width: 2;");
+        card.setStyle("-fx-padding: 10; -fx-border-color: gray; -fx-border-radius: 5; -fx-border-width: 1;");
 
         Text info = new Text(
-                "ID: " + transp.getId_transp() +
-                        " | Type: " + transp.getType_transp() +
+                "Type: " + transp.getType_transp() +
                         " | Station: " + transp.getNom_station() +
                         " | Zone: " + transp.getZone_geographique()
         );
@@ -149,6 +171,7 @@ public class TransportController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
     @FXML
     private void goBack() {
         try {
@@ -161,13 +184,13 @@ public class TransportController {
             showAlert("Erreur", "Impossible de retourner à la page d'accueil!", Alert.AlertType.ERROR);
         }
     }
-
     @FXML
     private void deleteTransport() {
         if (selectedTransport == null) {
             showAlert("Erreur", "Veuillez sélectionner un transport à supprimer!", Alert.AlertType.ERROR);
             return;
         }
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation de suppression");
         alert.setHeaderText("Supprimer le transport ?");
@@ -177,10 +200,9 @@ public class TransportController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             service.delete(selectedTransport.getId_transp());
             loadTransports();
-            showAlert("Succès", "Transport supprimé avec succès!", Alert.AlertType.INFORMATION);
+            showAlert("Succès", "🚮 Transport supprimé avec succès !", Alert.AlertType.INFORMATION);
             selectedTransport = null;
         }
     }
-
 
 }
