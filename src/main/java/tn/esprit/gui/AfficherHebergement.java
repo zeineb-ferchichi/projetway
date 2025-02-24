@@ -98,7 +98,8 @@ public class AfficherHebergement {
             Scene scene = new Scene(loader.load());
 
             ModifierHebergement controller = loader.getController();
-            controller.setHebergement(hebergement); // Pass data to modification window
+            // Pass the TableView reference and a callback to refresh the list
+            controller.setHebergement(hebergement, listHebergements, this::refreshHebergements);
 
             Stage newStage = new Stage();
             newStage.setTitle("Modifier un Hébergement");
@@ -109,19 +110,16 @@ public class AfficherHebergement {
         }
     }
 
+    private void refreshHebergements() {
+        loadHebergements(); // Reload all the Hebergements from the service
+    }
+
     @FXML
     private void handleAjouterHebergement() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterHebergement.fxml"));
             Scene scene = new Scene(loader.load());
 
-            // Get the controller of the new scene
-            AjouterHebergement controller = loader.getController();
-
-            // Pass the TableView reference to the new controller
-            controller.setHebergementTableView(listHebergements);
-
-            // Show the stage
             Stage newStage = new Stage();
             newStage.setTitle("Ajouter un Hébergement");
             newStage.setScene(scene);

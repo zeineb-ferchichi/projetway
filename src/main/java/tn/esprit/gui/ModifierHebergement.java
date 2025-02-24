@@ -14,10 +14,11 @@ import tn.esprit.services.HebergementService;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.scene.control.TableView;
 
 public class ModifierHebergement implements Initializable {
 
-    @FXML private ImageView imageView; // 🔹 FIX: Added missing ImageView reference
+    @FXML private ImageView imageView;
     @FXML private TextField txtNom;
     @FXML private TextField txtType;
     @FXML private TextField txtAdresse;
@@ -28,11 +29,13 @@ public class ModifierHebergement implements Initializable {
     @FXML private Button btnModifier;
 
     private Hebergement hebergement;
+    private TableView<Hebergement> hebergementTableView; // Reference to TableView
+    private Runnable onModifiedCallback; // Callback to refresh the TableView
     private final HebergementService hebergementService = new HebergementService();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        loadImage(); // 🔹 Loads the default image on initialization
+        loadImage();
     }
 
     private void loadImage() {
@@ -45,11 +48,11 @@ public class ModifierHebergement implements Initializable {
         }
     }
 
-    /**
-     * Initialise les champs avec les données de l'hébergement sélectionné.
-     */
-    public void setHebergement(Hebergement hebergement) {
+    // Set the Hebergement and TableView, and pass the callback for refreshing the list
+    public void setHebergement(Hebergement hebergement, TableView<Hebergement> tableView, Runnable onModifiedCallback) {
         this.hebergement = hebergement;
+        this.hebergementTableView = tableView; // Set the TableView reference
+        this.onModifiedCallback = onModifiedCallback; // Set the callback
 
         if (hebergement != null) {
             txtNom.setText(hebergement.getNom());
@@ -66,7 +69,6 @@ public class ModifierHebergement implements Initializable {
     private void updateHebergement() {
         if (hebergement == null) return;
 
-        // 🔹 Validate inputs
         if (!validateFields()) return;
 
         try {
@@ -82,7 +84,12 @@ public class ModifierHebergement implements Initializable {
 
             showAlert("Succès", "Hébergement modifié avec succès!", Alert.AlertType.INFORMATION);
 
-            // 🔹 Close the window after modification
+            // Call the callback to refresh the list
+            if (onModifiedCallback != null) {
+                onModifiedCallback.run();
+            }
+
+            // Close the window after modification
             Stage stage = (Stage) btnModifier.getScene().getWindow();
             stage.close();
         } catch (NumberFormatException e) {
