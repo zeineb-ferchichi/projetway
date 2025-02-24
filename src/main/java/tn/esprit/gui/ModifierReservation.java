@@ -1,14 +1,14 @@
 package tn.esprit.gui;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import tn.esprit.models.Reservation;
 import tn.esprit.services.ReservationService;
 
-import java.io.IOException;
+import java.io.File;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -16,6 +16,7 @@ import java.util.Date;
 
 public class ModifierReservation {
 
+    @FXML private ImageView imageView;
     @FXML private TextField txtClientName;
     @FXML private DatePicker dateDebut;
     @FXML private DatePicker dateFin;
@@ -24,6 +25,21 @@ public class ModifierReservation {
 
     private final ReservationService reservationService = new ReservationService();
     private Reservation reservation;
+
+    @FXML
+    public void initialize() {
+        loadImage();
+    }
+
+    private void loadImage() {
+        String imagePath = "C:/Users/khali/IdeaProjects/GestionHebrgement/478765722_1161037295221445_2233461229557996646_n.png";
+        File file = new File(imagePath);
+        if (file.exists()) {
+            imageView.setImage(new Image(file.toURI().toString()));
+        } else {
+            System.err.println("⚠ Image file not found at: " + imagePath);
+        }
+    }
 
     public void setReservation(Reservation reservation) {
         this.reservation = reservation;
