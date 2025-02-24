@@ -1,7 +1,6 @@
 package gui;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,6 +14,7 @@ import models.Abonnement;
 import services.AbonnementService;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,23 +23,30 @@ public class AbonnementController {
     @FXML private ComboBox<String> comboType;
     @FXML private TextField txtMontant, txtDureeValable, txtTransportId, searchAbonnement;
     @FXML private ComboBox<String> comboStatus;
+    @FXML private ComboBox<String> comboSortBy;
     @FXML private VBox abonDisplay;
 
-    private final AbonnementService service = new AbonnementService(); // ✅ Ajout de la déclaration
+    private final AbonnementService service = new AbonnementService();
     private Abonnement selectedAbonnement = null;
 
     @FXML
     public void initialize() {
         loadComboBoxes();
         loadAbonnements();
+        initializeSortComboBox();
     }
 
     private void loadComboBoxes() {
-        comboType.getItems().addAll("Mensuel", "Annuel", "Hebdomadaire");
+        comboType.setItems(FXCollections.observableArrayList("Mensuel", "Annuel", "Hebdomadaire"));
         comboType.setValue("Mensuel");
 
-        comboStatus.getItems().addAll("Actif", "Expiré", "Suspendu");
+        comboStatus.setItems(FXCollections.observableArrayList("Actif", "Expiré", "Suspendu"));
         comboStatus.setValue("Actif");
+    }
+
+    private void initializeSortComboBox() {
+        comboSortBy.setItems(FXCollections.observableArrayList("Type", "Montant", "Durée", "Statut"));
+        comboSortBy.setOnAction(event -> sortAbonnements());
     }
 
     private void loadAbonnements() {
@@ -50,24 +57,43 @@ public class AbonnementController {
         }
     }
 
-    // Méthode pour filtrer les abonnements
     @FXML
     private void filterAbonnements() {
         String keyword = searchAbonnement.getText().toLowerCase().trim();
-        ObservableList<Abonnement> filteredList = FXCollections.observableArrayList();
+        List<Abonnement> abonnements = service.getAll().stream()
+                .filter(a -> a.getType_abonnem().toLowerCase().contains(keyword) ||
+                        String.valueOf(a.getMontant()).contains(keyword) ||
+                        String.valueOf(a.getDuree_valable()).contains(keyword) ||
+                        String.valueOf(a.getTransport_id()).contains(keyword) ||
+                        a.getStatus_abonnem().toLowerCase().contains(keyword))
+                .toList();
 
-        for (Abonnement abo : service.getAll()) {
-            if (abo.getType_abonnem().toLowerCase().contains(keyword) ||
-                    String.valueOf(abo.getMontant()).contains(keyword) ||
-                    String.valueOf(abo.getDuree_valable()).contains(keyword) ||
-                    String.valueOf(abo.getTransport_id()).contains(keyword) ||
-                    abo.getStatus_abonnem().toLowerCase().contains(keyword)) {
-                filteredList.add(abo);
-            }
+        abonDisplay.getChildren().clear();
+        for (Abonnement abo : abonnements) {
+            abonDisplay.getChildren().add(createAbonnementCard(abo));
+        }
+    }
+
+    @FXML
+    private void sortAbonnements() {
+        String sortBy = comboSortBy.getValue();
+        if (sortBy == null) return;
+
+        List<Abonnement> abonnements = service.getAll();
+        Comparator<Abonnement> comparator = switch (sortBy) {
+            case "Type" -> Comparator.comparing(Abonnement::getType_abonnem);
+            case "Montant" -> Comparator.comparingDouble(Abonnement::getMontant);
+            case "Durée" -> Comparator.comparingInt(Abonnement::getDuree_valable);
+            case "Statut" -> Comparator.comparing(Abonnement::getStatus_abonnem);
+            default -> null;
+        };
+
+        if (comparator != null) {
+            abonnements.sort(comparator);
         }
 
         abonDisplay.getChildren().clear();
-        for (Abonnement abo : filteredList) {
+        for (Abonnement abo : abonnements) {
             abonDisplay.getChildren().add(createAbonnementCard(abo));
         }
     }
@@ -95,27 +121,6 @@ public class AbonnementController {
 
         card.getChildren().addAll(info, btnEdit, btnDelete);
         return card;
-    }
-
-    @FXML
-    private void goBack() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Home.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) abonDisplay.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            showAlert("Erreur", "Impossible de retourner à la page d'accueil!", Alert.AlertType.ERROR);
-        }
-    }
-
-    private void showAlert(String title, String message, Alert.AlertType type) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
     @FXML
@@ -194,12 +199,7 @@ public class AbonnementController {
         selectedAbonnement = null;
     }
 
-    private boolean validateFields() {
-        return !txtMontant.getText().isEmpty() &&
-                !txtDureeValable.getText().isEmpty() &&
-                !txtTransportId.getText().isEmpty();
-    }
-
+    @FXML
     private void selectAbonnementForEdit(Abonnement abo) {
         selectedAbonnement = abo;
         comboType.setValue(abo.getType_abonnem());
@@ -208,4 +208,31 @@ public class AbonnementController {
         txtTransportId.setText(String.valueOf(abo.getTransport_id()));
         comboStatus.setValue(abo.getStatus_abonnem());
     }
+
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private boolean validateFields() {
+        return !txtMontant.getText().isEmpty() &&
+                !txtDureeValable.getText().isEmpty() &&
+                !txtTransportId.getText().isEmpty();
+    }
+    @FXML
+    private void goBack() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Home.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) abonDisplay.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Impossible de retourner à la page d'accueil!", Alert.AlertType.ERROR);
+        }
+    }
+
 }
