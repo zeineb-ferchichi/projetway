@@ -30,6 +30,8 @@ public class AjouterReservation implements Initializable {
     @FXML private ComboBox<Hebergement> comboHebergement;
     @FXML private Button btnAjouter;
 
+    private TableView<Reservation> reservationTableView; // Reference to TableView
+
     private final ReservationService reservationService = new ReservationService();
     private final HebergementService hebergementService = new HebergementService();
 
@@ -45,7 +47,6 @@ public class AjouterReservation implements Initializable {
         ObservableList<Hebergement> hebergementList = FXCollections.observableArrayList(hebergements);
         comboHebergement.setItems(hebergementList);
 
-        // Afficher uniquement le nom de l'hébergement dans le ComboBox
         comboHebergement.setConverter(new StringConverter<>() {
             @Override
             public String toString(Hebergement hebergement) {
@@ -73,7 +74,6 @@ public class AjouterReservation implements Initializable {
     }
 
     private void configureDatePickers() {
-        // Empêcher la sélection de dates passées pour dateDebut
         dateDebut.setDayCellFactory(picker -> new DateCell() {
             @Override
             public void updateItem(LocalDate date, boolean empty) {
@@ -82,14 +82,13 @@ public class AjouterReservation implements Initializable {
             }
         });
 
-        // Empêcher la sélection d'une date de fin avant la date de début
         dateDebut.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 dateFin.setDayCellFactory(picker -> new DateCell() {
                     @Override
                     public void updateItem(LocalDate date, boolean empty) {
                         super.updateItem(date, empty);
-                        setDisable(empty || date.isBefore(newValue.plusDays(1))); // Date fin doit être après date début
+                        setDisable(empty || date.isBefore(newValue.plusDays(1)));
                     }
                 });
             }
@@ -117,7 +116,8 @@ public class AjouterReservation implements Initializable {
         reservationService.add(reservation);
         showAlert(Alert.AlertType.INFORMATION, "Succès", "Réservation ajoutée avec succès!");
 
-        // Fermer la fenêtre après l'ajout
+        refreshReservationTable(); // Met à jour la liste dans l'autre fenêtre
+
         Stage stage = (Stage) btnAjouter.getScene().getWindow();
         stage.close();
     }
@@ -128,5 +128,16 @@ public class AjouterReservation implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void refreshReservationTable() {
+        if (reservationTableView != null) {
+            ObservableList<Reservation> reservationList = FXCollections.observableArrayList(reservationService.getAll());
+            reservationTableView.setItems(reservationList);
+        }
+    }
+
+    public void setReservationTableView(TableView<Reservation> tableView) {
+        this.reservationTableView = tableView;
     }
 }
