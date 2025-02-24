@@ -1,43 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
 
-<VBox xmlns="http://javafx.com/javafx"
+<HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="tn.esprit.gui.AjouterHebergement"
-      spacing="20"
-      style="-fx-padding: 20; -fx-alignment: center; -fx-background-color: #E3F2FD;">
+      alignment="CENTER"
+      style="-fx-background-color: #F8F9FA; -fx-padding: 20;">
 
-    <Label text="Ajouter un Hébergement"
-           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #0D47A1;"/>
+    <!-- Left side: Image -->
+    <ImageView fx:id="imageView" fitWidth="300" preserveRatio="true"/>
 
-    <GridPane hgap="10" vgap="10">
-        <Label text="Nom :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtNom" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="Nom"/>
+    <!-- Right side: Form -->
+    <VBox spacing="20" alignment="CENTER"
+          style="-fx-padding: 40; -fx-background-color: white; -fx-background-radius: 10;
+                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 5);">
 
-        <Label text="Type :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtType" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="Type"/>
+        <Label text="Ajouter Hébergement"
+               style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #0D47A1;"/>
 
-        <Label text="Adresse :" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtAdresse" GridPane.rowIndex="2" GridPane.columnIndex="1" promptText="Adresse"/>
+        <GridPane hgap="10" vgap="10">
+            <Label text="Nom :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtNom" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="Nom"/>
 
-        <Label text="Ville :" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtVille" GridPane.rowIndex="3" GridPane.columnIndex="1" promptText="Ville"/>
+            <Label text="Type :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtType" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="Type"/>
 
-        <Label text="Pays :" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtPays" GridPane.rowIndex="4" GridPane.columnIndex="1" promptText="Pays"/>
+            <Label text="Adresse :" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtAdresse" GridPane.rowIndex="2" GridPane.columnIndex="1" promptText="Adresse"/>
 
-        <Label text="Capacité :" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtCapacite" GridPane.rowIndex="5" GridPane.columnIndex="1" promptText="Capacité"/>
+            <Label text="Ville :" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtVille" GridPane.rowIndex="3" GridPane.columnIndex="1" promptText="Ville"/>
 
-        <Label text="Prix :" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtPrix" GridPane.rowIndex="6" GridPane.columnIndex="1" promptText="Prix"/>
-    </GridPane>
+            <Label text="Pays :" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtPays" GridPane.rowIndex="4" GridPane.columnIndex="1" promptText="Pays"/>
 
-    <Button text="Ajouter" fx:id="btnAjouter" onAction="#addHebergement"
-            style="-fx-background-color: #42A5F5; -fx-text-fill: white;"/>
-</VBox>
+            <Label text="Capacité :" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtCapacite" GridPane.rowIndex="5" GridPane.columnIndex="1" promptText="Capacité"/>
+
+            <Label text="Prix :" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtPrix" GridPane.rowIndex="6" GridPane.columnIndex="1" promptText="Prix"/>
+        </GridPane>
+
+        <Button text="Ajouter" fx:id="btnAjouter" onAction="#addHebergement"
+                style="-fx-background-color: #0D47A1; -fx-text-fill: white; -fx-font-size: 16px;
+                       -fx-padding: 10 30; -fx-background-radius: 5;"/>
+    </VBox>
+
+</HBox>

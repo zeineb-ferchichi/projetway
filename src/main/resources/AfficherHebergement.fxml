@@ -27,7 +27,7 @@
             <TableColumn fx:id="villeCol" text="Ville" />
             <TableColumn fx:id="paysCol" text="Pays" />
             <TableColumn fx:id="capaciteCol" text="Capacité" />
-            <TableColumn fx:id="prixCol" text="Prix" />
+            <TableColumn fx:id="prixCol" text="Prix DT" />
             <TableColumn fx:id="actionsCol" text="Actions" /> <!-- ✅ Added this column -->
         </columns>
     </TableView>
