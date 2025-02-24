@@ -17,7 +17,7 @@
     <left>
         <VBox spacing="15" styleClass="sidebar">
             <!-- Image en haut -->
-            <ImageView fitHeight="530.0" fitWidth="156.0">
+            <ImageView fitHeight="528.0" fitWidth="149.0">
                 <image>
                     <Image url="@sidebar.png" />
                 </image>

@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import services.TransportService;
 import models.Transport;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,7 @@ public class TransportController {
 
     @FXML private ComboBox<String> cmbType;
     @FXML private TextField txtNomStation, txtZone, searchTransport;
+    @FXML private ComboBox<String> cmbSortBy;
     @FXML private VBox transportDisplay;
 
     private final TransportService service = new TransportService();
@@ -28,13 +30,17 @@ public class TransportController {
 
     @FXML
     public void initialize() {
+        initializeComboBoxes();
         loadTransports();
-        initializeComboBox();
     }
 
-    private void initializeComboBox() {
-        cmbType.getItems().addAll("Bus", "Train", "Taxi");
+    private void initializeComboBoxes() {
+        cmbType.setItems(FXCollections.observableArrayList("Bus", "Train", "Taxi"));
         cmbType.setValue("Bus");
+
+        cmbSortBy.setItems(FXCollections.observableArrayList("Type", "Station", "Zone"));
+        cmbSortBy.setValue("Type"); // Valeur par défaut
+        cmbSortBy.setOnAction(event -> sortTransports());
     }
 
     private void loadTransports() {
@@ -45,23 +51,40 @@ public class TransportController {
         }
     }
 
-    // Fonction de recherche
     @FXML
     private void filterTransports() {
         String keyword = searchTransport.getText().toLowerCase().trim();
-        ObservableList<Transport> filteredList = FXCollections.observableArrayList();
+        List<Transport> transports = service.getAll().stream()
+                .filter(t -> t.getType_transp().toLowerCase().contains(keyword) ||
+                        t.getNom_station().toLowerCase().contains(keyword) ||
+                        t.getZone_geographique().toLowerCase().contains(keyword))
+                .toList();
 
-        for (Transport transport : service.getAll()) {
-            if (transport.getType_transp().toLowerCase().contains(keyword) ||
-                    transport.getNom_station().toLowerCase().contains(keyword) ||
-                    transport.getZone_geographique().toLowerCase().contains(keyword)) {
-                filteredList.add(transport);
-            }
+        transportDisplay.getChildren().clear();
+        for (Transport transport : transports) {
+            transportDisplay.getChildren().add(createTransportCard(transport));
+        }
+    }
+
+    @FXML
+    private void sortTransports() {
+        String sortBy = cmbSortBy.getValue();
+        if (sortBy == null) return;
+
+        List<Transport> transports = service.getAll();
+        Comparator<Transport> comparator = switch (sortBy) {
+            case "Type" -> Comparator.comparing(Transport::getType_transp);
+            case "Station" -> Comparator.comparing(Transport::getNom_station);
+            case "Zone" -> Comparator.comparing(Transport::getZone_geographique);
+            default -> null;
+        };
+
+        if (comparator != null) {
+            transports.sort(comparator);
         }
 
-        // Mise à jour de l'affichage
         transportDisplay.getChildren().clear();
-        for (Transport transport : filteredList) {
+        for (Transport transport : transports) {
             transportDisplay.getChildren().add(createTransportCard(transport));
         }
     }
@@ -134,22 +157,10 @@ public class TransportController {
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.isPresent() && result.get() == ButtonType.YES) {
-            boolean success = service.delete(transp.getId_transp());
-            if (success) {
-                loadTransports();
-                showAlert("Succès", "🚮 Transport supprimé avec succès !", Alert.AlertType.INFORMATION);
-            } else {
-                showAlert("Erreur", "❌ Échec de la suppression du transport !", Alert.AlertType.ERROR);
-            }
+            service.delete(transp.getId_transp());
+            loadTransports();
+            showAlert("Succès", "✅ Transport supprimé avec succès !", Alert.AlertType.INFORMATION);
         }
-    }
-
-    @FXML
-    private void selectTransportForEdit(Transport transp) {
-        selectedTransport = transp;
-        cmbType.setValue(transp.getType_transp());
-        txtNomStation.setText(transp.getNom_station());
-        txtZone.setText(transp.getZone_geographique());
     }
 
     @FXML
@@ -158,18 +169,6 @@ public class TransportController {
         txtNomStation.clear();
         txtZone.clear();
         selectedTransport = null;
-    }
-
-    private boolean validateFields() {
-        return !(cmbType.getValue() == null || txtNomStation.getText().isEmpty() || txtZone.getText().isEmpty());
-    }
-
-    private void showAlert(String title, String message, Alert.AlertType type) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
     @FXML
@@ -184,10 +183,32 @@ public class TransportController {
             showAlert("Erreur", "Impossible de retourner à la page d'accueil!", Alert.AlertType.ERROR);
         }
     }
+
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void selectTransportForEdit(Transport transp) {
+        if (transp == null) return;
+
+        selectedTransport = transp;
+        cmbType.setValue(transp.getType_transp());
+        txtNomStation.setText(transp.getNom_station());
+        txtZone.setText(transp.getZone_geographique());
+    }
+
+    private boolean validateFields() {
+        return !txtNomStation.getText().isEmpty() && !txtZone.getText().isEmpty();
+    }
     @FXML
     private void deleteTransport() {
         if (selectedTransport == null) {
-            showAlert("Erreur", "Veuillez sélectionner un transport à supprimer!", Alert.AlertType.ERROR);
+            showAlert("Erreur", "⚠ Veuillez sélectionner un transport à supprimer!", Alert.AlertType.ERROR);
             return;
         }
 
@@ -200,7 +221,7 @@ public class TransportController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             service.delete(selectedTransport.getId_transp());
             loadTransports();
-            showAlert("Succès", "🚮 Transport supprimé avec succès !", Alert.AlertType.INFORMATION);
+            showAlert("Succès", "✅ Transport supprimé avec succès!", Alert.AlertType.INFORMATION);
             selectedTransport = null;
         }
     }
