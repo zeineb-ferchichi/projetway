@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import tn.esprit.models.Hebergement;
 import tn.esprit.models.Reservation;
 import tn.esprit.services.HebergementService;
@@ -42,6 +43,22 @@ public class AjouterReservation implements Initializable {
         List<Hebergement> hebergements = hebergementService.getAll();
         ObservableList<Hebergement> hebergementList = FXCollections.observableArrayList(hebergements);
         comboHebergement.setItems(hebergementList);
+
+        // Convert to display only the name of the accommodation
+        comboHebergement.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(Hebergement hebergement) {
+                return (hebergement != null) ? hebergement.getNom() : "";
+            }
+
+            @Override
+            public Hebergement fromString(String string) {
+                return hebergementList.stream()
+                        .filter(h -> h.getNom().equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
     }
 
     private void loadImage() {
@@ -75,7 +92,7 @@ public class AjouterReservation implements Initializable {
         reservationService.add(reservation);
         showAlert(Alert.AlertType.INFORMATION, "Succès", "Réservation ajoutée avec succès!");
 
-        // Fermer la fenêtre après l'ajout
+        // Close the window after adding
         Stage stage = (Stage) btnAjouter.getScene().getWindow();
         stage.close();
     }
