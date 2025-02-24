@@ -5,12 +5,15 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import tn.esprit.models.Hebergement;
 import tn.esprit.models.Reservation;
 import tn.esprit.services.HebergementService;
 import tn.esprit.services.ReservationService;
 
+import java.io.File;
 import java.net.URL;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -19,6 +22,7 @@ import java.util.ResourceBundle;
 
 public class AjouterReservation implements Initializable {
 
+    @FXML private ImageView imageView;
     @FXML private TextField txtClientName;
     @FXML private DatePicker dateDebut;
     @FXML private DatePicker dateFin;
@@ -31,12 +35,23 @@ public class AjouterReservation implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadHebergements();
+        loadImage();
     }
 
     private void loadHebergements() {
         List<Hebergement> hebergements = hebergementService.getAll();
         ObservableList<Hebergement> hebergementList = FXCollections.observableArrayList(hebergements);
         comboHebergement.setItems(hebergementList);
+    }
+
+    private void loadImage() {
+        String imagePath = "C:/Users/khali/IdeaProjects/GestionHebrgement/478765722_1161037295221445_2233461229557996646_n.png";
+        File file = new File(imagePath);
+        if (file.exists()) {
+            imageView.setImage(new Image(file.toURI().toString()));
+        } else {
+            System.err.println("⚠ Image file not found at: " + imagePath);
+        }
     }
 
     @FXML
