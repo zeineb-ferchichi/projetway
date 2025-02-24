@@ -1,21 +1,28 @@
 package tn.esprit.gui;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import javafx.scene.control.cell.TextFieldListCell;
+import javafx.util.StringConverter;
+import tn.esprit.models.Hebergement;
 import tn.esprit.models.Reservation;
+import tn.esprit.services.HebergementService;
 import tn.esprit.services.ReservationService;
 
 import java.io.File;
-import java.time.Instant;
+import java.net.URL;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
+import java.util.List;
+import java.util.ResourceBundle;
 
-public class ModifierReservation {
+public class ModifierReservation implements Initializable {
 
     @FXML private ImageView imageView;
     @FXML private TextField txtClientName;
@@ -23,14 +30,39 @@ public class ModifierReservation {
     @FXML private DatePicker dateFin;
     @FXML private Button btnModifier;
     @FXML private Button btnAnnuler;
+    @FXML private ComboBox<Hebergement> comboHebergement;
 
     private final ReservationService reservationService = new ReservationService();
+    private final HebergementService hebergementService = new HebergementService();
     private Reservation reservation;
 
-    @FXML
-    public void initialize() {
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        loadHebergements();
         loadImage();
         configureDatePickers();
+    }
+
+    private void loadHebergements() {
+        List<Hebergement> hebergements = hebergementService.getAll();
+        ObservableList<Hebergement> hebergementList = FXCollections.observableArrayList(hebergements);
+        comboHebergement.setItems(hebergementList);
+
+        // Afficher uniquement le nom de l'hébergement dans le ComboBox
+        comboHebergement.setConverter(new StringConverter<Hebergement>() {
+            @Override
+            public String toString(Hebergement hebergement) {
+                return (hebergement != null) ? hebergement.getNom() : "";
+            }
+
+            @Override
+            public Hebergement fromString(String string) {
+                return hebergementList.stream()
+                        .filter(h -> h.getNom().equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
     }
 
     private void loadImage() {
@@ -70,14 +102,26 @@ public class ModifierReservation {
     public void setReservation(Reservation reservation) {
         this.reservation = reservation;
         txtClientName.setText(reservation.getClientName());
-        dateDebut.setValue(convertToLocalDate(reservation.getDateDebut()));
-        dateFin.setValue(convertToLocalDate(reservation.getDateFin()));
+
+        // Explicitly convert java.util.Date to java.sql.Date for conversion to LocalDate
+        java.sql.Date dateDebutSql = new java.sql.Date(reservation.getDateDebut().getTime());
+        java.sql.Date dateFinSql = new java.sql.Date(reservation.getDateFin().getTime());
+
+        // Convert java.sql.Date to LocalDate
+        dateDebut.setValue(convertToLocalDate(dateDebutSql));
+        dateFin.setValue(convertToLocalDate(dateFinSql));
+
+        // Pré-sélectionner l'hébergement associé à la réservation
+        hebergementService.getAll().stream()
+                .filter(h -> h.getId() == reservation.getHebergementId())
+                .findFirst()
+                .ifPresent(comboHebergement::setValue);
     }
 
     @FXML
     private void modifierReservation() {
         if (reservation != null) {
-            if (txtClientName.getText().isEmpty() || dateDebut.getValue() == null || dateFin.getValue() == null) {
+            if (txtClientName.getText().isEmpty() || dateDebut.getValue() == null || dateFin.getValue() == null || comboHebergement.getValue() == null) {
                 showAlert("Champs manquants", "Veuillez remplir tous les champs.");
                 return;
             }
@@ -90,6 +134,7 @@ public class ModifierReservation {
             reservation.setClientName(txtClientName.getText());
             reservation.setDateDebut(convertToDate(dateDebut.getValue()));
             reservation.setDateFin(convertToDate(dateFin.getValue()));
+            reservation.setHebergementId(comboHebergement.getValue().getId());
 
             reservationService.update(reservation);
             showAlert("Succès", "Réservation modifiée avec succès !");
@@ -112,8 +157,8 @@ public class ModifierReservation {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
-    private Date convertToDate(LocalDate localDate) {
-        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    private java.sql.Date convertToDate(LocalDate localDate) {
+        return java.sql.Date.valueOf(localDate); // Correct conversion from LocalDate to java.sql.Date
     }
 
     private void showAlert(String title, String content) {
