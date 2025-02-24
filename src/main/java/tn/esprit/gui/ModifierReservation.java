@@ -5,6 +5,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.scene.control.cell.TextFieldListCell;
 import tn.esprit.models.Reservation;
 import tn.esprit.services.ReservationService;
 
@@ -29,6 +30,7 @@ public class ModifierReservation {
     @FXML
     public void initialize() {
         loadImage();
+        configureDatePickers();
     }
 
     private void loadImage() {
@@ -41,6 +43,30 @@ public class ModifierReservation {
         }
     }
 
+    private void configureDatePickers() {
+        // Empêcher la sélection de dates passées pour dateDebut
+        dateDebut.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                setDisable(empty || date.isBefore(LocalDate.now()));
+            }
+        });
+
+        // Empêcher la sélection d'une date de fin avant la date de début
+        dateDebut.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                dateFin.setDayCellFactory(picker -> new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate date, boolean empty) {
+                        super.updateItem(date, empty);
+                        setDisable(empty || date.isBefore(newValue.plusDays(1))); // Date fin doit être après date début
+                    }
+                });
+            }
+        });
+    }
+
     public void setReservation(Reservation reservation) {
         this.reservation = reservation;
         txtClientName.setText(reservation.getClientName());
@@ -51,6 +77,16 @@ public class ModifierReservation {
     @FXML
     private void modifierReservation() {
         if (reservation != null) {
+            if (txtClientName.getText().isEmpty() || dateDebut.getValue() == null || dateFin.getValue() == null) {
+                showAlert("Champs manquants", "Veuillez remplir tous les champs.");
+                return;
+            }
+
+            if (dateDebut.getValue().isAfter(dateFin.getValue())) {
+                showAlert("Date invalide", "La date de début doit être avant la date de fin.");
+                return;
+            }
+
             reservation.setClientName(txtClientName.getText());
             reservation.setDateDebut(convertToDate(dateDebut.getValue()));
             reservation.setDateFin(convertToDate(dateFin.getValue()));
