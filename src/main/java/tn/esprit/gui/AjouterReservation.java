@@ -37,6 +37,7 @@ public class AjouterReservation implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadHebergements();
         loadImage();
+        configureDatePickers();
     }
 
     private void loadHebergements() {
@@ -44,7 +45,7 @@ public class AjouterReservation implements Initializable {
         ObservableList<Hebergement> hebergementList = FXCollections.observableArrayList(hebergements);
         comboHebergement.setItems(hebergementList);
 
-        // Convert to display only the name of the accommodation
+        // Afficher uniquement le nom de l'hébergement dans le ComboBox
         comboHebergement.setConverter(new StringConverter<>() {
             @Override
             public String toString(Hebergement hebergement) {
@@ -71,6 +72,30 @@ public class AjouterReservation implements Initializable {
         }
     }
 
+    private void configureDatePickers() {
+        // Empêcher la sélection de dates passées pour dateDebut
+        dateDebut.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                setDisable(empty || date.isBefore(LocalDate.now()));
+            }
+        });
+
+        // Empêcher la sélection d'une date de fin avant la date de début
+        dateDebut.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                dateFin.setDayCellFactory(picker -> new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate date, boolean empty) {
+                        super.updateItem(date, empty);
+                        setDisable(empty || date.isBefore(newValue.plusDays(1))); // Date fin doit être après date début
+                    }
+                });
+            }
+        });
+    }
+
     @FXML
     private void ajouterReservation() {
         String clientName = txtClientName.getText();
@@ -92,7 +117,7 @@ public class AjouterReservation implements Initializable {
         reservationService.add(reservation);
         showAlert(Alert.AlertType.INFORMATION, "Succès", "Réservation ajoutée avec succès!");
 
-        // Close the window after adding
+        // Fermer la fenêtre après l'ajout
         Stage stage = (Stage) btnAjouter.getScene().getWindow();
         stage.close();
     }
