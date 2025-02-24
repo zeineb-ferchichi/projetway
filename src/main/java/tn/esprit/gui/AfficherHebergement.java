@@ -115,6 +115,13 @@ public class AfficherHebergement {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterHebergement.fxml"));
             Scene scene = new Scene(loader.load());
 
+            // Get the controller of the new scene
+            AjouterHebergement controller = loader.getController();
+
+            // Pass the TableView reference to the new controller
+            controller.setHebergementTableView(listHebergements);
+
+            // Show the stage
             Stage newStage = new Stage();
             newStage.setTitle("Ajouter un Hébergement");
             newStage.setScene(scene);

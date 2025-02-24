@@ -1,5 +1,7 @@
 package tn.esprit.gui;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -19,6 +21,7 @@ public class AjouterHebergement {
     @FXML private TextField txtPays;
     @FXML private TextField txtCapacite;
     @FXML private TextField txtPrix;
+    @FXML private TableView<Hebergement> hebergementTableView;  // Reference to TableView
 
     private final HebergementService service = new HebergementService();
 
@@ -55,8 +58,14 @@ public class AjouterHebergement {
                     prix
             );
 
+            // Add the new 'Hebergement' using the service
             service.add(hebergement);
             showAlert("Succès", "Hébergement ajouté avec succès!", Alert.AlertType.INFORMATION);
+
+            // Refresh the 'Hebergement' list in the TableView
+            refreshHebergementTable();
+
+            // Clear fields after adding
             clearFields();
 
         } catch (NumberFormatException e) {
@@ -100,5 +109,16 @@ public class AjouterHebergement {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    // Method to refresh the TableView
+    private void refreshHebergementTable() {
+        ObservableList<Hebergement> hebergementList = FXCollections.observableArrayList(service.getAll());
+        hebergementTableView.setItems(hebergementList);
+    }
+
+    // Setter for TableView reference
+    public void setHebergementTableView(TableView<Hebergement> tableView) {
+        this.hebergementTableView = tableView;
     }
 }
