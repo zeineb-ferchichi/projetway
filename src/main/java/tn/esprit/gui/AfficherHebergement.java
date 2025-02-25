@@ -15,6 +15,7 @@ import tn.esprit.services.HebergementService;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AfficherHebergement {
 
@@ -31,6 +32,8 @@ public class AfficherHebergement {
 
     @FXML private Button btnAjouter;
     @FXML private Button btnRefresh;
+    @FXML private TextField searchField; // Ajout du champ de recherche
+    @FXML private Button searchButton; // Bouton de recherche
 
     private final HebergementService hebergementService = new HebergementService();
 
@@ -41,10 +44,10 @@ public class AfficherHebergement {
             return;
         }
 
-        // Load Image for UI
+        // Charger l'image d'en-tête
         loadImage();
 
-        // Bind columns to Hebergement properties
+        // Liaison des colonnes aux propriétés des objets Hebergement
         nomCol.setCellValueFactory(new PropertyValueFactory<>("nom"));
         typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
         adresseCol.setCellValueFactory(new PropertyValueFactory<>("adresse"));
@@ -53,7 +56,7 @@ public class AfficherHebergement {
         capaciteCol.setCellValueFactory(new PropertyValueFactory<>("capacite"));
         prixCol.setCellValueFactory(new PropertyValueFactory<>("prix"));
 
-        // Add "Modifier" and "Supprimer" buttons to each row
+        // Ajout des boutons Modifier et Supprimer
         actionsCol.setCellFactory(col -> new TableCell<>() {
             private final Button deleteButton = new Button("🗑 Supprimer");
             private final Button editButton = new Button("✏ Modifier");
@@ -85,8 +88,11 @@ public class AfficherHebergement {
             }
         });
 
-        // Load initial data
+        // Charger la liste des hébergements
         loadHebergements();
+
+        // Ajouter l'action de recherche
+        searchButton.setOnAction(event -> handleSearch());
     }
 
     private void loadImage() {
@@ -105,9 +111,25 @@ public class AfficherHebergement {
         listHebergements.getItems().addAll(hebergements);
     }
 
+    @FXML
+    private void handleSearch() {
+        String searchText = searchField.getText().trim().toLowerCase();
+        if (searchText.isEmpty()) {
+            loadHebergements(); // Recharger tous les hébergements si le champ est vide
+            return;
+        }
+
+        List<Hebergement> filteredList = hebergementService.getAll().stream()
+                .filter(h -> h.getPays().toLowerCase().contains(searchText))
+                .collect(Collectors.toList());
+
+        listHebergements.getItems().clear();
+        listHebergements.getItems().addAll(filteredList);
+    }
+
     private void deleteHebergement(Hebergement hebergement) {
-        hebergementService.delete(hebergement.getId()); // Delete the Hebergement
-        loadHebergements(); // Refresh the list
+        hebergementService.delete(hebergement.getId()); // Supprimer l'hébergement
+        loadHebergements(); // Rafraîchir la liste
     }
 
     private void openModifierHebergement(Hebergement hebergement) {
@@ -116,7 +138,6 @@ public class AfficherHebergement {
             Scene scene = new Scene(loader.load());
 
             ModifierHebergement controller = loader.getController();
-            // Pass the TableView reference and a callback to refresh the list
             controller.setHebergement(hebergement, listHebergements, this::refreshHebergements);
 
             Stage newStage = new Stage();
@@ -129,7 +150,7 @@ public class AfficherHebergement {
     }
 
     private void refreshHebergements() {
-        loadHebergements(); // Reload all the Hebergements from the service
+        loadHebergements();
     }
 
     @FXML
@@ -138,9 +159,8 @@ public class AfficherHebergement {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterHebergement.fxml"));
             Scene scene = new Scene(loader.load());
 
-            // Pass the TableView reference to the new controller
             AjouterHebergement ajouterController = loader.getController();
-            ajouterController.setHebergementTableView(listHebergements); // Pass the TableView here
+            ajouterController.setHebergementTableView(listHebergements);
 
             Stage newStage = new Stage();
             newStage.setTitle("Ajouter un Hébergement");
