@@ -188,7 +188,6 @@ public class AdminController implements Initializable {
                 .append("Email: ").append(user.getGmail() != null ? user.getGmail() : "Non défini").append("\n")
                 .append("Identifiant: ").append(user.getIdentifiant() != null ? user.getIdentifiant() : "Non défini").append("\n")
                 .append("Rôle: ").append(user.getRole() != null ? user.getRole() : "Non défini").append("\n")
-                .append("Mot de passe: ").append(user.getMotdepasse() != null ? "********" : "Non défini").append("\n")
                 .append("Image: ").append(user.getImage() != null ? user.getImage() : "Non définie").append("\n")
                 .append("Ban: ").append(user.getBan() != null ? user.getBan() : "Non défini");
 

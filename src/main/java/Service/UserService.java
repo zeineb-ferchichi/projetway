@@ -197,8 +197,8 @@ public class UserService implements IService<User> {
 
 
         // Vérifier que le rôle est valide
-        if (user.getRole() == null || !(user.getRole().equalsIgnoreCase("directeur") || user.getRole().equalsIgnoreCase("employe"))) {
-            afficherAlerte("Erreur de validation", "Le rôle doit être 'directeur' ou 'employé' !");
+        if (user.getRole() == null || !(user.getRole().equalsIgnoreCase("directeur") || user.getRole().equalsIgnoreCase("employe") || user.getRole().equalsIgnoreCase("admin"))) {
+            afficherAlerte("Erreur de validation", "Le rôle doit être 'directeur' ou 'employe' ou 'admin'  !");
             return false;
         }
 

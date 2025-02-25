@@ -35,7 +35,6 @@
                     <!-- Vue par défaut : Ajout de note de frais -->
             <VBox fx:id="ajoutNoteFraisPane" alignment="CENTER" spacing="10">
                         <Label text="Ajout de Note de Frais" styleClass="title"/>
-                        <TextField fx:id="tfId" promptText="Id" styleClass="text-field"/>
                         <TextField fx:id="tfNomActivite" promptText="Nom de l'activité" styleClass="text-field"/>
                         <TextArea fx:id="tfDescription" promptText="Description" styleClass="text-field"/>
                         <Button text="Sélectionner une image" onAction="#choisirFacture" styleClass="button-create"/>

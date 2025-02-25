@@ -155,7 +155,7 @@ public class EmployeController {
             afficherAlerte("Veuillez sélectionner un utilisateur avant d'ajouter une note de frais.");
             return;
         }
-        int Id = Integer.parseInt(tfId.getText().trim());
+
         String nomActivite = tfNomActivite.getText().trim();
         String description = tfDescription.getText().trim();
 
@@ -164,7 +164,7 @@ public class EmployeController {
             return;
         }
 
-        Notedefrait nouvelleNote = new Notedefrait(Id,nomActivite, description, selectedFacturePath, currentUser.getId());
+        Notedefrait nouvelleNote = new Notedefrait(nomActivite, description, selectedFacturePath, currentUser.getId());
         notedefraitService.insert(nouvelleNote);
         loadNotesFrais();
         clearFields();
@@ -312,7 +312,7 @@ public class EmployeController {
     }
 
     private void clearFields() {
-        tfId.clear();
+
         tfNomActivite.clear();
         tfDescription.clear();
         selectedFacturePath = null;
@@ -346,7 +346,7 @@ public class EmployeController {
             if (profileUserName != null) profileUserName.setText(user.getNom());
             if (profileUserPrenom != null) profileUserPrenom.setText(user.getPrenom());
             if (profileUserGmail != null) profileUserGmail.setText(user.getGmail());
-            if (profileUserMotdepasse != null) profileUserMotdepasse.setText(user.getMotdepasse());
+
             if (currentUserName != null) {
                 currentUserName.setText(user.getNom());
             }
@@ -489,14 +489,15 @@ public class EmployeController {
         currentUser.setPrenom(profileUserPrenom.getText());
         currentUser.setGmail(profileUserGmail.getText());
 
-        // Mise à jour du mot de passe uniquement s'il est renseigné
+        // Mise à jour du mot de passe uniquement si le champ est rempli
         String newPassword = profileUserMotdepasse.getText();
-        if (!newPassword.isEmpty()) {
+        if (newPassword != null && !newPassword.trim().isEmpty()) {
             String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
             currentUser.setMotdepasse(hashedPassword);
         }
+        // Sinon, le mot de passe reste inchangé
 
-        // Appel à la méthode de validation
+        // Vérifier que les autres informations utilisateur sont valides
         if (!userService.validateUser(currentUser)) {
             return;
         }
@@ -514,6 +515,7 @@ public class EmployeController {
             currentUserImage.setImage(new Image("file:" + currentUser.getImage()));
         }
     }
+
 
 
 
