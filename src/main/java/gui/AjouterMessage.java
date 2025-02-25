@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import models.Forum;
 import models.Message;
+import okhttp3.*;
+import org.json.JSONObject;
 import services.MessageService;
 import services.ForumService;
 
@@ -46,7 +48,7 @@ public class AjouterMessage {
     private final MessageService messageService = new MessageService();
     private final ForumService forumService = new ForumService();
     private int forumId; // Stocke l'ID du forum sélectionné
-
+    private static final String API_KEY = "AIzaSyChr4M6I2yRTS3hArYsm4DjJTEi1wYi2Xc";
     @FXML
     public void initialize() {
 
@@ -104,7 +106,7 @@ public class AjouterMessage {
     // Ajoute un nouveau message et met à jour l'affichage
     private void ajouterMessage() {
         String contenu = messageInput.getText().trim();
-
+       contenu= isContentInappropriate(contenu);
         // Vérification si le contenu du message est non vide
         if (!contenu.isEmpty()) {
             // Vérification si le forum existe avant d'ajouter le message
@@ -221,5 +223,59 @@ public class AjouterMessage {
      forumBox.getChildren().add(contentLabel);
      tilePane.getChildren().add(forumBox);
  }
+    private String isContentInappropriate(String text) {
+        OkHttpClient client = new OkHttpClient();
+        String apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + API_KEY;
+
+        JSONObject requestBody = new JSONObject();
+        JSONObject content = new JSONObject();
+        String prompt = "Analyze the following text and replace any hate speech, profanity, or offensive words with '*****'. "
+                + "Ensure that only harmful words are censored while keeping the sentence structure intact. "
+                + "Return only the modified text.\n\n"
+                + "Text: " + text;
+        content.put("text", prompt);
+
+        JSONObject contents = new JSONObject();
+        contents.put("parts", new org.json.JSONArray().put(content));
+
+        requestBody.put("contents", new org.json.JSONArray().put(contents));
+
+        RequestBody body = RequestBody.create(
+                requestBody.toString(),
+                MediaType.get("application/json; charset=utf-8")
+        );
+
+        Request request = new Request.Builder()
+                .url(apiUrl)
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
+            JSONObject jsonResponse = new JSONObject(response.body().string());
+            String sanitizedText = jsonResponse
+                    .getJSONArray("candidates")
+                    .getJSONObject(0)
+                    .getJSONObject("content")
+                    .getJSONArray("parts")
+                    .getJSONObject(0)
+                    .getString("text")
+                    .trim();
+
+            return sanitizedText;
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur de vérification AI : " + e.getMessage());
+            return text;
+        }
+    }
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
 }

@@ -131,6 +131,10 @@ public class AfficherMessage {
             stage.setScene(new Scene(root));
             stage.setTitle("Modifier Message");
             stage.show();
+            stage.setOnHiding(event -> {
+                afficherMessages();
+
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -222,4 +226,5 @@ public class AfficherMessage {
         alert.showAndWait();
         e.printStackTrace();
     }
+
 }
