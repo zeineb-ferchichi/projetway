@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import services.TransportService;
 import models.Transport;
 import util.WindowsNotificationUtil;
+import services.PDFExportTransportService;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -253,5 +254,14 @@ public class TransportController {
             showAlert("Erreur", "⚠ Sélectionnez un transport à supprimer!", Alert.AlertType.ERROR);
         }
     }
+    @FXML
+    private void exportTransportsPDF() {
+        String filePath = System.getProperty("user.home") + "/Desktop/Transports.pdf";
+        PDFExportTransportService.exportTransportsToPDF(service.getAll(), filePath);
+
+        showAlert("Export PDF", "Le fichier PDF des transports a été généré sur le Bureau.", Alert.AlertType.INFORMATION);
+    }
+
+
 
 }

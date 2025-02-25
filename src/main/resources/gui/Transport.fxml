@@ -21,6 +21,8 @@
         <Label text="Gestion des Transports"
                style="-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;"/>
     </HBox>
+    <Button text="Exporter PDF" onAction="#exportTransportsPDF"
+            style="-fx-background-color: #43A047; -fx-text-fill: white;"/>
 
     <!-- Barre de recherche et tri -->
     <HBox spacing="10">

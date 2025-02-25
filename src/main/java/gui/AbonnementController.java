@@ -1,4 +1,5 @@
 package gui;
+import services.PDFExportAbonnementService;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -284,6 +285,15 @@ public class AbonnementController {
 
         return true;
     }
+
+    @FXML
+    private void exportAbonnementsPDF() {
+        String filePath = System.getProperty("user.home") + "/Desktop/Abonnements.pdf";
+        PDFExportAbonnementService.exportAbonnementsToPDF(service.getAll(), filePath);
+
+        showAlert("Export PDF", "Le fichier PDF a été généré sur le Bureau.", Alert.AlertType.INFORMATION);
+    }
+
 
 
 }

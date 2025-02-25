@@ -39,6 +39,18 @@
             <version>${javafx.version}</version>
         </dependency>
 
+        <!-- iText7 pour l'exportation PDF -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>kernel</artifactId>
+            <version>7.1.15</version>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>layout</artifactId>
+            <version>7.1.15</version>
+        </dependency>
+
         <!-- MySQL Connector -->
         <dependency>
             <groupId>com.mysql</groupId>
@@ -78,6 +90,10 @@
             <id>central</id>
             <url>https://repo.maven.apache.org/maven2</url>
         </repository>
+        <repository>
+            <id>itextpdf</id>
+            <url>https://maven.itextpdf.com</url>
+        </repository>
     </repositories>
 
     <build>
@@ -98,6 +114,7 @@
                 <configuration>
                     <source>17</source>
                     <target>17</target>
+                    <release>17</release>
                 </configuration>
             </plugin>
 

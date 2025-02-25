@@ -22,6 +22,10 @@
                style="-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;"/>
     </HBox>
 
+    <Button text="Exporter PDF" onAction="#exportAbonnementsPDF"
+            style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+
+
     <HBox spacing="10">
         <TextField fx:id="searchAbonnement" promptText="Rechercher un abonnement..."
                    onKeyReleased="#filterAbonnements"
