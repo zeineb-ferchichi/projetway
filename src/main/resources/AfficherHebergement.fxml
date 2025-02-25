@@ -1,38 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.geometry.Pos?>
+<?import javafx.geometry.Insets?>
 
-<VBox xmlns="http://javafx.com/javafx"
+<HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="tn.esprit.gui.AfficherHebergement"
-      spacing="15" alignment="CENTER"
-      style="-fx-padding: 20; -fx-background-color: #f9f9f9;">
+      alignment="CENTER"
+      style="-fx-background-color: #F8F9FA; -fx-padding: 20;">
 
-    <!-- Buttons Section (Top) -->
-    <HBox alignment="CENTER" spacing="10">
-        <Button fx:id="btnAjouter" text="➕ Ajouter un Hébergement" onAction="#handleAjouterHebergement"
-                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px 15px; -fx-font-weight: bold;"/>
-        <Button fx:id="btnRefresh" text="🔄 Actualiser" onAction="#handleRefresh"
-                style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10px 15px; -fx-font-weight: bold;"/>
-    </HBox>
+    <!-- Left side: Image -->
+    <ImageView fx:id="imageView" fitWidth="300" preserveRatio="true"/>
 
-    <!-- Table Section -->
-    <TableView fx:id="listHebergements" style="-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-font-size: 14px;">
-        <columns>
-            <TableColumn fx:id="nomCol" text="Nom" />
-            <TableColumn fx:id="typeCol" text="Type" />
-            <TableColumn fx:id="adresseCol" text="Adresse" />
-            <TableColumn fx:id="villeCol" text="Ville" />
-            <TableColumn fx:id="paysCol" text="Pays" />
-            <TableColumn fx:id="capaciteCol" text="Capacité" />
-            <TableColumn fx:id="prixCol" text="Prix DT" />
-            <TableColumn fx:id="actionsCol" text="Actions" /> <!-- ✅ Added this column -->
-        </columns>
-    </TableView>
+    <!-- Right side: Table and Buttons -->
+    <VBox spacing="20" alignment="CENTER"
+          style="-fx-padding: 40; -fx-background-color: white; -fx-background-radius: 10;
+                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 5);">
 
-    <!-- Action Buttons (Below the Table) -->
+        <Label text="Liste des Hébergements"
+               style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #0D47A1;"/>
 
+        <HBox alignment="CENTER" spacing="10">
+            <Button fx:id="btnAjouter" text="➕ Ajouter un Hébergement" onAction="#handleAjouterHebergement"
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px;
+                           -fx-padding: 10px 15px; -fx-font-weight: bold;"/>
+            <Button fx:id="btnRefresh" text="🔄 Actualiser" onAction="#handleRefresh"
+                    style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 14px;
+                           -fx-padding: 10px 15px; -fx-font-weight: bold;"/>
+        </HBox>
 
-</VBox>
+        <TableView fx:id="listHebergements" style="-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-font-size: 14px;">
+            <columns>
+                <TableColumn fx:id="nomCol" text="Nom" />
+                <TableColumn fx:id="typeCol" text="Type" />
+                <TableColumn fx:id="adresseCol" text="Adresse" />
+                <TableColumn fx:id="villeCol" text="Ville" />
+                <TableColumn fx:id="paysCol" text="Pays" />
+                <TableColumn fx:id="capaciteCol" text="Capacité" />
+                <TableColumn fx:id="prixCol" text="Prix DT" />
+                <TableColumn fx:id="actionsCol" text="Actions" />
+            </columns>
+        </TableView>
+    </VBox>
+</HBox>

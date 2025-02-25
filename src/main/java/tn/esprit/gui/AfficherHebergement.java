@@ -5,11 +5,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import tn.esprit.models.Hebergement;
 import tn.esprit.services.HebergementService;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -24,6 +27,7 @@ public class AfficherHebergement {
     @FXML private TableColumn<Hebergement, Integer> capaciteCol;
     @FXML private TableColumn<Hebergement, Double> prixCol;
     @FXML private TableColumn<Hebergement, Void> actionsCol;
+    @FXML private ImageView imageView;
 
     @FXML private Button btnAjouter;
     @FXML private Button btnRefresh;
@@ -33,9 +37,12 @@ public class AfficherHebergement {
     @FXML
     public void initialize() {
         if (listHebergements == null) {
-            System.out.println("Error: listHebergements is null. Check FXML fx:id!");
+            System.err.println("Error: listHebergements is null. Check FXML fx:id!");
             return;
         }
+
+        // Load Image for UI
+        loadImage();
 
         // Bind columns to Hebergement properties
         nomCol.setCellValueFactory(new PropertyValueFactory<>("nom"));
@@ -78,7 +85,18 @@ public class AfficherHebergement {
             }
         });
 
+        // Load initial data
         loadHebergements();
+    }
+
+    private void loadImage() {
+        String imagePath = "C:/Users/khali/IdeaProjects/GestionHebrgement/478765722_1161037295221445_2233461229557996646_n.png";
+        File file = new File(imagePath);
+        if (file.exists()) {
+            imageView.setImage(new Image(file.toURI().toString()));
+        } else {
+            System.err.println("⚠ Image file not found at: " + imagePath);
+        }
     }
 
     private void loadHebergements() {
