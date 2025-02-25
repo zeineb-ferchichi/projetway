@@ -76,6 +76,10 @@ public class signIn {
 
     @FXML
     private void handleSignIn(ActionEvent event) {
+        // Affichage des valeurs saisies pour le débogage
+        System.out.println("Identifiant saisi : '" + identifiantField.getText().trim() + "'");
+        System.out.println("Mot de passe saisi : '" + passwordField.getText().trim() + "'");
+
         String identifiant = identifiantField.getText().trim();
         String password = passwordField.getText().trim();
 
@@ -94,6 +98,11 @@ public class signIn {
                 user = u;
                 break;
             }
+        }
+
+        // Maintenant que 'user' est défini, on peut afficher le hash
+        if (user != null) {
+            System.out.println("Hash du mot de passe en base : " + user.getMotdepasse());
         }
 
         if (user == null) {
@@ -115,6 +124,7 @@ public class signIn {
             showAlert(Alert.AlertType.ERROR, "Échec de connexion", "Identifiant ou mot de passe invalide.");
         }
     }
+
 
 
 

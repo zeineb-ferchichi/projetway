@@ -30,6 +30,7 @@
             <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="300">
                 <Hyperlink onAction="#showUserList" text="listeUser" styleClass="listeUser" />
                 <Hyperlink onAction="#showAdminList" text="listeAdmin" styleClass="listeAdmin" />
+                <Hyperlink onAction="#openProfileWindow" text="Profile" styleClass="listeAdmin" />
             </VBox>
 
             <!-- Informations et actions sur l'utilisateur courant -->

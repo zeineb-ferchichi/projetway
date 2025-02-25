@@ -1,36 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="gui.AdminController" stylesheets="/style.css">
+      fx:controller="gui.EmployeController" stylesheets="@style.css" spacing="20" alignment="CENTER">
 
     <HBox spacing="30" styleClass="root">
 
-        <!-- Sidebar -->
-        <VBox alignment="CENTER" prefWidth="300" styleClass="sidebar">
-            <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="300">
-                <!-- Contenu éventuel -->
-            </VBox>
+        <VBox spacing="20" prefWidth="250" alignment="CENTER" styleClass="profile-pane">
 
-            <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="300">
+            <!-- Image Profil -->
+            <VBox alignment="CENTER" spacing="10" prefHeight="120" prefWidth="250">
 
             </VBox>
 
-            <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="300">
-                <ImageView fx:id="currentUserImage" fitHeight="100" fitWidth="100" styleClass="user-image"/>
-                <Label fx:id="currentUserName" text="Nom Admin" styleClass="user-name"/>
-                <Label fx:id="currentUserRole" text="Rôle Employe" styleClass="user-role"/>
-                <Button text="Log out" onAction="#handleSignIn" styleClass="logout-button"/>
+            <!-- Formulaire -->
+            <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="250">
+                <ImageView fx:id="currentUserImage" styleClass="image-vi" fitWidth="60" fitHeight="60"/>
+                <Label text="Nom:"/>
+                <TextField fx:id="profileUserName" style="-fx-pref-width: 200px;
+                  -fx-padding: 10px;
+                  -fx-background-radius: 20;
+                  -fx-border-radius: 20;
+                  -fx-border-width: 0;
+                  -fx-font-size: 14px;" maxWidth="200"/>
+
+                <Label text="Prénom:"/>
+                <TextField fx:id="profileUserPrenom" style="-fx-pref-width: 200px;
+                  -fx-padding: 10px;
+                  -fx-background-radius: 20;
+                  -fx-border-radius: 20;
+                  -fx-border-width: 0;
+                  -fx-font-size: 14px;" maxWidth="200"/>
+
+                <Label text="Email:"/>
+                <TextField fx:id="profileUserGmail"
+                           style="-fx-pref-width: 200px;
+                  -fx-padding: 10px;
+                  -fx-background-radius: 20;
+                  -fx-border-radius: 20;
+                  -fx-border-width: 0;
+                  -fx-font-size: 14px;"
+                           maxWidth="200"/>
+
+
+                <Label text="Mot de passe:"/>
+                <PasswordField fx:id="profileUserMotdepasse" styleClass="password-field" maxWidth="200"/>
+
+
+                <Button text="Changer l'image" styleClass="button-image" onAction="#handleChangeImage"/>
+                <Button text="Enregistrer les modifications" styleClass="button-modify" onAction="#handleUpdateCurrentUser"/>
             </VBox>
+
+            <VBox alignment="CENTER" spacing="10" prefHeight="20" prefWidth="250">
+
+            </VBox>
+
         </VBox>
-
-
-
     </HBox>
 </VBox>

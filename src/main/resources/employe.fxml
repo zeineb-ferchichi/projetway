@@ -28,14 +28,14 @@
             </VBox>
 
             <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="300">
-                <Hyperlink onAction="#ajouterNoteFrait" text="Gerer note de frait" styleClass="listeUser" />
+                <Hyperlink onAction="#ajouterNoteFrait" text="Gerer note de frai" styleClass="listeUser" />
                 <Hyperlink onAction="#afficherProfil" text="Profil" styleClass="listeAdmin" />
             </VBox>
 
             <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="300">
                 <ImageView fx:id="currentUserImage" fitHeight="100" fitWidth="100" styleClass="user-image"/>
                 <Label fx:id="currentUserName" text="Nom Admin" styleClass="user-name"/>
-                <Label fx:id="currentUserRole" text="Rôle Employe" styleClass="user-role"/>
+                <Label  text="Rôle Employe" styleClass="user-role"/>
                 <Button text="Log out" onAction="#handleSignIn" styleClass="logout-button"/>
             </VBox>
         </VBox>

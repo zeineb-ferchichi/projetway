@@ -45,6 +45,7 @@ public class AdminController implements Initializable {
     @FXML
     private Label currentUserName;
 
+
     private final UserService userService = new UserService();
     private User selectedUser = null;
     private User currentUser; // L'utilisateur connecté
@@ -268,7 +269,7 @@ public class AdminController implements Initializable {
             afficherUsers();
         }
 
-        showAlert("Utilisateur mis à jour avec succès !");
+
         clearFields();
     }
 
@@ -385,14 +386,31 @@ public class AdminController implements Initializable {
     }
     private void clearFields() {
 
-
-
-
          userRole.clear();
          userBan.clear();
          userImage.setImage(null);
         selectedUser = null;
     }
+
+    @FXML
+    private void openProfileWindow(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Profil.fxml"));
+        Parent root = loader.load();
+
+        // Récupérer le contrôleur du Profile
+        EmployeController profileController = loader.getController();
+
+        // Passer le currentUser au contrôleur du Profile
+        profileController.setCurrentUser(currentUser);
+
+        Stage profileStage = new Stage();
+        profileStage.setScene(new Scene(root));
+        profileStage.setTitle("Profile");
+        profileStage.show();
+    }
+
+
+
 
 
 }

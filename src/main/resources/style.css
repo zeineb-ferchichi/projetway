@@ -316,3 +316,37 @@
 .button-back:pressed {
     -fx-background-color: #cc0000;
 }
+
+
+
+.profile-pane {
+    -fx-background-image: url("/img/hh.png");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+
+}
+
+.profile-pane Label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+}
+
+.profile-pane TextField {
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+.image-vi {
+    -fx-background-radius: 50%;
+    -fx-border-radius: 50%;
+    -fx-border-color: white;
+    -fx-border-width: 2px;
+}
+
+
+
+
+
