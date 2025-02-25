@@ -19,13 +19,10 @@ public class HebergementService implements IService<Hebergement> {
         }
     }
 
-
-
     @Override
     public void add(Hebergement hebergement) {
         String SQL = "INSERT INTO Hebergement (nom, type, adresse, ville, pays, capacite, prix) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        // Ensure the connection is not null
         if (conn == null) {
             System.out.println("Error: Connection is null.");
             return;
@@ -48,7 +45,7 @@ public class HebergementService implements IService<Hebergement> {
             }
         } catch (SQLException e) {
             System.out.println("Error adding Hebergement: " + e.getMessage());
-            e.printStackTrace();  // Print the full exception stack trace for better debugging
+            e.printStackTrace();
         }
     }
 
@@ -56,7 +53,6 @@ public class HebergementService implements IService<Hebergement> {
     public void update(Hebergement hebergement) {
         String SQL = "UPDATE Hebergement SET nom = ?, type = ?, adresse = ?, ville = ?, pays = ?, capacite = ?, prix = ? WHERE id = ?";
 
-        // Ensure the connection is valid
         if (conn == null) {
             System.out.println("Error: Connection is null.");
             return;
@@ -69,7 +65,7 @@ public class HebergementService implements IService<Hebergement> {
             pstmt.setString(4, hebergement.getVille());
             pstmt.setString(5, hebergement.getPays());
             pstmt.setInt(6, hebergement.getCapacite());
-            pstmt.setInt(7, hebergement.getPrix());
+            pstmt.setDouble(7, hebergement.getPrix());  // Correction ici
             pstmt.setInt(8, hebergement.getId());
 
             int rowsUpdated = pstmt.executeUpdate();
@@ -87,7 +83,6 @@ public class HebergementService implements IService<Hebergement> {
     public void delete(int id) {
         String SQL = "DELETE FROM Hebergement WHERE id = ?";
 
-        // Ensure the connection is valid
         if (conn == null) {
             System.out.println("Error: Connection is null.");
             return;
@@ -112,7 +107,6 @@ public class HebergementService implements IService<Hebergement> {
         String SQL = "SELECT * FROM Hebergement";
         List<Hebergement> hebergementList = new ArrayList<>();
 
-        // Ensure the connection is valid
         if (conn == null) {
             System.out.println("Error: Connection is null.");
             return hebergementList;
@@ -138,5 +132,40 @@ public class HebergementService implements IService<Hebergement> {
             System.out.println("Error fetching Hebergements: " + e.getMessage());
         }
         return hebergementList;
+    }
+
+    /**
+     * Méthode ajoutée pour récupérer un hébergement par ID.
+     * @param id l'identifiant de l'hébergement
+     * @return l'objet Hebergement correspondant, ou null s'il n'existe pas
+     */
+    public Hebergement getById(int id) {
+        String SQL = "SELECT * FROM Hebergement WHERE id = ?";
+
+        if (conn == null) {
+            System.out.println("Error: Connection is null.");
+            return null;
+        }
+
+        try (PreparedStatement pstmt = conn.prepareStatement(SQL)) {
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return new Hebergement(
+                        rs.getInt("id"),
+                        rs.getString("nom"),
+                        rs.getString("type"),
+                        rs.getString("adresse"),
+                        rs.getString("ville"),
+                        rs.getString("pays"),
+                        rs.getInt("capacite"),
+                        rs.getInt("prix")
+                );
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching Hebergement by ID: " + e.getMessage());
+        }
+        return null;
     }
 }

@@ -7,7 +7,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import tn.esprit.models.Hebergement;
 import tn.esprit.models.Reservation;
+import tn.esprit.services.HebergementService;
 import tn.esprit.services.ReservationService;
 
 import java.io.IOException;
@@ -21,19 +23,26 @@ public class AfficherReservation implements Initializable {
     @FXML private TableColumn<Reservation, String> clientCol;
     @FXML private TableColumn<Reservation, String> dateDebutCol;
     @FXML private TableColumn<Reservation, String> dateFinCol;
-    @FXML private TableColumn<Reservation, Integer> hebergementCol;
+    @FXML private TableColumn<Reservation, String> hebergementCol; // Modifié pour afficher le nom
     @FXML private TableColumn<Reservation, Void> actionsCol;
     @FXML private Button btnRefresh;
     @FXML private Button btnAjouter;
 
     private final ReservationService reservationService = new ReservationService();
+    private final HebergementService hebergementService = new HebergementService(); // Ajout du service Hebergement
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         clientCol.setCellValueFactory(new PropertyValueFactory<>("clientName"));
         dateDebutCol.setCellValueFactory(new PropertyValueFactory<>("dateDebut"));
         dateFinCol.setCellValueFactory(new PropertyValueFactory<>("dateFin"));
-        hebergementCol.setCellValueFactory(new PropertyValueFactory<>("hebergementId"));
+
+        // Modifier la colonne pour afficher le NOM de l'hébergement au lieu de l'ID
+        hebergementCol.setCellValueFactory(cellData -> {
+            int hebergementId = cellData.getValue().getHebergementId();
+            Hebergement hebergement = hebergementService.getById(hebergementId); // Récupérer l'hébergement par ID
+            return new javafx.beans.property.SimpleStringProperty(hebergement != null ? hebergement.getNom() : "Inconnu");
+        });
 
         actionsCol.setCellFactory(param -> new TableCell<>() {
             private final Button deleteButton = new Button("Supprimer");
@@ -98,19 +107,6 @@ public class AfficherReservation implements Initializable {
     }
 
     private void openModifierReservation(Reservation reservation) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierReservation.fxml"));
-            Scene scene = new Scene(loader.load());
-
-            ModifierReservation controller = loader.getController();
-            controller.setReservation(reservation); // Passer les données à la fenêtre de modification
-
-            Stage newStage = new Stage();
-            newStage.setTitle("Modifier une Réservation");
-            newStage.setScene(scene);
-            newStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Modifier la réservation ici
     }
 }

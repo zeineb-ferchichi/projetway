@@ -21,11 +21,11 @@
     <!-- Table Section -->
     <TableView fx:id="tableReservations" style="-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-font-size: 14px;">
         <columns>
-            <TableColumn fx:id="clientCol" text="Nom du Client" prefWidth="150"/>
-            <TableColumn fx:id="dateDebutCol" text="Date Début" prefWidth="120"/>
-            <TableColumn fx:id="dateFinCol" text="Date Fin" prefWidth="120"/>
-            <TableColumn fx:id="hebergementCol" text="ID Hébergement" prefWidth="100"/>
-            <TableColumn fx:id="actionsCol" text="Actions" prefWidth="120"/>
+            <TableColumn fx:id="clientCol" text="Nom du Client" prefWidth="120" />
+            <TableColumn fx:id="dateDebutCol" text="Date Début" />
+            <TableColumn fx:id="dateFinCol" text="Date Fin" />
+            <TableColumn fx:id="hebergementCol" text="Nom d'Hébergement" prefWidth="150"/>
+            <TableColumn fx:id="actionsCol" text="Actions" />
         </columns>
     </TableView>
 
