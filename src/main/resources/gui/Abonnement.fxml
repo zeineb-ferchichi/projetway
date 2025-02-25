@@ -22,7 +22,6 @@
                style="-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;"/>
     </HBox>
 
-    <!-- Barre de recherche et tri -->
     <HBox spacing="10">
         <TextField fx:id="searchAbonnement" promptText="Rechercher un abonnement..."
                    onKeyReleased="#filterAbonnements"
