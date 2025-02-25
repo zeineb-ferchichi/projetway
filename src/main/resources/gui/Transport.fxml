@@ -46,7 +46,7 @@
                 style="-fx-background-color: #64B5F6; -fx-text-fill: white;"/>
         <Button text="Modifier" onAction="#updateTransport"
                 style="-fx-background-color: #64B5F6; -fx-text-fill: white;"/>
-        <Button text="Supprimer" onAction="#deleteTransport"
+        <Button text="Supprimer" onAction="#deleteTransportFromSelection"
                 style="-fx-background-color: #64B5F6; -fx-text-fill: white;"/>
         <Button text="Annuler" onAction="#clearFields"
                 style="-fx-background-color: #757575; -fx-text-fill: white;"/>
@@ -55,4 +55,5 @@
     <ScrollPane fitToWidth="true" fitToHeight="true">
         <VBox fx:id="transportDisplay"/>
     </ScrollPane>
+
 </VBox>

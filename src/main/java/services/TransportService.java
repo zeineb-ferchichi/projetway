@@ -2,6 +2,7 @@ package services;
 
 import models.Transport;
 import util.DBConnection;
+import util.WindowsNotificationUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -21,6 +22,10 @@ public class TransportService {
             stmt.setString(2, transport.getNom_station());
             stmt.setString(3, transport.getZone_geographique());
             stmt.executeUpdate();
+
+            // 🔔 Notification Windows
+            WindowsNotificationUtil.showWindowsNotification("Ajout Transport", "Le transport " + transport.getNom_station() + " a été ajouté !");
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -34,6 +39,10 @@ public class TransportService {
             stmt.setString(3, transport.getZone_geographique());
             stmt.setInt(4, transport.getId_transp());
             stmt.executeUpdate();
+
+            // 🔔 Notification Windows
+            WindowsNotificationUtil.showWindowsNotification("Modification Transport", "Le transport " + transport.getNom_station() + " a été modifié !");
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -43,7 +52,14 @@ public class TransportService {
         String sql = "DELETE FROM transport WHERE id_transp = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
-            return stmt.executeUpdate() > 0;
+            boolean success = stmt.executeUpdate() > 0;
+
+            if (success) {
+                // 🔔 Notification Windows
+                WindowsNotificationUtil.showWindowsNotification("Suppression Transport", "Un transport a été supprimé !");
+            }
+
+            return success;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

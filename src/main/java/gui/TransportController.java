@@ -1,7 +1,6 @@
 package gui;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,6 +12,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import services.TransportService;
 import models.Transport;
+import util.WindowsNotificationUtil;
+
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
@@ -39,7 +40,7 @@ public class TransportController {
         cmbType.setValue("Bus");
 
         cmbSortBy.setItems(FXCollections.observableArrayList("Type", "Station", "Zone"));
-        cmbSortBy.setValue("Type"); // Valeur par défaut
+        cmbSortBy.setValue("Type");
         cmbSortBy.setOnAction(event -> sortTransports());
     }
 
@@ -121,6 +122,8 @@ public class TransportController {
             loadTransports();
             clearFields();
             showAlert("Succès", "🚀 Transport ajouté avec succès !", Alert.AlertType.INFORMATION);
+
+            WindowsNotificationUtil.showWindowsNotification("Ajout Transport", "Le transport " + transp.getNom_station() + " a été ajouté !");
         } else {
             showAlert("Erreur", "⚠ Veuillez remplir tous les champs.", Alert.AlertType.ERROR);
         }
@@ -142,6 +145,8 @@ public class TransportController {
             loadTransports();
             clearFields();
             showAlert("Succès", "✅ Transport modifié avec succès !", Alert.AlertType.INFORMATION);
+
+            WindowsNotificationUtil.showWindowsNotification("Modification Transport", "Le transport " + selectedTransport.getNom_station() + " a été modifié !");
             selectedTransport = null;
         }
     }
@@ -159,7 +164,7 @@ public class TransportController {
         if (result.isPresent() && result.get() == ButtonType.YES) {
             service.delete(transp.getId_transp());
             loadTransports();
-            showAlert("Succès", "✅ Transport supprimé avec succès !", Alert.AlertType.INFORMATION);
+            showAlert("Succès", "✅ Transport supprimé avec succès!", Alert.AlertType.INFORMATION);
         }
     }
 
@@ -206,23 +211,11 @@ public class TransportController {
         return !txtNomStation.getText().isEmpty() && !txtZone.getText().isEmpty();
     }
     @FXML
-    private void deleteTransport() {
-        if (selectedTransport == null) {
-            showAlert("Erreur", "⚠ Veuillez sélectionner un transport à supprimer!", Alert.AlertType.ERROR);
-            return;
-        }
-
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation de suppression");
-        alert.setHeaderText("Supprimer le transport ?");
-        alert.setContentText("Voulez-vous vraiment supprimer ce transport ?");
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            service.delete(selectedTransport.getId_transp());
-            loadTransports();
-            showAlert("Succès", "✅ Transport supprimé avec succès!", Alert.AlertType.INFORMATION);
-            selectedTransport = null;
+    private void deleteTransportFromSelection() {
+        if (selectedTransport != null) {
+            deleteTransport(selectedTransport);
+        } else {
+            showAlert("Erreur", "⚠ Sélectionnez un transport à supprimer!", Alert.AlertType.ERROR);
         }
     }
 

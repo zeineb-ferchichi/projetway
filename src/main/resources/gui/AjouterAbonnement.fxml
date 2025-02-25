@@ -36,5 +36,5 @@
                    promptText="Ex: 2"/>
     </GridPane>
 
-    <Button text="Ajouter" fx:id="btnAjouter" onAction="#ajouterAbonnement"/>
+    <Button text="Ajouter" fx:id="btnAjouter" onAction="#AjouterAbonnement"/>
 </VBox>
