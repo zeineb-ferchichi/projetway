@@ -55,6 +55,13 @@ public class AfficherReservation implements Initializable {
             private final Button editButton = new Button("Modifier");
 
             {
+                // Définir la couleur verte pour le bouton Modifier
+                editButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
+
+                // Définir la couleur rouge pour le bouton Supprimer
+                deleteButton.setStyle("-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-weight: bold;");
+
+                // Ajouter les actions aux boutons
                 deleteButton.setOnAction(event -> {
                     Reservation reservation = getTableRow().getItem();
                     if (reservation != null) {

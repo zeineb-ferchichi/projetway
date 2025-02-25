@@ -25,7 +25,7 @@ public class AfficherHebergement {
     @FXML private TableColumn<Hebergement, String> villeCol;
     @FXML private TableColumn<Hebergement, String> paysCol;
     @FXML private TableColumn<Hebergement, Integer> capaciteCol;
-    @FXML private TableColumn<Hebergement, Double> prixCol;
+    @FXML private TableColumn<Hebergement, Integer> prixCol;
     @FXML private TableColumn<Hebergement, Void> actionsCol;
     @FXML private ImageView imageView;
 
@@ -137,6 +137,10 @@ public class AfficherHebergement {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterHebergement.fxml"));
             Scene scene = new Scene(loader.load());
+
+            // Pass the TableView reference to the new controller
+            AjouterHebergement ajouterController = loader.getController();
+            ajouterController.setHebergementTableView(listHebergements); // Pass the TableView here
 
             Stage newStage = new Stage();
             newStage.setTitle("Ajouter un Hébergement");
