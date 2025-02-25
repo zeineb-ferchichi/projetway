@@ -94,40 +94,49 @@ public class TransportController {
         HBox card = new HBox(10);
         card.setStyle("-fx-padding: 10; -fx-border-color: gray; -fx-border-radius: 5; -fx-border-width: 1;");
 
+        // ✅ Affichage avec l'ID
         Text info = new Text(
-                "Type: " + transp.getType_transp() +
+                "ID: " + transp.getId_transp() +
+                        " | Type: " + transp.getType_transp() +
                         " | Station: " + transp.getNom_station() +
                         " | Zone: " + transp.getZone_geographique()
         );
 
-        Button btnDelete = new Button("❌");
+        Button btnDelete = new Button("supprimer❌");
         btnDelete.setOnAction(e -> deleteTransport(transp));
 
-        Button btnEdit = new Button("✏️");
+        Button btnEdit = new Button("modifier✏️");
         btnEdit.setOnAction(e -> selectTransportForEdit(transp));
 
         card.getChildren().addAll(info, btnEdit, btnDelete);
         return card;
     }
 
+
     @FXML
     private void addTransport() {
-        if (validateFields()) {
-            Transport transp = new Transport(
-                    cmbType.getValue(),
-                    txtNomStation.getText(),
-                    txtZone.getText()
-            );
-            service.add(transp);
-            loadTransports();
-            clearFields();
-            showAlert("Succès", "🚀 Transport ajouté avec succès !", Alert.AlertType.INFORMATION);
-
-            WindowsNotificationUtil.showWindowsNotification("Ajout Transport", "Le transport " + transp.getNom_station() + " a été ajouté !");
-        } else {
-            showAlert("Erreur", "⚠ Veuillez remplir tous les champs.", Alert.AlertType.ERROR);
+        if (!validateFields()) {
+            return; // 🚨 Bloque l'ajout si la validation échoue
         }
+
+        Transport transp = new Transport(
+                cmbType.getValue(),
+                txtNomStation.getText().trim(),
+                txtZone.getText().trim()
+        );
+
+        int newId = service.add(transp); // ✅ Récupère l'ID du transport ajouté
+
+        loadTransports();
+        clearFields();
+        showAlert("Succès", "🚀 Transport ajouté avec succès !", Alert.AlertType.INFORMATION);
+
+        // 🔔 Notification Windows avec ID
+        WindowsNotificationUtil.showWindowsNotification("Ajout Transport", "Transport ID: " + newId + " ajouté !");
     }
+
+
+
 
     @FXML
     private void updateTransport() {
@@ -136,20 +145,25 @@ public class TransportController {
             return;
         }
 
-        if (validateFields()) {
-            selectedTransport.setType_transp(cmbType.getValue());
-            selectedTransport.setNom_station(txtNomStation.getText());
-            selectedTransport.setZone_geographique(txtZone.getText());
-
-            service.update(selectedTransport);
-            loadTransports();
-            clearFields();
-            showAlert("Succès", "✅ Transport modifié avec succès !", Alert.AlertType.INFORMATION);
-
-            WindowsNotificationUtil.showWindowsNotification("Modification Transport", "Le transport " + selectedTransport.getNom_station() + " a été modifié !");
-            selectedTransport = null;
+        if (!validateFields()) {
+            return; // 🚨 Bloque la modification si la validation échoue
         }
+
+        selectedTransport.setType_transp(cmbType.getValue());
+        selectedTransport.setNom_station(txtNomStation.getText().trim());
+        selectedTransport.setZone_geographique(txtZone.getText().trim());
+
+        service.update(selectedTransport);
+        loadTransports();
+        clearFields();
+        showAlert("Succès", "✅ Transport modifié avec succès !", Alert.AlertType.INFORMATION);
+
+        // 🔔 Notification Windows avec ID
+        WindowsNotificationUtil.showWindowsNotification("Modification Transport", "Transport ID: " + selectedTransport.getId_transp() + " modifié !");
+        selectedTransport = null;
     }
+
+
 
     @FXML
     private void deleteTransport(Transport transp) {
@@ -206,10 +220,31 @@ public class TransportController {
         txtNomStation.setText(transp.getNom_station());
         txtZone.setText(transp.getZone_geographique());
     }
-
+    @FXML
     private boolean validateFields() {
-        return !txtNomStation.getText().isEmpty() && !txtZone.getText().isEmpty();
+        String nomStation = txtNomStation.getText().trim();
+        String zoneGeo = txtZone.getText().trim();
+
+        if (nomStation.isEmpty() || zoneGeo.isEmpty()) {
+            showAlert("Erreur de saisie", "Veuillez remplir tous les champs obligatoires !", Alert.AlertType.ERROR);
+            return false;
+        }
+
+        if (!nomStation.matches("^[a-zA-Z ]+$")) { // ✅ Accepte uniquement les lettres et espaces
+            showAlert("Erreur de saisie", "Le nom de la station ne doit contenir que des lettres !", Alert.AlertType.ERROR);
+            return false;
+        }
+
+        if (!zoneGeo.matches("^[a-zA-Z ]+$")) { // ✅ Accepte uniquement les lettres et espaces
+            showAlert("Erreur de saisie", "La zone géographique ne doit contenir que des lettres !", Alert.AlertType.ERROR);
+            return false;
+        }
+
+        return true; // ✅ Si tout est bon
     }
+
+
+
     @FXML
     private void deleteTransportFromSelection() {
         if (selectedTransport != null) {

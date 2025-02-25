@@ -15,21 +15,32 @@ public class TransportService {
         this.conn = DBConnection.getInstance().getConn();
     }
 
-    public void add(Transport transport) {
+    public int add(Transport transport) {
         String sql = "INSERT INTO transport (type_transp, nom_station, zone_geographique) VALUES (?, ?, ?)";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        int generatedId = -1; // ✅ Variable pour stocker l'ID généré
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, transport.getType_transp());
             stmt.setString(2, transport.getNom_station());
             stmt.setString(3, transport.getZone_geographique());
             stmt.executeUpdate();
 
-            // 🔔 Notification Windows
-            WindowsNotificationUtil.showWindowsNotification("Ajout Transport", "Le transport " + transport.getNom_station() + " a été ajouté !");
+            // ✅ Récupération de l'ID généré
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    generatedId = rs.getInt(1);
+                }
+            }
+
+            // 🔔 Notification Windows avec ID
+            WindowsNotificationUtil.showWindowsNotification("Ajout Transport", "Transport ID: " + generatedId + " ajouté !");
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return generatedId; // ✅ Retourner l'ID généré
     }
+
 
     public void update(Transport transport) {
         String sql = "UPDATE transport SET type_transp = ?, nom_station = ?, zone_geographique = ? WHERE id_transp = ?";

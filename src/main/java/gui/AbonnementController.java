@@ -119,20 +119,21 @@ public class AbonnementController {
         card.setStyle("-fx-padding: 10; -fx-border-color: gray; -fx-border-radius: 5; -fx-border-width: 1;");
 
         Text info = new Text(
-                "Type: " + abo.getType_abonnem() +
+                "ID Abonnement: " + abo.getId_abonnem() + // ✅ Affichage avec ID
+                        " | Type: " + abo.getType_abonnem() +
                         " | Montant: " + abo.getMontant() +
                         " | Durée: " + abo.getDuree_valable() + " jours" +
                         " | Statut: " + abo.getStatus_abonnem() +
                         " | Transport ID: " + abo.getTransport_id()
         );
 
-        Button btnDelete = new Button("❌");
+        Button btnDelete = new Button("supprimer❌");
         btnDelete.setOnAction(e -> {
             selectedAbonnement = abo;
             deleteAbonnement();
         });
 
-        Button btnEdit = new Button("✏️");
+        Button btnEdit = new Button("modifier✏️");
         btnEdit.setOnAction(e -> selectAbonnementForEdit(abo));
 
         card.getChildren().addAll(info, btnEdit, btnDelete);
@@ -142,23 +143,28 @@ public class AbonnementController {
     @FXML
     private void deleteAbonnement() {
         if (selectedAbonnement == null) {
-            showAlert("Erreur", "Veuillez sélectionner un abonnement à supprimer!", Alert.AlertType.ERROR);
+            showAlert("Erreur", "⚠ Veuillez sélectionner un abonnement à supprimer!", Alert.AlertType.ERROR);
             return;
         }
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Voulez-vous vraiment supprimer cet abonnement ?", ButtonType.YES, ButtonType.NO);
-        Optional<ButtonType> result = alert.showAndWait();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation de suppression");
+        alert.setHeaderText("Supprimer l'abonnement ?");
+        alert.setContentText("Voulez-vous vraiment supprimer cet abonnement ?");
 
-        if (result.isPresent() && result.get() == ButtonType.YES) {
-            service.delete(selectedAbonnement.getId_abonnem());
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            int abonnementId = selectedAbonnement.getId_abonnem(); // ✅ Récupération de l'ID
+            service.delete(abonnementId);
             loadAbonnements();
             showAlert("Succès", "✅ Abonnement supprimé avec succès!", Alert.AlertType.INFORMATION);
 
-            // 🔔 Notification Windows
-            WindowsNotificationUtil.showWindowsNotification("Suppression Abonnement", "L'abonnement " + selectedAbonnement.getType_abonnem() + " a été supprimé !");
+            // 🔔 Notification avec ID
+            WindowsNotificationUtil.showWindowsNotification("Suppression Abonnement", "L'abonnement avec l'ID " + abonnementId + " a été supprimé !");
             selectedAbonnement = null;
         }
     }
+
 
     @FXML
     private void goBack() {
@@ -195,51 +201,55 @@ public class AbonnementController {
 
     @FXML
     private void addAbonnement() {
-        if (validateFields()) {
-            try {
-                Abonnement abo = new Abonnement(
-                        comboType.getValue(),
-                        Double.parseDouble(txtMontant.getText()),
-                        Integer.parseInt(txtDureeValable.getText()),
-                        Integer.parseInt(txtTransportId.getText()),
-                        comboStatus.getValue()
-                );
-                service.add(abo);
-                loadAbonnements();
-                clearFields();
-                showAlert("Succès", "✅ Abonnement ajouté avec succès!", Alert.AlertType.INFORMATION);
-
-                // 🔔 Notification Windows
-                WindowsNotificationUtil.showWindowsNotification("Ajout Abonnement", "L'abonnement " + abo.getType_abonnem() + " a été ajouté !");
-            } catch (Exception e) {
-                showAlert("Erreur", "Vérifiez les valeurs saisies!", Alert.AlertType.ERROR);
-            }
-        } else {
-            showAlert("Erreur", "Veuillez remplir tous les champs !", Alert.AlertType.ERROR);
+        if (!validateFields()) {
+            return;
         }
+
+        Abonnement abo = new Abonnement(
+                comboType.getValue(),
+                Double.parseDouble(txtMontant.getText()),
+                Integer.parseInt(txtDureeValable.getText()),
+                Integer.parseInt(txtTransportId.getText()),
+                comboStatus.getValue()
+        );
+
+        service.add(abo);  // ❌ ERREUR : la méthode add() retourne void !
+
+        loadAbonnements();
+        clearFields();
+        showAlert("Succès", "✅ Abonnement ajouté avec succès!", Alert.AlertType.INFORMATION);
+
+        WindowsNotificationUtil.showWindowsNotification("Ajout Abonnement", "L'abonnement " + abo.getType_abonnem() + " a été ajouté !");
     }
+
 
     @FXML
     private void updateAbonnement() {
         if (selectedAbonnement == null) {
-            showAlert("Erreur", "Veuillez sélectionner un abonnement à modifier!", Alert.AlertType.ERROR);
+            showAlert("Erreur", "⚠ Veuillez sélectionner un abonnement à modifier !", Alert.AlertType.ERROR);
             return;
         }
 
-        if (validateFields()) {
-            selectedAbonnement.setType_abonnem(comboType.getValue());
-            selectedAbonnement.setMontant(Double.parseDouble(txtMontant.getText()));
-            selectedAbonnement.setDuree_valable(Integer.parseInt(txtDureeValable.getText()));
-            selectedAbonnement.setTransport_id(Integer.parseInt(txtTransportId.getText()));
-            selectedAbonnement.setStatus_abonnem(comboStatus.getValue());
-
-            service.update(selectedAbonnement);
-            loadAbonnements();
-            clearFields();
-            showAlert("Succès", "✅ Abonnement modifié avec succès!", Alert.AlertType.INFORMATION);
-            selectedAbonnement = null;
+        if (!validateFields()) {
+            return;
         }
+
+        selectedAbonnement.setType_abonnem(comboType.getValue());
+        selectedAbonnement.setMontant(Double.parseDouble(txtMontant.getText()));
+        selectedAbonnement.setDuree_valable(Integer.parseInt(txtDureeValable.getText()));
+        selectedAbonnement.setTransport_id(Integer.parseInt(txtTransportId.getText()));
+        selectedAbonnement.setStatus_abonnem(comboStatus.getValue());
+
+        service.update(selectedAbonnement);
+        loadAbonnements();
+        clearFields();
+        showAlert("Succès", "✅ Abonnement modifié avec succès!", Alert.AlertType.INFORMATION);
+
+        // 🔔 Notification avec ID
+        WindowsNotificationUtil.showWindowsNotification("Modification Abonnement", "L'abonnement avec l'ID " + selectedAbonnement.getId_abonnem() + " a été modifié !");
+        selectedAbonnement = null;
     }
+
 
     @FXML
     private void clearFields() {
