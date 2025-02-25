@@ -35,6 +35,7 @@ public class ModifierReservation implements Initializable {
     private final ReservationService reservationService = new ReservationService();
     private final HebergementService hebergementService = new HebergementService();
     private Reservation reservation;
+    private TableView<Reservation> reservationTableView; // Référence de la TableView
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -118,6 +119,10 @@ public class ModifierReservation implements Initializable {
                 .ifPresent(comboHebergement::setValue);
     }
 
+    public void setReservationTableView(TableView<Reservation> reservationTableView) {
+        this.reservationTableView = reservationTableView;
+    }
+
     @FXML
     private void modifierReservation() {
         if (reservation != null) {
@@ -138,6 +143,11 @@ public class ModifierReservation implements Initializable {
 
             reservationService.update(reservation);
             showAlert("Succès", "Réservation modifiée avec succès !");
+
+            // Si reservationTableView n'est pas nul, on met à jour la table
+            if (reservationTableView != null) {
+                reservationTableView.getItems().setAll(reservationService.getAll());
+            }
 
             Stage stage = (Stage) btnModifier.getScene().getWindow();
             stage.close();

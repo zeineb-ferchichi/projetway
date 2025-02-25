@@ -134,6 +134,7 @@ public class AfficherReservation implements Initializable {
 
             ModifierReservation controller = loader.getController();
             controller.setReservation(reservation);
+            controller.setReservationTableView(tableReservations); // Passer la référence de la TableView
 
             Stage newStage = new Stage();
             newStage.setTitle("Modifier la Réservation");
