@@ -13,12 +13,16 @@ import tn.esprit.models.Hebergement;
 import tn.esprit.models.Reservation;
 import tn.esprit.services.HebergementService;
 import tn.esprit.services.ReservationService;
-import tn.esprit.util.QRCodeGenerator;  // Classe pour générer le QR Code
+import tn.esprit.util.QRCodeGenerator;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class AfficherReservation implements Initializable {
 
@@ -30,33 +34,25 @@ public class AfficherReservation implements Initializable {
     @FXML private TableColumn<Reservation, Void> actionsCol;
     @FXML private Button btnRefresh;
     @FXML private Button btnAjouter;
-    @FXML private ImageView imageViewQRCode; // ImageView pour afficher le QR code
-    @FXML private ImageView imageView; // L'ImageView de gauche pour l'image
+    @FXML private ImageView imageViewQRCode;
+    @FXML private ImageView imageView;
+    @FXML private TextField searchField;
 
     private final ReservationService reservationService = new ReservationService();
     private final HebergementService hebergementService = new HebergementService();
+    private List<Reservation> allReservations;
+    private ObservableList<Reservation> filteredReservations;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
         // Affichage d'une image par défaut
         Image image = new Image("file:/C:/Users/khali/IdeaProjects/GestionHebrgement/478765722_1161037295221445_2233461229557996646_n.png");
         imageView.setImage(image);
-
-        // Ajouter un listener pour la sélection dans la table
-        tableReservations.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                // Afficher le QR Code lorsque la réservation est sélectionnée
-                displayQRCode(newValue);
-            }
-        });
 
         // Initialisation des colonnes de la TableView
         clientCol.setCellValueFactory(new PropertyValueFactory<>("clientName"));
         dateDebutCol.setCellValueFactory(new PropertyValueFactory<>("dateDebut"));
         dateFinCol.setCellValueFactory(new PropertyValueFactory<>("dateFin"));
-
-        // Afficher le nom d'hébergement dans la TableView
         hebergementCol.setCellValueFactory(cellData -> {
             int hebergementId = cellData.getValue().getHebergementId();
             Hebergement hebergement = hebergementService.getById(hebergementId);
@@ -69,22 +65,20 @@ public class AfficherReservation implements Initializable {
             private final Button editButton = new Button("Modifier");
 
             {
-                // Style des boutons
                 editButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
                 deleteButton.setStyle("-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-weight: bold;");
-
-                // Actions des boutons
-                deleteButton.setOnAction(event -> {
-                    Reservation reservation = getTableRow().getItem();
-                    if (reservation != null) {
-                        supprimerReservation(reservation);
-                    }
-                });
 
                 editButton.setOnAction(event -> {
                     Reservation reservation = getTableRow().getItem();
                     if (reservation != null) {
                         openModifierReservation(reservation);
+                    }
+                });
+
+                deleteButton.setOnAction(event -> {
+                    Reservation reservation = getTableRow().getItem();
+                    if (reservation != null) {
+                        supprimerReservation(reservation);
                     }
                 });
             }
@@ -98,10 +92,20 @@ public class AfficherReservation implements Initializable {
 
         // Charger les réservations au démarrage
         loadReservations();
+
+        // Listener to generate QR code on row selection
+        tableReservations.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                // Generate and display the QR code for the selected reservation
+                displayQRCode(newValue);
+            }
+        });
     }
 
     private void loadReservations() {
-        tableReservations.getItems().setAll(reservationService.getAll());
+        allReservations = reservationService.getAll();
+        filteredReservations = FXCollections.observableArrayList(allReservations);
+        tableReservations.setItems(filteredReservations);
     }
 
     private void supprimerReservation(Reservation reservation) {
@@ -133,7 +137,6 @@ public class AfficherReservation implements Initializable {
     }
 
     private void openModifierReservation(Reservation reservation) {
-        // Ouvrir la fenêtre de modification d'une réservation
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierReservation.fxml"));
             Scene scene = new Scene(loader.load());
@@ -151,6 +154,23 @@ public class AfficherReservation implements Initializable {
         }
     }
 
+    @FXML
+    private void handleSearch() {
+        String searchText = searchField.getText().trim().toLowerCase();
+        if (searchText.isEmpty()) {
+            loadReservations(); // Reload all reservations if the search field is empty
+            return;
+        }
+
+        List<Reservation> filteredList = allReservations.stream()
+                .filter(reservation -> reservation.getClientName().toLowerCase().contains(searchText))
+                .collect(Collectors.toList());
+
+        filteredReservations.setAll(filteredList); // Update the ObservableList with the filtered list
+        tableReservations.setItems(filteredReservations); // Update the TableView
+    }
+
+
     private void displayQRCode(Reservation reservation) {
         String reservationDetails = "Client: " + reservation.getClientName() + "\n" +
                 "Début: " + reservation.getDateDebut() + "\n" +
@@ -161,11 +181,9 @@ public class AfficherReservation implements Initializable {
 
         if (qrCodeImage != null) {
             System.out.println("QR Code généré avec succès.");
-            imageViewQRCode.setImage(qrCodeImage); // Afficher l'image dans l'ImageView
+            imageViewQRCode.setImage(qrCodeImage);
         } else {
             System.out.println("Erreur : QR Code non généré.");
         }
     }
-
-
 }
