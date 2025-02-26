@@ -172,8 +172,5 @@ public class AfficherHebergement {
         }
     }
 
-    @FXML
-    private void handleRefresh() {
-        loadHebergements();
-    }
+
 }
