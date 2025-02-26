@@ -95,10 +95,15 @@ public class EmployeController {
 
     @FXML
     private void loadNotesFrais() {
+        if (currentUser == null) {
+            afficherAlerte("Utilisateur non connecté !");
+            return;
+        }
         gridNotesFrais.getChildren().clear();
-        List<Notedefrait> notes = notedefraitService.getAll();
+        List<Notedefrait> notes = notedefraitService.getNotesByUserId(currentUser.getId()); // ✅ Récupère uniquement les notes de l'utilisateur connecté
         afficherNotesFrais(notes);
     }
+
 
     @FXML
     private void voirNotesUser() {
@@ -152,7 +157,7 @@ public class EmployeController {
     @FXML
     private void ajouterNoteFrais() {
         if (currentUser == null) {
-            afficherAlerte("Veuillez sélectionner un utilisateur avant d'ajouter une note de frais.");
+            afficherAlerte("Erreur : Utilisateur non connecté !");
             return;
         }
 
@@ -164,11 +169,14 @@ public class EmployeController {
             return;
         }
 
+        // Associer la note à l'utilisateur connecté
         Notedefrait nouvelleNote = new Notedefrait(nomActivite, description, selectedFacturePath, currentUser.getId());
         notedefraitService.insert(nouvelleNote);
-        loadNotesFrais();
+
+        loadNotesFrais(); // Rafraîchir uniquement les notes de l'utilisateur
         clearFields();
     }
+
     private void selectNoteFrais(Notedefrait noteFrais) {
         if (noteFrais == null) {
             System.out.println("ERREUR : Note de frais sélectionnée est null !");
@@ -192,38 +200,40 @@ public class EmployeController {
     }
     @FXML
     private void modifierNoteFrais() {
-        System.out.println("Selected Note: " + selectedNoteFrais);
         if (selectedNoteFrais == null) {
             afficherAlerte("Veuillez sélectionner une note de frais à modifier.");
             return;
         }
 
-        // Set the modified values
+        // Vérifier que l'utilisateur connecté est bien le propriétaire de la note
+        if (currentUser == null || selectedNoteFrais.getUserId() != currentUser.getId()) {
+            afficherAlerte("Vous ne pouvez modifier que vos propres notes de frais !");
+            return;
+        }
+
         selectedNoteFrais.setNomactivite(tfNomActiviteModif.getText());
         selectedNoteFrais.setDescription(tfDescriptionModif.getText());
 
-        // If a new image was selected, update the facture link
         if (selectedFacturePath != null) {
             selectedNoteFrais.setLienfacture(selectedFacturePath);
         }
 
-        // Save the modified note (you will need to update this method based on your service)
         notedefraitService.update(selectedNoteFrais);
-
-        // Reload the list of notes (adjust if you need to refresh the UI)
         loadNotesFrais();
-
-        // Hide the modification pane and clear fields
-
         clearFields();
     }
 
 
     @FXML
     private void supprimerNoteFrais() {
-        System.out.println("Selected Note: " + selectedNoteFrais);
         if (selectedNoteFrais == null) {
             afficherAlerte("Veuillez sélectionner une note de frais à supprimer.");
+            return;
+        }
+
+        // Vérifier que l'utilisateur connecté est bien le propriétaire de la note
+        if (currentUser == null || selectedNoteFrais.getUserId() != currentUser.getId()) {
+            afficherAlerte("Vous ne pouvez supprimer que vos propres notes de frais !");
             return;
         }
 
@@ -233,6 +243,7 @@ public class EmployeController {
             clearFields();
         }
     }
+
 
     @FXML
     private void choisirFacture() {

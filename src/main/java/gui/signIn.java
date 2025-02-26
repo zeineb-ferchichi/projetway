@@ -152,7 +152,7 @@ public class signIn {
                     + " Rôle: " + user.getRole());
 
             FXMLLoader loader;
-            Parent root;
+            Parent root = null; // ✅ Initialise root à null pour éviter une erreur
 
             // Vérification du rôle
             switch (user.getRole().toLowerCase()) {
@@ -170,16 +170,22 @@ public class signIn {
                     employeController.setCurrentUser(user);
                     break;
 
-               /* case "directeur":
-                    loader = new FXMLLoader(getClass().getResource("/directeur.fxml"));
-                    root = loader.load();
-                    DirecteurController directeurController = loader.getController();
-                    directeurController.setCurrentUser(user);
-                    break;*/
+            /*case "directeur":
+                loader = new FXMLLoader(getClass().getResource("/directeur.fxml"));
+                root = loader.load();
+                DirecteurController directeurController = loader.getController();
+                directeurController.setCurrentUser(user);
+                break;*/
 
                 default:
                     showAlert(Alert.AlertType.ERROR, "Accès refusé", "Votre rôle ne permet pas d'accéder à cette application.");
                     return;
+            }
+
+            // ✅ Vérifier que root est bien initialisé avant d'afficher la scène
+            if (root == null) {
+                System.out.println("Erreur : l'interface n'a pas été chargée !");
+                return;
             }
 
             // Affichage de la nouvelle scène
@@ -192,6 +198,7 @@ public class signIn {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir l'interface.");
         }
     }
+
 
 
 
