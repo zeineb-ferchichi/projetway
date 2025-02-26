@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+
 public class AfficherHebergement {
 
     @FXML private TableView<Hebergement> listHebergements;
@@ -34,8 +36,11 @@ public class AfficherHebergement {
     @FXML private Button btnRefresh;
     @FXML private TextField searchField; // Ajout du champ de recherche
     @FXML private Button searchButton; // Bouton de recherche
+    @FXML private Button sortPriceButton;
+
 
     private final HebergementService hebergementService = new HebergementService();
+    private boolean ascendingOrder = true;
 
     @FXML
     public void initialize() {
@@ -93,6 +98,8 @@ public class AfficherHebergement {
 
         // Ajouter l'action de recherche
         searchButton.setOnAction(event -> handleSearch());
+        sortPriceButton.setOnAction(event -> handleSortByPrice());
+
     }
 
     private void loadImage() {
@@ -172,5 +179,14 @@ public class AfficherHebergement {
         }
     }
 
+    @FXML
+    private void handleSortByPrice() {
+        listHebergements.getItems().setAll(listHebergements.getItems().stream()
+                .sorted((h1, h2) -> ascendingOrder
+                        ? Integer.compare(h1.getPrix(), h2.getPrix())
+                        : Integer.compare(h2.getPrix(), h1.getPrix()))
+                .collect(Collectors.toList()));
 
+        ascendingOrder = !ascendingOrder;
+    }
 }
