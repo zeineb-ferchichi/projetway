@@ -45,5 +45,8 @@
                 <TableColumn fx:id="actionsCol" text="Actions" />
             </columns>
         </TableView>
+
+        <!-- QR Code Section -->
+        <ImageView fx:id="imageViewQRCode" fitWidth="200" fitHeight="200" preserveRatio="true" style="-fx-border-radius: 10; -fx-border-color: #ccc; -fx-padding: 20;"/>
     </VBox>
 </HBox>
