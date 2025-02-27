@@ -25,6 +25,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.security.Provider;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -102,6 +103,14 @@ public class EmployeController {
 
 
 
+    private void trierNotesParActivite(List<Notedefrait> notes) {
+        // Utilisation de la méthode sort() de la collection pour trier la liste en fonction du nom de l'activité
+        notes.sort((note1, note2) -> note1.getNomactivite().compareToIgnoreCase(note2.getNomactivite()));
+
+        // Après avoir trié, vous pouvez rafraîchir l'affichage des notes de frais
+        afficherNotesFrais(notes);
+    }
+
 
     @FXML
     private void loadNotesFrais() {
@@ -110,7 +119,8 @@ public class EmployeController {
             return;
         }
         gridNotesFrais.getChildren().clear();
-        List<Notedefrait> notes = notedefraitService.getNotesByUserId(currentUser.getId()); // ✅ Récupère uniquement les notes de l'utilisateur connecté
+        List<Notedefrait> notes = notedefraitService.getNotesByUserId(currentUser.getId());
+        trierNotesParActivite(notes);
         afficherNotesFrais(notes);
     }
 
@@ -179,13 +189,22 @@ public class EmployeController {
             return;
         }
 
-        // Associer la note à l'utilisateur connecté
+        // Créez une instance de Notedefrait pour la validation
         Notedefrait nouvelleNote = new Notedefrait(nomActivite, description, selectedFacturePath, currentUser.getId());
+
+        // Validation de la nouvelle note de frais
+        if (!Service.NotedefraitService.validateNotedefrait(nouvelleNote)) {
+            afficherAlerte("Erreur de validation des données !");
+            return;
+        }
+
+        // Associer la note à l'utilisateur connecté
         notedefraitService.insert(nouvelleNote);
 
         loadNotesFrais(); // Rafraîchir uniquement les notes de l'utilisateur
         clearFields();
     }
+
 
     private void selectNoteFrais(Notedefrait noteFrais) {
         if (noteFrais == null) {
@@ -231,7 +250,16 @@ public class EmployeController {
             return;
         }
 
-        // Mise à jour des valeurs
+        // Créez une instance de Notedefrait pour la validation
+        Notedefrait nouvelleNote = new Notedefrait(nouveauNom, nouvelleDescription, selectedFacturePath, currentUser.getId());
+
+        // Validation de la nouvelle note de frais
+        if (!Service.NotedefraitService.validateNotedefrait(nouvelleNote)) {
+            afficherAlerte("Erreur de validation des données !");
+            return;
+        }
+
+        // Mise à jour des valeurs dans l'objet sélectionné
         selectedNoteFrais.setNomactivite(nouveauNom);
         selectedNoteFrais.setDescription(nouvelleDescription);
 
@@ -248,9 +276,8 @@ public class EmployeController {
 
         // Nettoyer les champs après modification
         clearFields();
-
-        
     }
+
 
 
 
