@@ -20,14 +20,22 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import Service.UserService;
+
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import org.mindrot.jbcrypt.BCrypt;
 
+
+
 public class EmployeController {
+
+    @FXML
+    private TextField searchNoteField;
 
     @FXML
     private ImageView notedefraitImage;
@@ -79,10 +87,10 @@ public class EmployeController {
     public void initialize() {
         System.out.println("⚡ Initialisation de EmployeController");
 
-        if (profileUserName == null) {
-            System.out.println("❌ profileUserName est NULL !");
+        if (currentUserName == null) {
+            System.out.println("❌ currentUserName est NULL !");
         } else {
-            System.out.println("✅ profileUserName chargé !");
+            System.out.println("✅ currentUserName chargé !");
         }
 
         if (currentUserImage == null) {
@@ -91,6 +99,8 @@ public class EmployeController {
             System.out.println("✅ currentUserImage chargé !");
         }
     }
+
+
 
 
     @FXML
@@ -211,17 +221,37 @@ public class EmployeController {
             return;
         }
 
-        selectedNoteFrais.setNomactivite(tfNomActiviteModif.getText());
-        selectedNoteFrais.setDescription(tfDescriptionModif.getText());
+        // Récupérer les nouvelles valeurs des champs
+        String nouveauNom = tfNomActiviteModif.getText().trim();
+        String nouvelleDescription = tfDescriptionModif.getText().trim();
 
+        // Vérifier que les champs ne sont pas vides
+        if (nouveauNom.isEmpty() || nouvelleDescription.isEmpty()) {
+            afficherAlerte("Tous les champs doivent être remplis !");
+            return;
+        }
+
+        // Mise à jour des valeurs
+        selectedNoteFrais.setNomactivite(nouveauNom);
+        selectedNoteFrais.setDescription(nouvelleDescription);
+
+        // Mise à jour de l'image si une nouvelle a été sélectionnée
         if (selectedFacturePath != null) {
             selectedNoteFrais.setLienfacture(selectedFacturePath);
         }
 
+        // Appeler le service pour effectuer la mise à jour
         notedefraitService.update(selectedNoteFrais);
+
+        // Rafraîchir la liste des notes affichées
         loadNotesFrais();
+
+        // Nettoyer les champs après modification
         clearFields();
+
+        
     }
+
 
 
     @FXML
@@ -314,7 +344,9 @@ public class EmployeController {
     private void switchToListe() {
         ajoutNoteFraisPane.setVisible(false);
         notesFraisContainer.setVisible(true);
+        loadNotesFrais(); //
     }
+
 
     @FXML
     private void switchToAjout() {
@@ -353,13 +385,14 @@ public class EmployeController {
         this.currentUser = user;
 
         if (user != null) {
-
+            System.out.println("Utilisateur mis à jour : " + user.getNom());
             if (profileUserName != null) profileUserName.setText(user.getNom());
             if (profileUserPrenom != null) profileUserPrenom.setText(user.getPrenom());
             if (profileUserGmail != null) profileUserGmail.setText(user.getGmail());
 
             if (currentUserName != null) {
                 currentUserName.setText(user.getNom());
+                System.out.println("currentUserName mis à jour avec : " + user.getNom());
             }
             // Charger l'image si elle existe
             if (user.getImage() != null && !user.getImage().isEmpty()) {
@@ -367,16 +400,14 @@ public class EmployeController {
                 if (file.exists() && currentUserImage != null) {
                     Image image = new Image(file.toURI().toString());
                     currentUserImage.setImage(image);
-                } else {
-                    System.out.println("⚠️ Image introuvable : " + user.getImage());
                 }
-            } else {
-                System.out.println("⚠️ Aucun chemin d'image défini !");
             }
         } else {
             System.out.println("⚠️ currentUser est null !");
         }
+
     }
+
 
 
 
@@ -448,23 +479,7 @@ public class EmployeController {
 
 
 
-    private void populateCurrentUserProfile() {
-        if (currentUser == null) {
-            return;
-        }
-        if (profileUserName != null) {
-            profileUserName.setText(currentUser.getNom());
-        }
-        if (profileUserPrenom != null) {
-            profileUserPrenom.setText(currentUser.getPrenom());
-        }
-        if (profileUserGmail != null) {
-            profileUserGmail.setText(currentUser.getGmail());
-        }
-        if (profileUserMotdepasse != null) {
-            profileUserMotdepasse.setText(currentUser.getIdentifiant());
-        }
-    }
+
 
 
 
@@ -489,43 +504,138 @@ public class EmployeController {
             return;
         }
 
-        // Demander la confirmation de la mise à jour
+        // Utiliser la méthode confirmUpdate pour obtenir la confirmation
         if (!confirmUpdate()) {
-            return; // Annule la mise à jour si l'utilisateur ne confirme pas
+            return;
         }
 
-        // Récupération et mise à jour des informations de l'utilisateur
-        String newName = profileUserName.getText();
-        currentUser.setNom(newName);
+        // Mise à jour des infos
+        currentUser.setNom(profileUserName.getText());
         currentUser.setPrenom(profileUserPrenom.getText());
         currentUser.setGmail(profileUserGmail.getText());
 
-        // Mise à jour du mot de passe uniquement si le champ est rempli
         String newPassword = profileUserMotdepasse.getText();
         if (newPassword != null && !newPassword.trim().isEmpty()) {
             String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
             currentUser.setMotdepasse(hashedPassword);
         }
-        // Sinon, le mot de passe reste inchangé
 
-        // Vérifier que les autres informations utilisateur sont valides
         if (!userService.validateUser(currentUser)) {
             return;
         }
 
-        // Mise à jour de l'utilisateur en base
         userService.update(currentUser);
 
-        // Actualiser l'affichage du label avec le nouveau nom
-        if (currentUserName != null) {
-            currentUserName.setText(newName);
+        // Mise à jour de l'affichage après la modification
+        updateCurrentUserDisplay();
+
+        // Assurez-vous que `setCurrentUser` est appelé après la mise à jour
+        setCurrentUser(currentUser);
+    }
+
+
+
+
+    @FXML
+    private void handleChangeProfileImage() {
+        if (currentUser == null) {
+            afficherAlerte("Aucun utilisateur connecté !");
+            return;
         }
 
-        // Actualiser l'affichage de l'image si besoin
-        if (currentUserImage != null && currentUser.getImage() != null && !currentUser.getImage().isEmpty()) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choisir une nouvelle image de profil");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg"));
+
+        File file = fileChooser.showOpenDialog(null);
+        if (file != null && afficherConfirmation("Confirmer", "Voulez-vous vraiment changer votre image de profil ?")) {
+            currentUser.setImage(file.getAbsolutePath());
+            userService.update(currentUser);
+
+            // ⚡ Mise à jour de l'affichage après modification
+            updateCurrentUserDisplay();
+        }
+    }
+
+
+
+    private boolean afficherConfirmation(String titre, String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(titre);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+
+        ButtonType buttonOui = new ButtonType("Oui");
+        ButtonType buttonNon = new ButtonType("Non", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(buttonOui, buttonNon);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.isPresent() && result.get() == buttonOui;
+    }
+
+    private void updateCurrentUserDisplay() {
+        if (currentUser == null) {
+            afficherAlerte("Aucun utilisateur connecté !");
+            return;
+        }
+
+        if (currentUserName != null) {
+            currentUserName.setText(currentUser.getNom());
+        } else {
+            System.out.println("currentUserName is null!");
+        }
+
+        if (currentUser.getImage() != null) {
             currentUserImage.setImage(new Image("file:" + currentUser.getImage()));
         }
     }
+
+
+
+
+
+    @FXML
+    private void searchNotesByName() {
+        if (currentUser == null) {
+            afficherAlerte("Utilisateur non connecté !");
+            return;
+        }
+
+        String searchText = searchNoteField.getText().trim();
+
+        if (isSearchTextEmpty(searchText)) {
+            // Si la recherche est vide, afficher toutes les notes de frais
+            List<Notedefrait> allNotes = notedefraitService.getNotesByUserId(currentUser.getId());
+            afficherNotesFrais(allNotes);
+            return;
+        }
+
+        // Sinon, effectuer la recherche par nom
+        List<Notedefrait> filteredNotes = notedefraitService.searchNotesByName(currentUser.getId(), searchText);
+
+        if (filteredNotes.isEmpty()) {
+            afficherAlerte("Aucune note de frais trouvée avec ce nom !");
+        } else {
+            afficherNotesFrais(filteredNotes);
+        }
+    }
+
+    private boolean isSearchTextEmpty(String text) {
+        return text == null || text.isEmpty();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

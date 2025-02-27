@@ -50,7 +50,7 @@
                 <PasswordField fx:id="profileUserMotdepasse" styleClass="password-field" maxWidth="200"/>
 
 
-                <Button text="Changer l'image" styleClass="button-image" onAction="#handleChangeImage"/>
+                <Button text="Changer l'image" styleClass="button-image" onAction="#handleChangeProfileImage"/>
                 <Button text="Enregistrer les modifications" styleClass="button-modify" onAction="#handleUpdateCurrentUser"/>
             </VBox>
 

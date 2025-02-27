@@ -272,24 +272,7 @@ public class AdminController implements Initializable {
         clearFields();
     }
 
-    @FXML
-    private void handleChangeImage() {
-        if (selectedUser == null) {
-            showAlert("Veuillez d'abord sélectionner un utilisateur !");
-            return;
-        }
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choisir une image de profil");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg")
-        );
-        File file = fileChooser.showOpenDialog(null);
-        if (file != null) {
-            String imagePath = file.toURI().toString();
-            userImage.setImage(new Image(imagePath));
-            selectedUser.setImage(file.getAbsolutePath());
-        }
-    }
+
 
     private boolean confirmBan(User user) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);

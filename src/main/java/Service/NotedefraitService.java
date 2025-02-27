@@ -6,6 +6,7 @@ import util.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NotedefraitService implements IService<Notedefrait> {
     private static Connection cnx;
@@ -200,6 +201,34 @@ public class NotedefraitService implements IService<Notedefrait> {
         }
         return notes;
     }
+
+    public List<Notedefrait> searchNotesByName(int userId, String searchText) {
+        List<Notedefrait> filteredNotes = new ArrayList<>();
+        String query = "SELECT * FROM notedefrait WHERE user_id = ? AND LOWER(nomactivite) LIKE LOWER(?)";
+
+        try (PreparedStatement ps = cnx.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            ps.setString(2, "%" + searchText + "%");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Notedefrait note = new Notedefrait(
+                        rs.getInt("id"),
+                        rs.getString("nomactivite"),
+                        rs.getString("description"),
+                        rs.getString("lienfacture"),
+                        rs.getInt("user_id")
+                );
+                filteredNotes.add(note);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return filteredNotes;
+    }
+
+
 
 
 

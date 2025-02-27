@@ -170,12 +170,12 @@ public class signIn {
                     employeController.setCurrentUser(user);
                     break;
 
-            /*case "directeur":
+            case "directeur":
                 loader = new FXMLLoader(getClass().getResource("/directeur.fxml"));
                 root = loader.load();
                 DirecteurController directeurController = loader.getController();
                 directeurController.setCurrentUser(user);
-                break;*/
+                break;
 
                 default:
                     showAlert(Alert.AlertType.ERROR, "Accès refusé", "Votre rôle ne permet pas d'accéder à cette application.");

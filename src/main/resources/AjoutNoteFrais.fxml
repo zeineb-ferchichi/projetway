@@ -6,12 +6,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.image.*?>
-
 <?import javafx.geometry.Insets?>
+
 <VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="gui.EmployeController" stylesheets="/style.css">
     <HBox spacing="30" styleClass="root">
-        <VBox alignment="CENTER" prefWidth="300"  styleClass="sidebar">
+        <VBox alignment="CENTER" prefWidth="300" styleClass="sidebar">
             <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="300">
                 <!-- Contenu éventuel -->
             </VBox>
@@ -24,26 +24,34 @@
             <VBox alignment="CENTER" spacing="10" prefHeight="200" prefWidth="300">
                 <ImageView fx:id="currentUserImage" fitHeight="100" fitWidth="100" styleClass="user-image"/>
                 <Label fx:id="currentUserName" text="Nom Admin" styleClass="user-name"/>
-                <Label  text="Rôle Employe" styleClass="user-role"/>
+                <Label text="Rôle Employe" styleClass="user-role"/>
                 <Button text="Log out" onAction="#handleSignIn" styleClass="logout-button"/>
             </VBox>
         </VBox>
 
-        <!-- Conteneur de vues -->
-        <StackPane fx:id="mainContent" alignment="CENTER" prefWidth="700" >
-
-                    <!-- Vue par défaut : Ajout de note de frais -->
+        <StackPane fx:id="mainContent" alignment="CENTER" prefWidth="700">
+            <!-- Vue par défaut : Ajout de note de frais -->
             <VBox fx:id="ajoutNoteFraisPane" alignment="CENTER" spacing="10">
-                        <Label text="Ajout de Note de Frais" styleClass="title"/>
-                        <TextField fx:id="tfNomActivite" promptText="Nom de l'activité" styleClass="text-field"/>
-                        <TextArea fx:id="tfDescription" promptText="Description" styleClass="text-field"/>
-                        <Button text="Sélectionner une image" onAction="#choisirFacture" styleClass="button-create"/>
-                        <Button fx:id="btnAjouterNote" text="Ajouter" onAction="#ajouterNoteFrais" styleClass="button-create"/>
+                <Label text="Ajout de Note de Frais" styleClass="title"/>
+                <TextField fx:id="tfNomActivite" promptText="Nom de l'activité" styleClass="text-field"/>
+                <TextArea fx:id="tfDescription" promptText="Description" styleClass="text-field"/>
+                <Button text="Sélectionner une image" onAction="#choisirFacture" styleClass="button-create"/>
+                <Button fx:id="btnAjouterNote" text="Ajouter" onAction="#ajouterNoteFrais" styleClass="button-create"/>
             </VBox>
 
             <VBox fx:id="notesFraisContainer" visible="false" alignment="CENTER">
                 <VBox fx:id="modificationPane" prefHeight="700" spacing="10">
                     <Label text="Liste des Notes de Frais" styleClass="text-title"/>
+
+                    <!-- Barre de recherche placée en haut de la liste -->
+                    <HBox alignment="CENTER" spacing="10" prefHeight="30" prefWidth="700">
+                        <TextField fx:id="searchNoteField" promptText="Rechercher une note de frais..." onKeyReleased="#searchNotesByName"/>
+
+
+
+
+                    </HBox>
+
                     <ScrollPane fitToWidth="true" prefHeight="500" prefWidth="700">
                         <GridPane fx:id="gridNotesFrais" hgap="20" vgap="20">
                             <padding>
@@ -63,8 +71,6 @@
             </VBox>
         </StackPane>
 
-
-
         <Button fx:id="btnSwitchToListe" styleClass="listeUser" onAction="#switchToListe">
             <graphic>
                 <ImageView fitWidth="20" fitHeight="20">
@@ -76,3 +82,4 @@
         </Button>
     </HBox>
 </VBox>
+
