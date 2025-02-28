@@ -21,7 +21,7 @@ public class HebergementService implements IService<Hebergement> {
 
     @Override
     public void add(Hebergement hebergement) {
-        String SQL = "INSERT INTO Hebergement (nom, type, adresse, ville, pays, capacite, prix) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String SQL = "INSERT INTO Hebergement (nom, type, adresse, ville, pays, capacite, prix, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         if (conn == null) {
             System.out.println("Error: Connection is null.");
@@ -36,6 +36,7 @@ public class HebergementService implements IService<Hebergement> {
             pstmt.setString(5, hebergement.getPays());
             pstmt.setInt(6, hebergement.getCapacite());
             pstmt.setDouble(7, hebergement.getPrix());
+            pstmt.setString(8, hebergement.getImage()); // Ajout de l'image
 
             int rowsInserted = pstmt.executeUpdate();
             if (rowsInserted > 0) {
@@ -51,7 +52,7 @@ public class HebergementService implements IService<Hebergement> {
 
     @Override
     public void update(Hebergement hebergement) {
-        String SQL = "UPDATE Hebergement SET nom = ?, type = ?, adresse = ?, ville = ?, pays = ?, capacite = ?, prix = ? WHERE id = ?";
+        String SQL = "UPDATE Hebergement SET nom = ?, type = ?, adresse = ?, ville = ?, pays = ?, capacite = ?, prix = ?, image = ? WHERE id = ?";
 
         if (conn == null) {
             System.out.println("Error: Connection is null.");
@@ -65,8 +66,9 @@ public class HebergementService implements IService<Hebergement> {
             pstmt.setString(4, hebergement.getVille());
             pstmt.setString(5, hebergement.getPays());
             pstmt.setInt(6, hebergement.getCapacite());
-            pstmt.setDouble(7, hebergement.getPrix());  // Correction ici
-            pstmt.setInt(8, hebergement.getId());
+            pstmt.setDouble(7, hebergement.getPrix());
+            pstmt.setString(8, hebergement.getImage()); // Mise à jour de l'image
+            pstmt.setInt(9, hebergement.getId());
 
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
@@ -125,6 +127,7 @@ public class HebergementService implements IService<Hebergement> {
                 h.setPays(rs.getString("pays"));
                 h.setCapacite(rs.getInt("capacite"));
                 h.setPrix(rs.getInt("prix"));
+                h.setImage(rs.getString("image")); // Récupération de l'image
 
                 hebergementList.add(h);
             }
@@ -160,7 +163,8 @@ public class HebergementService implements IService<Hebergement> {
                         rs.getString("ville"),
                         rs.getString("pays"),
                         rs.getInt("capacite"),
-                        rs.getInt("prix")
+                        rs.getInt("prix"),
+                        rs.getString("image") // Ajout de l'image
                 );
             }
         } catch (SQLException e) {

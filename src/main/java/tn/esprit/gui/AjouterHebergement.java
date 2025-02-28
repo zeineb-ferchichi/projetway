@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import tn.esprit.models.Hebergement;
 import tn.esprit.services.HebergementService;
 
@@ -21,22 +22,30 @@ public class AjouterHebergement {
     @FXML private TextField txtPays;
     @FXML private TextField txtCapacite;
     @FXML private TextField txtPrix;
-    @FXML private TableView<Hebergement> hebergementTableView;  // Reference to TableView
+    @FXML private Button btnSelectImage;
+    @FXML private TableView<Hebergement> hebergementTableView;
 
     private final HebergementService service = new HebergementService();
+    private String imagePath = null; // Initialisé à null
 
     @FXML
     public void initialize() {
-        loadImage();
+        if (btnSelectImage != null) {
+            btnSelectImage.setOnAction(event -> selectImage());
+        } else {
+            System.err.println("⚠ Erreur : btnSelectImage est null. Vérifiez le FXML.");
+        }
     }
 
-    private void loadImage() {
-        String imagePath = "C:/Users/khali/IdeaProjects/GestionHebrgement/478765722_1161037295221445_2233461229557996646_n.png";
-        File file = new File(imagePath);
-        if (file.exists()) {
-            imageView.setImage(new Image(file.toURI().toString()));
-        } else {
-            System.err.println("⚠ Image file not found at: " + imagePath);
+    @FXML
+    public void selectImage() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg"));
+
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            Image image = new Image(selectedFile.toURI().toString());
+            imageView.setImage(image);
         }
     }
 
@@ -55,19 +64,14 @@ public class AjouterHebergement {
                     txtVille.getText(),
                     txtPays.getText(),
                     capacite,
-                    prix
+                    prix,
+                    imagePath // Stocker l'image
             );
 
-            // Add the new 'Hebergement' using the service
             service.add(hebergement);
             showAlert("Succès", "Hébergement ajouté avec succès!", Alert.AlertType.INFORMATION);
-
-            // Refresh the 'Hebergement' list in the TableView
             refreshHebergementTable();
-
-            // Clear fields after adding
             clearFields();
-
         } catch (NumberFormatException e) {
             showAlert("Erreur", "Capacité et Prix doivent être des nombres valides!", Alert.AlertType.ERROR);
         }
@@ -81,13 +85,15 @@ public class AjouterHebergement {
         txtPays.clear();
         txtCapacite.clear();
         txtPrix.clear();
+        imageView.setImage(null); // Réinitialiser l'image
+        imagePath = null;
     }
 
     private boolean validateFields() {
         if (txtNom.getText().isEmpty() || txtType.getText().isEmpty() || txtAdresse.getText().isEmpty() ||
                 txtVille.getText().isEmpty() || txtPays.getText().isEmpty() || txtCapacite.getText().isEmpty() ||
-                txtPrix.getText().isEmpty()) {
-            showAlert("Erreur", "Veuillez remplir tous les champs!", Alert.AlertType.ERROR);
+                txtPrix.getText().isEmpty() || imagePath == null) {
+            showAlert("Erreur", "Veuillez remplir tous les champs et sélectionner une image!", Alert.AlertType.ERROR);
             return false;
         }
 
@@ -111,13 +117,11 @@ public class AjouterHebergement {
         alert.showAndWait();
     }
 
-    // Method to refresh the TableView
     private void refreshHebergementTable() {
         ObservableList<Hebergement> hebergementList = FXCollections.observableArrayList(service.getAll());
         hebergementTableView.setItems(hebergementList);
     }
 
-    // Setter for TableView reference
     public void setHebergementTableView(TableView<Hebergement> tableView) {
         this.hebergementTableView = tableView;
     }

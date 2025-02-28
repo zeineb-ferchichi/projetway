@@ -1,6 +1,5 @@
 package tn.esprit.models;
 
-
 public class Hebergement {
 
     private int id;
@@ -11,9 +10,11 @@ public class Hebergement {
     private String pays;
     private int capacite;
     private int prix;
+    private String image; // Ajout de l'attribut image
 
-    public Hebergement(){}
-    public Hebergement(int id, String nom, String type, String adresse, String ville, String pays, int capacite, int prix) {
+    public Hebergement() {}
+
+    public Hebergement(int id, String nom, String type, String adresse, String ville, String pays, int capacite, int prix, String image) {
         this.id = id;
         this.nom = nom;
         this.type = type;
@@ -22,10 +23,10 @@ public class Hebergement {
         this.pays = pays;
         this.capacite = capacite;
         this.prix = prix;
+        this.image = image;
     }
 
-
-    public Hebergement(String nom, String type, String adresse, String ville, String pays, int capacite, int prix) {
+    public Hebergement(String nom, String type, String adresse, String ville, String pays, int capacite, int prix, String image) {
         this.nom = nom;
         this.type = type;
         this.adresse = adresse;
@@ -33,6 +34,7 @@ public class Hebergement {
         this.pays = pays;
         this.capacite = capacite;
         this.prix = prix;
+        this.image = image;
     }
 
     public int getId() {
@@ -99,6 +101,14 @@ public class Hebergement {
         this.prix = prix;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     @Override
     public String toString() {
         return "Hebergement{" +
@@ -110,6 +120,7 @@ public class Hebergement {
                 ", pays='" + pays + '\'' +
                 ", capacite=" + capacite +
                 ", prix=" + prix +
+                ", image='" + image + '\'' +
                 '}';
     }
 }
