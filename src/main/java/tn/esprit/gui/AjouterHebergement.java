@@ -35,8 +35,19 @@ public class AjouterHebergement {
         } else {
             System.err.println("⚠ Erreur : btnSelectImage est null. Vérifiez le FXML.");
         }
-    }
 
+        loadImage();
+
+    }
+    private void loadImage() {
+        String imagePath = "C:/Users/khali/IdeaProjects/GestionHebrgement/478765722_1161037295221445_2233461229557996646_n.png";
+        File file = new File(imagePath);
+        if (file.exists()) {
+            imageView.setImage(new Image(file.toURI().toString()));
+        } else {
+            System.err.println("⚠ Image file not found at: " + imagePath);
+        }
+    }
     @FXML
     public void selectImage() {
         FileChooser fileChooser = new FileChooser();
@@ -44,10 +55,11 @@ public class AjouterHebergement {
 
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
-            Image image = new Image(selectedFile.toURI().toString());
-            imageView.setImage(image);
+            imagePath = selectedFile.getAbsolutePath(); // Stocker seulement le chemin
+            System.out.println("Image sélectionnée : " + imagePath);
         }
     }
+
 
     @FXML
     private void addHebergement() {
@@ -85,9 +97,10 @@ public class AjouterHebergement {
         txtPays.clear();
         txtCapacite.clear();
         txtPrix.clear();
-        imageView.setImage(null); // Réinitialiser l'image
+        // imageView.setImage(null); // On ne touche pas à l'image affichée
         imagePath = null;
     }
+
 
     private boolean validateFields() {
         if (txtNom.getText().isEmpty() || txtType.getText().isEmpty() || txtAdresse.getText().isEmpty() ||
@@ -120,6 +133,7 @@ public class AjouterHebergement {
     private void refreshHebergementTable() {
         ObservableList<Hebergement> hebergementList = FXCollections.observableArrayList(service.getAll());
         hebergementTableView.setItems(hebergementList);
+        loadImage();
     }
 
     public void setHebergementTableView(TableView<Hebergement> tableView) {

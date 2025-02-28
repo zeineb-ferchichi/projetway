@@ -20,9 +20,7 @@
     <VBox spacing="15" alignment="CENTER">
         <ImageView fx:id="imageView" fitWidth="300" preserveRatio="true"
                    style="-fx-border-color: #ccc; -fx-border-width: 2px; -fx-border-radius: 5px;"/>
-        <Button fx:id="btnSelectImage" text="Sélectionner une image" onAction="#selectImage"
-                style="-fx-background-color: #0D47A1; -fx-text-fill: white; -fx-font-size: 14px;
-                       -fx-padding: 8 20; -fx-background-radius: 5;"/>
+
     </VBox>
 
     <!-- Right side: Form -->
@@ -54,7 +52,12 @@
 
             <Label text="Prix :" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
             <TextField fx:id="txtPrix" GridPane.rowIndex="6" GridPane.columnIndex="1" promptText="Prix"/>
+
         </GridPane>
+
+        <Button fx:id="btnSelectImage" text="Sélectionner une image" onAction="#selectImage"
+                style="-fx-background-color: #0D47A1; -fx-text-fill: white; -fx-font-size: 14px;
+                       -fx-padding: 8 20; -fx-background-radius: 5;"/>
 
         <Button text="Ajouter" fx:id="btnAjouter" onAction="#addHebergement"
                 style="-fx-background-color: #0D47A1; -fx-text-fill: white; -fx-font-size: 16px;
