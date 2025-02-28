@@ -14,7 +14,6 @@ import tn.esprit.services.HebergementService;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.scene.control.TableView;
 
 public class ModifierHebergement implements Initializable {
 
@@ -29,8 +28,7 @@ public class ModifierHebergement implements Initializable {
     @FXML private Button btnModifier;
 
     private Hebergement hebergement;
-    private TableView<Hebergement> hebergementTableView; // Reference to TableView
-    private Runnable onModifiedCallback; // Callback to refresh the TableView
+    private Runnable onModifiedCallback; // Callback to refresh the list
     private final HebergementService hebergementService = new HebergementService();
 
     @Override
@@ -48,10 +46,9 @@ public class ModifierHebergement implements Initializable {
         }
     }
 
-    // Set the Hebergement and TableView, and pass the callback for refreshing the list
-    public void setHebergement(Hebergement hebergement, TableView<Hebergement> tableView, Runnable onModifiedCallback) {
+    // Set the Hebergement and pass the callback for refreshing the list
+    public void setHebergement(Hebergement hebergement, Runnable onModifiedCallback) {
         this.hebergement = hebergement;
-        this.hebergementTableView = tableView; // Set the TableView reference
         this.onModifiedCallback = onModifiedCallback; // Set the callback
 
         if (hebergement != null) {

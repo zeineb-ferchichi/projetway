@@ -23,10 +23,10 @@ public class AjouterHebergement {
     @FXML private TextField txtCapacite;
     @FXML private TextField txtPrix;
     @FXML private Button btnSelectImage;
-    @FXML private TableView<Hebergement> hebergementTableView;
 
     private final HebergementService service = new HebergementService();
     private String imagePath = null; // Initialisé à null
+    private Runnable refreshCallback; // Callback to refresh the parent view
 
     @FXML
     public void initialize() {
@@ -37,8 +37,8 @@ public class AjouterHebergement {
         }
 
         loadImage();
-
     }
+
     private void loadImage() {
         String imagePath = "C:/Users/khali/IdeaProjects/GestionHebrgement/478765722_1161037295221445_2233461229557996646_n.png";
         File file = new File(imagePath);
@@ -48,6 +48,7 @@ public class AjouterHebergement {
             System.err.println("⚠ Image file not found at: " + imagePath);
         }
     }
+
     @FXML
     public void selectImage() {
         FileChooser fileChooser = new FileChooser();
@@ -59,7 +60,6 @@ public class AjouterHebergement {
             System.out.println("Image sélectionnée : " + imagePath);
         }
     }
-
 
     @FXML
     private void addHebergement() {
@@ -82,7 +82,12 @@ public class AjouterHebergement {
 
             service.add(hebergement);
             showAlert("Succès", "Hébergement ajouté avec succès!", Alert.AlertType.INFORMATION);
-            refreshHebergementTable();
+
+            // Call the refresh callback to update the parent view
+            if (refreshCallback != null) {
+                refreshCallback.run();
+            }
+
             clearFields();
         } catch (NumberFormatException e) {
             showAlert("Erreur", "Capacité et Prix doivent être des nombres valides!", Alert.AlertType.ERROR);
@@ -97,10 +102,8 @@ public class AjouterHebergement {
         txtPays.clear();
         txtCapacite.clear();
         txtPrix.clear();
-        // imageView.setImage(null); // On ne touche pas à l'image affichée
         imagePath = null;
     }
-
 
     private boolean validateFields() {
         if (txtNom.getText().isEmpty() || txtType.getText().isEmpty() || txtAdresse.getText().isEmpty() ||
@@ -130,13 +133,8 @@ public class AjouterHebergement {
         alert.showAndWait();
     }
 
-    private void refreshHebergementTable() {
-        ObservableList<Hebergement> hebergementList = FXCollections.observableArrayList(service.getAll());
-        hebergementTableView.setItems(hebergementList);
-        loadImage();
-    }
-
-    public void setHebergementTableView(TableView<Hebergement> tableView) {
-        this.hebergementTableView = tableView;
+    // Set the refresh callback
+    public void setRefreshCallback(Runnable refreshCallback) {
+        this.refreshCallback = refreshCallback;
     }
 }

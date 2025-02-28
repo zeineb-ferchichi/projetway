@@ -4,10 +4,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import tn.esprit.models.Hebergement;
 import tn.esprit.services.HebergementService;
@@ -17,89 +18,34 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
-
 public class AfficherHebergement {
 
-    @FXML private TableView<Hebergement> listHebergements;
-    @FXML private TableColumn<Hebergement, String> nomCol;
-    @FXML private TableColumn<Hebergement, String> typeCol;
-    @FXML private TableColumn<Hebergement, String> adresseCol;
-    @FXML private TableColumn<Hebergement, String> villeCol;
-    @FXML private TableColumn<Hebergement, String> paysCol;
-    @FXML private TableColumn<Hebergement, Integer> capaciteCol;
-    @FXML private TableColumn<Hebergement, Integer> prixCol;
-    @FXML private TableColumn<Hebergement, Void> actionsCol;
-    @FXML private ImageView imageView;
-
-    @FXML private Button btnAjouter;
-    @FXML private Button btnRefresh;
-    @FXML private TextField searchField; // Ajout du champ de recherche
-    @FXML private Button searchButton; // Bouton de recherche
-    @FXML private Button sortPriceButton;
-
+    @FXML private TilePane gridHebergements; // Grid for displaying hébergements
+    @FXML private ImageView imageView; // Header image
+    @FXML private Button btnAjouter; // Add button
+    @FXML private TextField searchField; // Search field
+    @FXML private Button searchButton; // Search button
+    @FXML private Button sortPriceButton; // Sort by price button
 
     private final HebergementService hebergementService = new HebergementService();
     private boolean ascendingOrder = true;
 
     @FXML
     public void initialize() {
-        if (listHebergements == null) {
-            System.err.println("Error: listHebergements is null. Check FXML fx:id!");
+        if (gridHebergements == null) {
+            System.err.println("Error: gridHebergements is null. Check FXML fx:id!");
             return;
         }
 
-        // Charger l'image d'en-tête
+        // Load the header image
         loadImage();
 
-        // Liaison des colonnes aux propriétés des objets Hebergement
-        nomCol.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
-        adresseCol.setCellValueFactory(new PropertyValueFactory<>("adresse"));
-        villeCol.setCellValueFactory(new PropertyValueFactory<>("ville"));
-        paysCol.setCellValueFactory(new PropertyValueFactory<>("pays"));
-        capaciteCol.setCellValueFactory(new PropertyValueFactory<>("capacite"));
-        prixCol.setCellValueFactory(new PropertyValueFactory<>("prix"));
-
-        // Ajout des boutons Modifier et Supprimer
-        actionsCol.setCellFactory(col -> new TableCell<>() {
-            private final Button deleteButton = new Button("🗑 Supprimer");
-            private final Button editButton = new Button("✏ Modifier");
-            private final HBox buttonContainer = new HBox(10, editButton, deleteButton);
-
-            {
-                deleteButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;");
-                editButton.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold;");
-
-                deleteButton.setOnAction(event -> {
-                    Hebergement hebergement = getTableRow().getItem();
-                    if (hebergement != null) {
-                        deleteHebergement(hebergement);
-                    }
-                });
-
-                editButton.setOnAction(event -> {
-                    Hebergement hebergement = getTableRow().getItem();
-                    if (hebergement != null) {
-                        openModifierHebergement(hebergement);
-                    }
-                });
-            }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                setGraphic(empty ? null : buttonContainer);
-            }
-        });
-
-        // Charger la liste des hébergements
+        // Load the list of hébergements into the grid
         loadHebergements();
 
-        // Ajouter l'action de recherche
+        // Add search action
         searchButton.setOnAction(event -> handleSearch());
         sortPriceButton.setOnAction(event -> handleSortByPrice());
-
     }
 
     private void loadImage() {
@@ -113,16 +59,64 @@ public class AfficherHebergement {
     }
 
     private void loadHebergements() {
-        listHebergements.getItems().clear();
+        gridHebergements.getChildren().clear(); // Clear the grid
         List<Hebergement> hebergements = hebergementService.getAll();
-        listHebergements.getItems().addAll(hebergements);
+        for (Hebergement hebergement : hebergements) {
+            VBox gridItem = createGridItem(hebergement);
+            gridHebergements.getChildren().add(gridItem);
+        }
+    }
+
+    private VBox createGridItem(Hebergement hebergement) {
+        VBox item = new VBox(0);
+        item.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 10px; -fx-border-radius: 5px; -fx-border-color: #ccc;");
+
+        // Add image
+        ImageView itemImageView = new ImageView();
+        itemImageView.setFitWidth(150);
+        itemImageView.setFitHeight(100);
+        if (hebergement.getImage() != null) {
+            File imageFile = new File(hebergement.getImage());
+            if (imageFile.exists()) {
+                itemImageView.setImage(new Image(imageFile.toURI().toString()));
+            }
+        }
+
+        // Add labels for details
+        Label nameLabel = new Label(hebergement.getNom());
+        nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+
+
+        Label villePaysLabel = new Label("Ville: " + hebergement.getVille() + ", Pays: " + hebergement.getPays());
+        villePaysLabel.setStyle("-fx-font-size: 12px;");
+
+        Label priceLabel = new Label("Prix: " + hebergement.getPrix() + " DT");
+        priceLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #4CAF50;");
+
+        // Add buttons for actions
+        HBox buttonContainer = new HBox(10);
+        Button deleteButton = new Button("🗑 Supprimer");
+        Button editButton = new Button("✏ Modifier");
+
+        deleteButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;");
+        editButton.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold;");
+
+        deleteButton.setOnAction(event -> deleteHebergement(hebergement));
+        editButton.setOnAction(event -> openModifierHebergement(hebergement));
+
+        buttonContainer.getChildren().addAll(editButton, deleteButton);
+
+        // Add all elements to the VBox
+        item.getChildren().addAll(itemImageView, nameLabel, villePaysLabel, priceLabel, buttonContainer);
+        return item;
     }
 
     @FXML
     private void handleSearch() {
         String searchText = searchField.getText().trim().toLowerCase();
         if (searchText.isEmpty()) {
-            loadHebergements(); // Recharger tous les hébergements si le champ est vide
+            loadHebergements(); // Reload all hébergements if the search field is empty
             return;
         }
 
@@ -130,13 +124,16 @@ public class AfficherHebergement {
                 .filter(h -> h.getPays().toLowerCase().contains(searchText))
                 .collect(Collectors.toList());
 
-        listHebergements.getItems().clear();
-        listHebergements.getItems().addAll(filteredList);
+        gridHebergements.getChildren().clear();
+        for (Hebergement hebergement : filteredList) {
+            VBox gridItem = createGridItem(hebergement);
+            gridHebergements.getChildren().add(gridItem);
+        }
     }
 
     private void deleteHebergement(Hebergement hebergement) {
-        hebergementService.delete(hebergement.getId()); // Supprimer l'hébergement
-        loadHebergements(); // Rafraîchir la liste
+        hebergementService.delete(hebergement.getId()); // Delete the hébergement
+        loadHebergements(); // Refresh the grid
     }
 
     private void openModifierHebergement(Hebergement hebergement) {
@@ -145,7 +142,7 @@ public class AfficherHebergement {
             Scene scene = new Scene(loader.load());
 
             ModifierHebergement controller = loader.getController();
-            controller.setHebergement(hebergement, listHebergements, this::refreshHebergements);
+            controller.setHebergement(hebergement, this::refreshHebergements); // Pass the callback
 
             Stage newStage = new Stage();
             newStage.setTitle("Modifier un Hébergement");
@@ -167,7 +164,7 @@ public class AfficherHebergement {
             Scene scene = new Scene(loader.load());
 
             AjouterHebergement ajouterController = loader.getController();
-            ajouterController.setHebergementTableView(listHebergements);
+            ajouterController.setRefreshCallback(this::refreshHebergements);
 
             Stage newStage = new Stage();
             newStage.setTitle("Ajouter un Hébergement");
@@ -181,11 +178,17 @@ public class AfficherHebergement {
 
     @FXML
     private void handleSortByPrice() {
-        listHebergements.getItems().setAll(listHebergements.getItems().stream()
+        List<Hebergement> sortedList = hebergementService.getAll().stream()
                 .sorted((h1, h2) -> ascendingOrder
                         ? Integer.compare(h1.getPrix(), h2.getPrix())
                         : Integer.compare(h2.getPrix(), h1.getPrix()))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
+
+        gridHebergements.getChildren().clear();
+        for (Hebergement hebergement : sortedList) {
+            VBox gridItem = createGridItem(hebergement);
+            gridHebergements.getChildren().add(gridItem);
+        }
 
         ascendingOrder = !ascendingOrder;
     }
