@@ -18,6 +18,59 @@
     -fx-alignment: center;
     -fx-padding: 15px;
 }
+.button-modifier {
+    -fx-background-color: #4682B4;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+.button-modifier {
+    -fx-background-color: #1E90FF;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 6px 12px;
+}
+
+.button-supprimer {
+    -fx-background-color: #B22222;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 6px 12px;
+}
+
+.button-supprimer {
+    -fx-background-color: #8B0000;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+VBox {
+    -fx-spacing: 15;
+}
+.root {
+    -fx-background-image: url("backrgound.png");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+
+
+
+HBox {
+    -fx-spacing: 10;
+}
+
+Label {
+    -fx-font-family: "Arial";
+}
+.button {
+    -fx-padding: 10px 20px;
+    -fx-margin: 10px; /* Ajoute de l'espace entre les boutons */
+}
+
+Button {
+    -fx-font-size: 14px;
+    -fx-padding: 8px 12px;
+    -fx-border-radius: 5;
+}
 
 .logo {
     -fx-fit-height: 80px;

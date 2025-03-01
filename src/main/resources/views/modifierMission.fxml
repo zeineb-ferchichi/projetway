@@ -34,8 +34,8 @@
             <Label text="Date de fin:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
             <DatePicker fx:id="DPDateFin" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="200"/>
 
-            <Label text="Statut:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
-            <ComboBox fx:id="cbStatut" GridPane.columnIndex="1" GridPane.rowIndex="4" prefWidth="200"/>
+            <ComboBox fx:id="cbStatut" />
+
         </GridPane>
 
         <!-- Bouton de mise à jour -->

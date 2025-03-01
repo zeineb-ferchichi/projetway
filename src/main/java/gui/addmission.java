@@ -2,10 +2,7 @@ package gui;
 
 import entities.Mission;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import services.MissionService;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.FXML;
@@ -26,6 +23,8 @@ public class addmission {
 
     @FXML
     private DatePicker DPDateDebut;
+    @FXML
+    private Button btnAjouter;
 
     @FXML
     private DatePicker DPDateFin;
@@ -34,28 +33,60 @@ public class addmission {
 
     private final MissionService missionService = new MissionService();
 
+
     @FXML
     private void ajouterMission() {
-        String nom = TFNomMission.getText();
-        String description = TFDescription.getText();
+        String nomMission = TFNomMission.getText().trim();
+        String description = TFDescription.getText().trim();
         LocalDate dateDebut = DPDateDebut.getValue();
         LocalDate dateFin = DPDateFin.getValue();
-        String selectedStatut = cbStatut.getValue(); // Get selected status
 
-        if (nom.isEmpty() || description.isEmpty() || dateDebut == null || dateFin == null || selectedStatut == null) {
+        if (nomMission.isEmpty() || description.isEmpty() || dateDebut == null || dateFin == null) {
             showAlert("Erreur", "Veuillez remplir tous les champs !");
             return;
         }
 
-        // Convert String to Enum (if using Enum)
-        StatutTermint statut = StatutTermint.valueOf(selectedStatut);
+        if (dateDebut.isBefore(LocalDate.now())) {
+            showAlert("Erreur", "La date de début ne peut pas être dans le passé !");
+            return;
+        }
 
-        // Create and save mission
-        Mission newMission = new Mission(0, nom, dateDebut, dateFin, description, statut);
-        missionService.add(newMission);
+        if (dateDebut.isAfter(dateFin)) {
+            showAlert("Erreur", "La date de début doit être avant la date de fin !");
+            return;
+        }
+        StatutTermint statut;
+        LocalDate today = LocalDate.now();
 
-        showAlert("Succès", "✅ Mission ajoutée avec statut: " + statut);
+        if (today.isBefore(dateDebut)) {
+            statut = StatutTermint.EN_ATTENTE; // Avant la date de début
+        } else if (today.isEqual(dateDebut) || (today.isAfter(dateDebut) && today.isBefore(dateFin))) {
+            statut = StatutTermint.EN_COURS; // Pendant la période de la mission
+        } else {
+            statut = StatutTermint.TERMINE; // Après la date de fin
+        }
+
+
+
+
+        Mission nouvelleMission = new Mission(nomMission, dateDebut, dateFin, description, statut);
+        missionService.add(nouvelleMission);
+
+        showAlert("Succès", "✅ Mission ajoutée avec succès !");
+// ✅ Rafraîchir automatiquement la liste dans AfficherMission
+        if (AfficherMission.afficherMissionsInstance != null) {
+            AfficherMission.afficherMissionsInstance.rafraichirListeMissions();
+        } else {
+            System.out.println("⚠ AfficherMission n'est pas initialisé !");
+        }
+
+// ✅ Fermer la fenêtre après l'ajout
+        Stage stage = (Stage) btnAjouter.getScene().getWindow();
+        stage.close();
     }
+
+
+
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -77,6 +108,7 @@ public class addmission {
         } catch (IOException e) {
             System.out.println("❌ Erreur lors de l'ouverture de la fenêtre d'affichage : " + e.getMessage());
         }
+
     }
 
 }

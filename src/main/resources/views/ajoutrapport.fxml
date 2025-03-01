@@ -1,46 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/23.0.1"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="gui.AjoutRapportController">
+<?import javafx.scene.control.Tooltip?>
+<AnchorPane prefHeight="297.0" prefWidth="492.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AjoutRapportController">
     <children>
         <!-- Conteneur principal -->
-        <VBox spacing="10" alignment="CENTER" layoutX="50.0" layoutY="30.0">
-            <Label text="Ajouter un Rapport" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+        <VBox alignment="CENTER" layoutX="14.0" prefHeight="277.0" prefWidth="478.0" spacing="10">
+            <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Ajouter un Rapport" />
+            <TextField fx:id="tfNomRapport">
+                <tooltip>
+                    <Tooltip text="Seuls les lettres sont autorisées" />
+                </tooltip>
+            </TextField>
+
 
             <!-- Libellé du rapport -->
             <HBox spacing="10">
-                <Label text="Libellé:"/>
-                <TextField fx:id="TFLibelle"/>
+                <Label text="Libellé:" />
+                <TextField fx:id="TFLibelle" />
             </HBox>
 
             <!-- Date d'exposition -->
-            <HBox spacing="10">
-                <Label text="Date d'exposition:"/>
-                <DatePicker fx:id="DPDateExpo"/>
-            </HBox>
+
 
             <!-- Sélection de fichiers -->
             <HBox spacing="10">
-                <Label text="Ressources:"/>
-                <ListView fx:id="LVFiles" prefHeight="100"/>
-                <Button text="📂 Ajouter Fichier" onAction="#addFile"/>
+                <Label text="Ressources:" />
+                <ListView fx:id="LVFiles" prefHeight="100" />
+                <Button onAction="#addFile" text="📂 Ajouter Fichier" />
             </HBox>
 
             <!-- Sélection de la mission associée -->
             <HBox spacing="10">
-                <Label text="Mission associée:"/>
-                <ComboBox fx:id="cbMission"/>
+                <Label text="Mission associée:" />
+                <ComboBox fx:id="cbMission" />
             </HBox>
 
             <!-- Boutons d'action -->
             <HBox spacing="15">
-                <Button fx:id="btnAjouter" text="✅ Ajouter" onAction="#ajouterRapport" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
-                <Button fx:id="btnAnnuler" text="❌ Annuler" onAction="#annuler" style="-fx-background-color: #FF5252; -fx-text-fill: white;"/>
+                <Button fx:id="btnAjouter" onAction="#ajouterRapport" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="✅ Ajouter" />
+                <Button fx:id="btnAnnuler" onAction="#annuler" style="-fx-background-color: #FF5252; -fx-text-fill: white;" text="❌ Annuler" />
             </HBox>
         </VBox>
     </children>

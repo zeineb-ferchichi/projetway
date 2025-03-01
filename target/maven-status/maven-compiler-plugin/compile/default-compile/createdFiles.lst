@@ -2,6 +2,7 @@ services\MissionService.class
 gui\ModifierMission.class
 entities\Mission.class
 entities\StatutTermint.class
+util\InputValidation.class
 gui\AfficherRapportController.class
 services\RapportService.class
 org\example\Main.class

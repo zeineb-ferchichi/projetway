@@ -25,9 +25,20 @@ public class ModifierRapportController {
     private DatePicker DPDateCreation;
 
     @FXML
+    private DatePicker DPDateExp;
+
+    @FXML
     private TextField TFFichier;
+    private Rapport rapport;
 
     private RapportService rapportService = new RapportService();
+
+    private void remplirChamps() {
+        if (rapport != null) {
+            TFNomRapport.setText(rapport.getLibelleR());
+            DPDateExp.setValue(rapport.getDateExpo());
+        }
+    }
 
     // ✅ Méthode pour choisir un fichier
     @FXML
@@ -43,31 +54,41 @@ public class ModifierRapportController {
     // ✅ Méthode pour mettre à jour le rapport
     @FXML
     private void updateRapport() {
-        if (TFNomRapport.getText().isEmpty() || DPDateCreation.getValue() == null || TFFichier.getText().isEmpty()) {
-            showAlert("Erreur", "Veuillez remplir tous les champs !");
+        if (DPDateCreation == null) {
+            System.out.println("❌ DPDateCreation est NULL !");
             return;
         }
 
-        // ✅ Mettre à jour les données du rapport
-        rapportActuel.setLibelleR(TFNomRapport.getText());
-        rapportActuel.setDateExpo(DPDateCreation.getValue()); // Pas besoin de conversion !
-        rapportActuel.setRessources(new ArrayList<>(rapportActuel.getRessources())); // 🔄 Convertit en liste modifiable
-        rapportActuel.getRessources().clear();
-        rapportActuel.getRessources().add(TFFichier.getText());
+        if (DPDateCreation.getValue() == null) {
+            DPDateCreation.setValue(LocalDate.now()); // 📌 Définit la date actuelle si elle est vide
+        }
 
-        // ✅ Mise à jour en base
-        rapportService.update(rapportActuel);
+        LocalDate dateCreation = DPDateCreation.getValue();
+        String nom = TFNomRapport.getText().trim();
+        String fichierJoint = TFFichier.getText().trim(); // ✅ Utiliser TFFichier au lieu de TFFilePath
 
-        System.out.println("✅ Mise à jour effectuée !");
+        if (nom.isEmpty()) {
+            showAlert("Erreur", "Veuillez saisir un nom de rapport !");
+            return;
+        }
+
+        rapport.setLibelleR(nom);
+        rapport.setDateExpo(dateCreation);
+
+        if (!fichierJoint.isEmpty()) {
+            rapport.getRessources().clear();
+            rapport.getRessources().add(fichierJoint);
+        }
+
+        rapportService.update(rapport);
         showAlert("Succès", "Rapport mis à jour avec succès !");
-        Stage stage = (Stage) TFNomRapport.getScene().getWindow();
-        stage.close();  // ✅ Ferme la fenêtre de modification
 
-// ✅ Rafraîchir la liste dans AfficherRapportController
-        AfficherRapportController controller = new AfficherRapportController();
-        controller.rafraichirListe();
-
+        // 🔄 Fermer la fenêtre après mise à jour
+        Stage stage = (Stage) TFFichier.getScene().getWindow(); // ✅ Correction ici
+        stage.close();
     }
+
+
 
     // ✅ Méthode d'affichage d'une alerte
     private void showAlert(String titre, String message) {
@@ -77,30 +98,39 @@ public class ModifierRapportController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+    public void setRapportData(Rapport rapport) {
+        this.rapport = rapport;
+        remplirChamps(); // Remplit les champs avec les données du rapport sélectionné
+    }
+
     @FXML
     private void initialize() {
-        System.out.println("✅ Initialisation des champs FXML...");
-    }
+        System.out.println("✅ Initialisation de ModifierRapportController...");
 
-    public void setRapportData(Rapport rapport) {
-        if (TFNomRapport == null || DPDateCreation == null || TFFichier == null) {
-            System.out.println("❌ Les champs FXML ne sont pas encore initialisés !");
-            return;
-        }
-
-        this.rapportActuel = rapport;
-        System.out.println("✅ Rapport transmis : " + rapport.getLibelleR());
-
-        // ✅ Conversion correcte de la date
-        if (rapport.getDateExpo() != null) {
-            DPDateCreation.setValue(rapport.getDateExpo());
+        if (DPDateCreation != null) {
+            System.out.println("✅ DPDateCreation est bien initialisé.");
         } else {
-            DPDateCreation.setValue(null);
+            System.out.println("❌ DPDateCreation est NULL !");
         }
-
-        // ✅ Ajouter le chemin du fichier joint si disponible
-        TFFichier.setText(rapport.getRessources().isEmpty() ? "" : rapport.getRessources().get(0));
     }
+    @FXML
+    public void setRapport(Rapport rapport) {
+        this.rapport = rapport;
+
+        if (rapport != null) {
+            TFNomRapport.setText(rapport.getLibelleR());
+
+            // 📌 Mettre automatiquement la date actuelle s'il n'y a pas de date définie
+            if (rapport.getDateExpo() != null) {
+                DPDateCreation.setValue(rapport.getDateExpo());
+            } else {
+                DPDateCreation.setValue(LocalDate.now());
+            }
+
+            TFFilePath.setText(rapport.getRessources().isEmpty() ? "" : String.join(", ", rapport.getRessources()));
+        }
+    }
+
 }
 
 

@@ -50,25 +50,13 @@
             </HBox>
 
             <!-- Sélection du statut -->
-            <HBox spacing="20">
-                <Label text="Statut" styleClass="field-label"/>
-                <ComboBox fx:id="cbStatut" styleClass="custom-combobox">
-                    <items>
-                        <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="EN_COURS"/>
-                            <String fx:value="TERMINE"/>
-                            <String fx:value="EN_ATTENTE"/>
-                        </FXCollections>
-                    </items>
-                </ComboBox>
-            </HBox>
+
 
         </VBox>
 
         <!-- Boutons centrés et bien espacés -->
         <HBox spacing="30" layoutX="180.0" layoutY="380.0">
-            <Button text="Ajouter" styleClass="custom-button" onAction="#ajouterMission"/>
-            <Button text="Afficher" styleClass="custom-button-secondary" onAction="#afficherMissions"/>
+            <Button text="Ajouter" styleClass="icon-button" onAction="#ajouterMission"/>
         </HBox>
 
     </children>

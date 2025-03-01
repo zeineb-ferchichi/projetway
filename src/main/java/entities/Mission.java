@@ -29,6 +29,19 @@ public class Mission {
         this.statut = statut;
 
     }
+    public int getId() {
+        return this.idMission;
+    }
+
+    // ✅ Constructeur avec statut (Utilisé pour INSERT avec statut initial)
+    public Mission(String nomMission, LocalDate date_deb, LocalDate date_fin, String description, StatutTermint statut) {
+        this.nomMission = nomMission;
+        this.date_deb = date_deb;
+        this.date_fin = date_fin;
+        this.description = description;
+        this.statut = statut;
+    }
+
 
     // ✅ Constructeur sans ID (Utilisé pour INSERT)
     public Mission(String nomMission, LocalDate date_deb, LocalDate date_fin, String description) {
@@ -92,12 +105,6 @@ public class Mission {
 
     @Override
     public String toString() {
-        return "Mission{" +
-                "idMission=" + idMission +
-                ", nomMission='" + nomMission + '\'' +
-                ", date_deb=" + date_deb +
-                ", date_fin=" + date_fin +
-                ", description='" + description + '\'' +
-                '}';
+        return nomMission; // Affiche uniquement le nom de la mission
     }
 }

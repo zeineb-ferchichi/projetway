@@ -44,7 +44,29 @@ public class MissionService implements IService<Mission> {
             System.out.println("❌ Erreur lors de l'ajout de la mission: " + e.getMessage());
         }
     }
+    public List<Mission> getAllMissions() {
+        List<Mission> missions = new ArrayList<>();
+        String query = "SELECT idMission, nomMission, date_deb, date_fin, description, statut FROM mission";
 
+        try (PreparedStatement ps = conn.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Mission mission = new Mission(
+                        rs.getInt("idMission"),
+                        rs.getString("nomMission"),
+                        rs.getDate("date_deb").toLocalDate(),
+                        rs.getDate("date_fin").toLocalDate(),
+                        rs.getString("description"),
+                        StatutTermint.valueOf(rs.getString("statut")) // Conversion String -> Enum
+                );
+                missions.add(mission);
+            }
+        } catch (Exception e) {
+            System.err.println("❌ Erreur lors de la récupération des missions : " + e.getMessage());
+        }
+        return missions;
+    }
 
     @Override
     public Mission getById(int id) {
@@ -67,6 +89,40 @@ public class MissionService implements IService<Mission> {
         }
         return null;
     }
+    public void mettreAJourStatutMissions() {
+        List<Mission> missions = getAll(); // Récupère toutes les missions
+        LocalDate today = LocalDate.now();
+
+        for (Mission mission : missions) {
+            if (mission.getDate_deb().isAfter(today)) {
+                mission.setStatut(StatutTermint.EN_ATTENTE);
+            } else if (!mission.getDate_deb().isAfter(today) && !mission.getDate_fin().isBefore(today)) {
+                mission.setStatut(StatutTermint.EN_COURS);
+            } else {
+                mission.setStatut(StatutTermint.TERMINE);
+            }
+
+            // ✅ Mise à jour dans la base de données
+            update(mission);
+        }
+    }
+    public void mettreAJourStatuts() {
+        List<Mission> missions = getAll();
+        LocalDate today = LocalDate.now();
+
+        for (Mission mission : missions) {
+            if (today.isAfter(mission.getDate_fin()) && mission.getStatut() != StatutTermint.TERMINE) {
+                mission.setStatut(StatutTermint.TERMINE);
+                update(mission);
+            } else if ((today.isEqual(mission.getDate_deb()) || (today.isAfter(mission.getDate_deb()) && today.isBefore(mission.getDate_fin())))
+                    && mission.getStatut() != StatutTermint.EN_COURS) {
+                mission.setStatut(StatutTermint.EN_COURS);
+                update(mission);
+            }
+        }
+    }
+
+
 
 
     @Override
@@ -151,4 +207,18 @@ public class MissionService implements IService<Mission> {
             System.out.println("❌ Erreur lors de la mise à jour de la mission : " + e.getMessage());
         }
     }
+    public void updateStatutMissions() {
+        List<Mission> missions = getAll();
+        LocalDate today = LocalDate.now();
+
+        for (Mission mission : missions) {
+            if (today.isAfter(mission.getDate_deb()) && today.isBefore(mission.getDate_fin())) {
+                mission.setStatut(StatutTermint.EN_COURS);
+            } else if (today.isAfter(mission.getDate_fin())) {
+                mission.setStatut(StatutTermint.TERMINE);
+            }
+            update(mission); // ✅ Mise à jour de la mission dans la base de données
+        }
+    }
+
 }

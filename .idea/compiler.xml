@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="WorkshopJDBC3A20" />
         <module name="projetwayMission" />
+        <module name="projetway" />
       </profile>
     </annotationProcessing>
   </component>
