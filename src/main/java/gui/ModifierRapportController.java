@@ -127,7 +127,7 @@ public class ModifierRapportController {
                 DPDateCreation.setValue(LocalDate.now());
             }
 
-            TFFilePath.setText(rapport.getRessources().isEmpty() ? "" : String.join(", ", rapport.getRessources()));
+            TFFichier.setText(rapport.getRessources().isEmpty() ? "" : String.join(", ", rapport.getRessources()));
         }
     }
 
