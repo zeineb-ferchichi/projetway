@@ -113,23 +113,22 @@ public class ModifierRapportController {
             System.out.println("❌ DPDateCreation est NULL !");
         }
     }
-    @FXML
     public void setRapport(Rapport rapport) {
         this.rapport = rapport;
 
         if (rapport != null) {
             TFNomRapport.setText(rapport.getLibelleR());
 
-            // 📌 Mettre automatiquement la date actuelle s'il n'y a pas de date définie
             if (rapport.getDateExpo() != null) {
                 DPDateCreation.setValue(rapport.getDateExpo());
             } else {
                 DPDateCreation.setValue(LocalDate.now());
             }
 
-            TFFichier.setText(rapport.getRessources().isEmpty() ? "" : String.join(", ", rapport.getRessources()));
+            TFFichier.setText(rapport.getRessources().isEmpty() ? "" : String.join(", ", rapport.getRessources())); // ✅ Correction ici
         }
     }
+
 
 }
 
