@@ -117,17 +117,22 @@ public class ModifierRapportController {
         this.rapport = rapport;
 
         if (rapport != null) {
-            TFNomRapport.setText(rapport.getLibelleR());
-
-            if (rapport.getDateExpo() != null) {
-                DPDateCreation.setValue(rapport.getDateExpo());
-            } else {
-                DPDateCreation.setValue(LocalDate.now());
+            if (TFNomRapport != null) {
+                TFNomRapport.setText(rapport.getLibelleR());
             }
 
-            TFFichier.setText(rapport.getRessources().isEmpty() ? "" : String.join(", ", rapport.getRessources())); // ✅ Correction ici
+            if (DPDateCreation != null) {
+                DPDateCreation.setValue(rapport.getDateExpo() != null ? rapport.getDateExpo() : LocalDate.now());
+            }
+
+            if (TFFichier != null) {
+                TFFichier.setText(rapport.getRessources() != null && !rapport.getRessources().isEmpty()
+                        ? String.join(", ", rapport.getRessources())
+                        : "");
+            }
         }
     }
+
 
 
 }

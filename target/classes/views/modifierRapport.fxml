@@ -27,7 +27,7 @@
             <Button text="📂 Parcourir" onAction="#choisirFichier" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
         </GridPane>
 
-        <!-- Bouton de mise à jour -->
+        <!-- Bouton de mise à jour -->Q
         <Button text="Mettre à jour"
                 layoutX="90"
                 layoutY="200"
