@@ -17,7 +17,7 @@ public class TestFX extends Application {
         DBConnection.getInstance();  // This will initialize the connection
 
         // Load the FXML and show the scene
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Main.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherHebergement.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);

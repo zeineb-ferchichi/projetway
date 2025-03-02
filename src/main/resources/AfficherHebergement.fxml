@@ -55,16 +55,16 @@
                             style="-fx-background-color: #007BFF; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;"/>
                 </HBox>
 
-                <!-- Pagination -->
-                <Pagination fx:id="pagination" pageCount="1" style="-fx-padding: 10px;"/>
+                <TilePane fx:id="gridHebergements"
+                          style="-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 10px;"
+                          hgap="40" vgap="10" prefColumns="4" prefTileWidth="200" prefTileHeight="200">
+                    <!-- Items will be added dynamically in the controller -->
+                </TilePane>
             </VBox>
+
         </HBox>
 
         <!-- Grid Section -->
-        <TilePane fx:id="gridHebergements"
-                  style="-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 10px;"
-                  hgap="40" vgap="10" prefColumns="4" prefTileWidth="200" prefTileHeight="200">
-            <!-- Items will be added dynamically in the controller -->
-        </TilePane>
+
     </VBox>
 </ScrollPane>
