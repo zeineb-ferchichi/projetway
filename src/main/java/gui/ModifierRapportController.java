@@ -15,7 +15,6 @@ import java.util.ArrayList;
 public class ModifierRapportController {
 
     // ✅ Référence au rapport sélectionné
-    private Rapport rapportActuel;
 
     // ✅ Injection des champs du formulaire
     @FXML
@@ -107,12 +106,17 @@ public class ModifierRapportController {
     private void initialize() {
         System.out.println("✅ Initialisation de ModifierRapportController...");
 
-        if (DPDateCreation != null) {
-            System.out.println("✅ DPDateCreation est bien initialisé.");
-        } else {
+        if (TFNomRapport == null) {
+            System.out.println("❌ TFNomRapport est NULL !");
+        }
+        if (DPDateCreation == null) {
             System.out.println("❌ DPDateCreation est NULL !");
         }
+        if (TFFichier == null) {
+            System.out.println("❌ TFFichier est NULL !");
+        }
     }
+
     public void setRapport(Rapport rapport) {
         this.rapport = rapport;
 
