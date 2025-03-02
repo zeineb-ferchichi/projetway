@@ -6,10 +6,11 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.embed.swing.SwingFXUtils; // Importation du module javafx.embed.swing
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Hashtable;
 
 public class QRCodeGenerator {
@@ -36,5 +37,17 @@ public class QRCodeGenerator {
         }
     }
 
+    public static byte[] imageToByteArray(javafx.scene.image.Image image) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try {
+            // Convertir l'image JavaFX en BufferedImage
+            java.awt.image.BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
 
+            // Écrire l'image dans le flux de sortie
+            javax.imageio.ImageIO.write(bufferedImage, "PNG", outputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return outputStream.toByteArray();
+    }
 }

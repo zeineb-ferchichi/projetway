@@ -47,7 +47,28 @@
             <version>3.4.1</version> <!-- ou une autre version de ZXing -->
         </dependency>
 
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>kernel</artifactId>
+            <version>7.2.5</version> <!-- Utilisez la dernière version stable -->
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>layout</artifactId>
+            <version>7.2.5</version>
+        </dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.36</version> <!-- Utilisez la dernière version stable -->
+        </dependency>
+
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-swing</artifactId>
+        <version>17.0.2</version> <!-- Module pour l'intégration avec Swing -->
+    </dependency>
 
     </dependencies>
 

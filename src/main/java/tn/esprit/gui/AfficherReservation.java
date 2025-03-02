@@ -8,11 +8,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import tn.esprit.models.Hebergement;
 import tn.esprit.models.Reservation;
 import tn.esprit.services.HebergementService;
 import tn.esprit.services.ReservationService;
+import tn.esprit.util.PDFGenerator;
 import tn.esprit.util.QRCodeGenerator;
 
 import java.io.IOException;
@@ -60,35 +63,7 @@ public class AfficherReservation implements Initializable {
         });
 
         // Initialiser les actions pour modifier ou supprimer une réservation
-        actionsCol.setCellFactory(param -> new TableCell<>() {
-            private final Button deleteButton = new Button("Supprimer");
-            private final Button editButton = new Button("Modifier");
-
-            {
-                editButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
-                deleteButton.setStyle("-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-weight: bold;");
-
-                editButton.setOnAction(event -> {
-                    Reservation reservation = getTableRow().getItem();
-                    if (reservation != null) {
-                        openModifierReservation(reservation);
-                    }
-                });
-
-                deleteButton.setOnAction(event -> {
-                    Reservation reservation = getTableRow().getItem();
-                    if (reservation != null) {
-                        supprimerReservation(reservation);
-                    }
-                });
-            }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                setGraphic(empty ? null : new javafx.scene.layout.HBox(5, editButton, deleteButton));
-            }
-        });
+        actionsCol.setCellFactory(createActionsCellFactory());
 
         // Charger les réservations au démarrage
         loadReservations();
@@ -170,7 +145,6 @@ public class AfficherReservation implements Initializable {
         tableReservations.setItems(filteredReservations); // Update the TableView
     }
 
-
     private void displayQRCode(Reservation reservation) {
         String reservationDetails = "Client: " + reservation.getClientName() + "\n" +
                 "Début: " + reservation.getDateDebut() + "\n" +
@@ -212,5 +186,75 @@ public class AfficherReservation implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void handlePDF(Reservation reservation) {
+        if (reservation != null) {
+            // Générer le PDF dans un emplacement spécifique
+            String filePath = "C:/Users/khali/Documents/reservation_ticket.pdf";
+            PDFGenerator.generatePDF(reservation, filePath);
+
+            // Afficher un message de succès
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("PDF Généré");
+            alert.setHeaderText(null);
+            alert.setContentText("Le ticket de réservation a été généré avec succès : " + filePath);
+            alert.showAndWait();
+        } else {
+            // Afficher un message d'erreur si aucune réservation n'est sélectionnée
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Aucune Réservation Sélectionnée");
+            alert.setHeaderText(null);
+            alert.setContentText("Veuillez sélectionner une réservation pour générer le PDF.");
+            alert.showAndWait();
+        }
+    }
+
+    public Callback<TableColumn<Reservation, Void>, TableCell<Reservation, Void>> createActionsCellFactory() {
+        return param -> new TableCell<>() {
+            private final Button editButton = new Button("Modifier");
+            private final Button deleteButton = new Button("Supprimer");
+            private final Button pdfButton = new Button("PDF");
+
+            {
+                // Styles des boutons
+                editButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
+                deleteButton.setStyle("-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-weight: bold;");
+                pdfButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;");
+
+                // Actions des boutons
+                editButton.setOnAction(event -> {
+                    Reservation reservation = getTableRow().getItem();
+                    if (reservation != null) {
+                        openModifierReservation(reservation);
+                    }
+                });
+
+                deleteButton.setOnAction(event -> {
+                    Reservation reservation = getTableRow().getItem();
+                    if (reservation != null) {
+                        supprimerReservation(reservation);
+                    }
+                });
+
+                pdfButton.setOnAction(event -> {
+                    Reservation reservation = getTableRow().getItem();
+                    if (reservation != null) {
+                        handlePDF(reservation);
+                    }
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(new HBox(5, editButton, deleteButton, pdfButton));
+                }
+            }
+        };
     }
 }
