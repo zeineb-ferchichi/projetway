@@ -6,8 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="4521cf16-3487-4307-9bcd-1a7e6c8c1d4f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gui/ModifierRapportController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/ModifierRapportController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/gui/ModifierRapportController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gui/ModifierRapportController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/views/modifierRapport.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/modifierRapport.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,44 +40,44 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Debug",
-    "Application.MainGUI.executor": "Run",
-    "Application.Unnamed.executor": "Run",
-    "Maven.Project3A2 [clean].executor": "Run",
-    "Maven.Project3A2 [install].executor": "Run",
-    "Maven.Project3A2 [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
-    "Maven.Unknown [clean].executor": "Run",
-    "Maven.WorkshopJDBC3A20 [clean].executor": "Run",
-    "Maven.WorkshopJDBC3A20 [install].executor": "Run",
-    "Maven.projectway [clean].executor": "Run",
-    "Maven.projectway [install].executor": "Run",
-    "Maven.projetway [clean].executor": "Run",
-    "Maven.projetway [install].executor": "Run",
-    "Maven.projetway [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
-    "Maven.projetway [site].executor": "Run",
-    "Maven.projetwayMission [clean].executor": "Run",
-    "Maven.projetwayMission [install].executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "mission",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/projetway",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "C:/projetwayMission/src/main/java/org/example/Main.java",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.MainGUI.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Unnamed.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Project3A2 [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Project3A2 [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Project3A2 [org.openjfx:javafx-maven-plugin:0.0.8:run].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Unknown [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.WorkshopJDBC3A20 [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.WorkshopJDBC3A20 [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.projectway [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.projectway [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.projetway [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.projetway [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.projetway [org.openjfx:javafx-maven-plugin:0.0.8:run].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.projetway [site].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.projetwayMission [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.projetwayMission [install].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;mission&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/projetway&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;C:/projetwayMission/src/main/java/org/example/Main.java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\projetwayMission - lmrigl\src\main\resources\views" />
@@ -172,6 +171,7 @@
       <workItem from="1740695222178" duration="2121000" />
       <workItem from="1740773011612" duration="12910000" />
       <workItem from="1740835696612" duration="5334000" />
+      <workItem from="1740873827846" duration="2564000" />
     </task>
     <servers />
   </component>

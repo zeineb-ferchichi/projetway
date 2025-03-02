@@ -19,15 +19,14 @@
             <TextField fx:id="TFNomRapport" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="200"/>
 
             <Label text="Date de création:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-            <DatePicker fx:id="DPDateExp" layoutX="200" layoutY="150"/>
-            <DatePicker fx:id="DPDateCreation" />
+            <DatePicker fx:id="DPDateCreation" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
             <Label text="Fichier joint:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
             <TextField fx:id="TFFichier" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="200"/>
             <Button text="📂 Parcourir" onAction="#choisirFichier" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
         </GridPane>
 
-        <!-- Bouton de mise à jour -->Q
+        <!-- Bouton de mise à jour -->
         <Button text="Mettre à jour"
                 layoutX="90"
                 layoutY="200"

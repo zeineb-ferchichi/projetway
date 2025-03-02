@@ -63,8 +63,10 @@ public class ModifierRapportController {
         }
 
         LocalDate dateCreation = DPDateCreation.getValue();
+        LocalDate dateExpiration = dateCreation.plusDays(30); // ✅ Ajout automatique de 30 jours
+
         String nom = TFNomRapport.getText().trim();
-        String fichierJoint = TFFichier.getText().trim(); // ✅ Utiliser TFFichier au lieu de TFFilePath
+        String fichierJoint = TFFichier.getText().trim();
 
         if (nom.isEmpty()) {
             showAlert("Erreur", "Veuillez saisir un nom de rapport !");
@@ -72,7 +74,7 @@ public class ModifierRapportController {
         }
 
         rapport.setLibelleR(nom);
-        rapport.setDateExpo(dateCreation);
+        rapport.setDateExpo(dateExpiration); // ✅ Mettre automatiquement la nouvelle date d'expiration
 
         if (!fichierJoint.isEmpty()) {
             rapport.getRessources().clear();
@@ -83,7 +85,7 @@ public class ModifierRapportController {
         showAlert("Succès", "Rapport mis à jour avec succès !");
 
         // 🔄 Fermer la fenêtre après mise à jour
-        Stage stage = (Stage) TFFichier.getScene().getWindow(); // ✅ Correction ici
+        Stage stage = (Stage) TFFichier.getScene().getWindow();
         stage.close();
     }
 
