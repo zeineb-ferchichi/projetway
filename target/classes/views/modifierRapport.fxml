@@ -18,21 +18,15 @@
             <Label text="Nom du Rapport:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
             <TextField fx:id="TFNomRapport" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="200"/>
 
-            <Label text="Date de création:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-            <DatePicker fx:id="DPDateCreation" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-
-            <Label text="Date d'expiration:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-            <DatePicker fx:id="DPDateExp" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-
-            <Label text="Fichier joint:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-            <TextField fx:id="TFFichier" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="200"/>
-            <Button text="📂 Parcourir" onAction="#choisirFichier" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+            <Label text="Fichier joint:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <TextField fx:id="TFFichier" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="200"/>
+            <Button text="📂 Parcourir" onAction="#choisirFichier" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
         </GridPane>
 
         <!-- Bouton de mise à jour -->
         <Button text="Mettre à jour"
                 layoutX="90"
-                layoutY="250"
+                layoutY="150"
                 fx:id="btnUpdateRapport"
                 onAction="#updateRapport"
                 style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-border-radius: 5; -fx-padding: 10 20;"/>

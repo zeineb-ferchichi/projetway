@@ -53,17 +53,10 @@ public class ModifierRapportController {
     // ✅ Méthode pour mettre à jour le rapport
     @FXML
     private void updateRapport() {
-        if (DPDateCreation == null) {
-            System.out.println("❌ DPDateCreation est NULL !");
+        if (rapport == null) {
+            showAlert("Erreur", "Aucun rapport sélectionné !");
             return;
         }
-
-        if (DPDateCreation.getValue() == null) {
-            DPDateCreation.setValue(LocalDate.now()); // 📌 Définit la date actuelle si elle est vide
-        }
-
-        LocalDate dateCreation = DPDateCreation.getValue();
-        LocalDate dateExpiration = dateCreation.plusDays(30); // ✅ Ajout automatique de 30 jours
 
         String nom = TFNomRapport.getText().trim();
         String fichierJoint = TFFichier.getText().trim();
@@ -74,7 +67,7 @@ public class ModifierRapportController {
         }
 
         rapport.setLibelleR(nom);
-        rapport.setDateExpo(dateExpiration); // ✅ Mettre automatiquement la nouvelle date d'expiration
+        rapport.setDateExpo(LocalDate.now()); // ✅ Mettre automatiquement la date d'exposition à aujourd'hui
 
         if (!fichierJoint.isEmpty()) {
             rapport.getRessources().clear();
@@ -88,6 +81,7 @@ public class ModifierRapportController {
         Stage stage = (Stage) TFFichier.getScene().getWindow();
         stage.close();
     }
+
 
 
 
