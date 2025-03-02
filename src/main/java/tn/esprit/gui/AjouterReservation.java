@@ -35,6 +35,8 @@ public class AjouterReservation implements Initializable {
     private final ReservationService reservationService = new ReservationService();
     private final HebergementService hebergementService = new HebergementService();
 
+    private Hebergement selectedHebergement; // Ajout de l'attribut pour stocker l'hébergement sélectionné
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadHebergements();
@@ -61,6 +63,11 @@ public class AjouterReservation implements Initializable {
                         .orElse(null);
             }
         });
+
+        // Si un hébergement est déjà défini, sélectionnez-le dans la ComboBox
+        if (selectedHebergement != null) {
+            comboHebergement.getSelectionModel().select(selectedHebergement);
+        }
     }
 
     private void loadImage() {
@@ -139,5 +146,12 @@ public class AjouterReservation implements Initializable {
 
     public void setReservationTableView(TableView<Reservation> tableView) {
         this.reservationTableView = tableView;
+    }
+
+    public void setHebergement(Hebergement hebergement) {
+        this.selectedHebergement = hebergement;
+        if (comboHebergement != null) {
+            comboHebergement.getSelectionModel().select(hebergement);
+        }
     }
 }

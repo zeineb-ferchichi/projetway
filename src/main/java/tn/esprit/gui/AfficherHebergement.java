@@ -29,7 +29,7 @@ public class AfficherHebergement {
 
     private final HebergementService hebergementService = new HebergementService();
     private boolean ascendingOrder = true;
-    private List<Hebergement> allHebergements; // Store all hébergements for pagination
+    private List<Hebergement> allHebergements; // Store all hébergements
 
     @FXML
     public void initialize() {
@@ -69,8 +69,6 @@ public class AfficherHebergement {
         }
     }
 
-
-
     private VBox createGridItem(Hebergement hebergement) {
         VBox item = new VBox(0);
         item.setStyle("-fx-background-color: #f0f0f0; -fx-padding: 10px; -fx-border-radius: 5px; -fx-border-color: #ccc;");
@@ -97,17 +95,20 @@ public class AfficherHebergement {
         priceLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #4CAF50;");
 
         // Add buttons for actions
-        HBox buttonContainer = new HBox(10);
-        Button deleteButton = new Button("🗑 Supprimer");
+        HBox buttonContainer = new HBox(20);
+        Button deleteButton = new Button("🗑  Supprimer");
         Button editButton = new Button("✏ Modifier");
+        Button reserveButton = new Button("📅 Réserver");
 
         deleteButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;");
         editButton.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold;");
+        reserveButton.setStyle("-fx-background-color: #007BFF; -fx-text-fill: white; -fx-font-weight: bold;");
 
         deleteButton.setOnAction(event -> deleteHebergement(hebergement));
         editButton.setOnAction(event -> openModifierHebergement(hebergement));
+        reserveButton.setOnAction(event -> openAjouterReservation(hebergement));
 
-        buttonContainer.getChildren().addAll(editButton, deleteButton);
+        buttonContainer.getChildren().addAll(editButton, deleteButton, reserveButton);
 
         // Add all elements to the VBox
         item.getChildren().addAll(itemImageView, nameLabel, villePaysLabel, priceLabel, buttonContainer);
@@ -132,6 +133,7 @@ public class AfficherHebergement {
             gridHebergements.getChildren().add(gridItem);
         }
     }
+
     private void deleteHebergement(Hebergement hebergement) {
         hebergementService.delete(hebergement.getId()); // Delete the hébergement
         loadHebergements(); // Refresh the grid
@@ -147,6 +149,24 @@ public class AfficherHebergement {
 
             Stage newStage = new Stage();
             newStage.setTitle("Modifier un Hébergement");
+            newStage.setScene(scene);
+            newStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void openAjouterReservation(Hebergement hebergement) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterReservation.fxml"));
+            Scene scene = new Scene(loader.load());
+
+            // Passer l'hébergement au contrôleur de la réservation
+            AjouterReservation controller = loader.getController();
+            controller.setHebergement(hebergement);
+
+            Stage newStage = new Stage();
+            newStage.setTitle("Réserver un Hébergement");
             newStage.setScene(scene);
             newStage.show();
         } catch (IOException e) {
@@ -190,16 +210,6 @@ public class AfficherHebergement {
             VBox gridItem = createGridItem(hebergement);
             gridHebergements.getChildren().add(gridItem);
         }
-    }
-    private boolean isAlreadySorted() {
-        // Vérifier si la liste est déjà triée dans l'ordre actuel
-        for (int i = 1; i < allHebergements.size(); i++) {
-            int comparison = Integer.compare(allHebergements.get(i - 1).getPrix(), allHebergements.get(i).getPrix());
-            if ((ascendingOrder && comparison > 0) || (!ascendingOrder && comparison < 0)) {
-                return false; // La liste n'est pas triée dans l'ordre actuel
-            }
-        }
-        return true; // La liste est déjà triée dans l'ordre actuel
     }
 
     @FXML

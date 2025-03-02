@@ -57,7 +57,7 @@
 
                 <TilePane fx:id="gridHebergements"
                           style="-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 10px;"
-                          hgap="40" vgap="10" prefColumns="4" prefTileWidth="200" prefTileHeight="200">
+                          hgap="44" vgap="10" prefColumns="3" prefTileWidth="200" prefTileHeight="200">
                     <!-- Items will be added dynamically in the controller -->
                 </TilePane>
             </VBox>
