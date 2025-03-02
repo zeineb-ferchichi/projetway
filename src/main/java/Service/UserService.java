@@ -6,6 +6,9 @@ import util.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.mail.*;
+import javax.mail.internet.*;
+import java.util.Properties;
 
 public class UserService implements IService<User> {
 
@@ -301,6 +304,62 @@ public class UserService implements IService<User> {
             e.printStackTrace();
         }
     }
+
+
+    public User getUserByIdentifiantOrEmail(String input) {
+        // Chercher l'utilisateur dans la base de données par identifiant ou email
+        String sql = "SELECT * FROM user WHERE Identifiant = ? OR Gmail = ?";
+        User user = null;
+        try (Connection conn = DataSource.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, input);
+            stmt.setString(2, input);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                user = new User();
+                user.setIdentifiant(rs.getString("Identifiant"));
+                user.setGmail(rs.getString("Gmail"));
+                // Set other fields as needed
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+
+
+    public void sendResetEmail(User user, String resetLink) {
+        final String fromEmail = "mouhamarzoukk70@gmail.com";
+        final String appPassword = "yuha qqwo qoun yvrq";
+
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.port", "587"); // Utilisation de STARTTLS → port 587
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true"); // Active STARTTLS
+
+        // Création d'une session authentifiée
+        Session session = Session.getInstance(properties, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(fromEmail, appPassword);
+            }
+        });
+
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(fromEmail));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getGmail()));
+            message.setSubject("Réinitialisation de votre mot de passe");
+            message.setText("Cliquez sur le lien suivant pour réinitialiser votre mot de passe : " + resetLink);
+
+            Transport.send(message);
+            System.out.println("Email envoyé avec succès.");
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
 

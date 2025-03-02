@@ -171,7 +171,7 @@ public class signIn {
                     break;
 
             case "directeur":
-                loader = new FXMLLoader(getClass().getResource("/directeur.fxml"));
+                loader = new FXMLLoader(getClass().getResource("/directeurr.fxml"));
                 root = loader.load();
                 DirecteurController directeurController = loader.getController();
                 directeurController.setCurrentUser(user);
@@ -199,6 +199,62 @@ public class signIn {
         }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+    @FXML
+    private void handleForgotPassword(ActionEvent event) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Réinitialisation du mot de passe");
+        dialog.setHeaderText("Entrez votre identifiant ou votre email pour réinitialiser votre mot de passe.");
+
+        dialog.showAndWait().ifPresent(input -> {
+            if (input.isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Veuillez entrer un identifiant ou un email.");
+                return;
+            }
+
+            User user = userService.getUserByIdentifiantOrEmail(input);
+
+            if (user != null) {
+                String resetLink = generateResetLink(user);
+
+                // ✅ Utilisation du service EmailService
+                userService.sendResetEmail(user, resetLink);
+
+
+                showAlert(Alert.AlertType.INFORMATION, "Réinitialisation du mot de passe",
+                        "Un email vous a été envoyé pour réinitialiser votre mot de passe.");
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Aucun utilisateur trouvé avec cet identifiant ou email.");
+            }
+        });
+    }
+
+
+    private String generateResetLink(User user) {
+        // Générer un lien de réinitialisation (par exemple, en utilisant un token ou un ID utilisateur)
+        // Ici, on génère juste un lien fictif pour l'exemple
+        return "https://votreapp.com/reset-password?token=" + user.getIdentifiant();
+    }
+
+    private void sendResetEmail(User user, String resetLink) {
+        // Utilisez JavaMail ou une autre solution pour envoyer un email à l'utilisateur avec le lien de réinitialisation
+        // Exemple d'utilisation avec JavaMail (voir documentation pour l'implémentation complète)
+        String to = user.getGmail();
+        String subject = "Réinitialisation de votre mot de passe";
+        String content = "Cliquez sur le lien suivant pour réinitialiser votre mot de passe : " + resetLink;
+
+        // Code d'envoi d'email ici avec JavaMail ou une autre API
+    }
 
 
 

@@ -46,10 +46,6 @@
                     <!-- Barre de recherche placée en haut de la liste -->
                     <HBox alignment="CENTER" spacing="10" prefHeight="30" prefWidth="700">
                         <TextField fx:id="searchNoteField" promptText="Rechercher une note de frais..." onKeyReleased="#searchNotesByName"/>
-
-
-
-
                     </HBox>
 
                     <ScrollPane fitToWidth="true" prefHeight="500" prefWidth="700">

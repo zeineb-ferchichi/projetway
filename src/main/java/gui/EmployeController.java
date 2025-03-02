@@ -3,6 +3,7 @@ package gui;
 import Entitie.Notedefrait;
 import Entitie.User;
 import Service.NotedefraitService;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +12,11 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -21,6 +27,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import Service.UserService;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +37,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import org.mindrot.jbcrypt.BCrypt;
+import javafx.stage.Window;
+import javafx.stage.Stage;
+import java.util.ArrayList;
+import java.util.List;
+
 
 
 
@@ -400,6 +412,9 @@ public class EmployeController {
         alert.showAndWait();
     }
     @FXML
+    private Button signInButton;
+
+    @FXML
     private void handleSignIn(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/signIn.fxml"));
         Parent root = loader.load();
@@ -407,33 +422,59 @@ public class EmployeController {
         stage.setScene(new Scene(root));
         stage.show();
     }
+
+
+
+
+
     @FXML
     public void setCurrentUser(User user) {
         this.currentUser = user;
 
         if (user != null) {
-            System.out.println("Utilisateur mis à jour : " + user.getNom());
+            System.out.println("✅ Utilisateur mis à jour : " + user.getNom());
+
+            // Vérification et mise à jour des labels
             if (profileUserName != null) profileUserName.setText(user.getNom());
             if (profileUserPrenom != null) profileUserPrenom.setText(user.getPrenom());
             if (profileUserGmail != null) profileUserGmail.setText(user.getGmail());
 
             if (currentUserName != null) {
                 currentUserName.setText(user.getNom());
-                System.out.println("currentUserName mis à jour avec : " + user.getNom());
+                System.out.println("✅ currentUserName mis à jour avec : " + user.getNom());
+            } else {
+                System.out.println("⚠️ currentUserName est null, rechargement forcé...");
+                forceReloadUI();
             }
+
             // Charger l'image si elle existe
             if (user.getImage() != null && !user.getImage().isEmpty()) {
                 File file = new File(user.getImage());
                 if (file.exists() && currentUserImage != null) {
                     Image image = new Image(file.toURI().toString());
                     currentUserImage.setImage(image);
+                    System.out.println("✅ Image de l'utilisateur chargée !");
+                } else {
+                    System.out.println("⚠️ L'image de l'utilisateur n'existe pas !");
                 }
             }
         } else {
             System.out.println("⚠️ currentUser est null !");
         }
-
     }
+
+
+
+    private void forceReloadUI() {
+        Platform.runLater(() -> {
+            if (currentUserName != null && currentUser != null) {
+                currentUserName.setText(currentUser.getNom());
+                System.out.println("🔄 UI rechargée avec : " + currentUser.getNom());
+            }
+        });
+    }
+
+
 
 
 
@@ -523,7 +564,6 @@ public class EmployeController {
     }
 
 
-    // Méthode pour enregistrer les modifications du profil de l'utilisateur connecté
     @FXML
     private void handleUpdateCurrentUser(ActionEvent event) {
         if (currentUser == null) {
@@ -531,12 +571,12 @@ public class EmployeController {
             return;
         }
 
-        // Utiliser la méthode confirmUpdate pour obtenir la confirmation
+        // Confirmation de la mise à jour
         if (!confirmUpdate()) {
             return;
         }
 
-        // Mise à jour des infos
+        // Mise à jour des informations
         currentUser.setNom(profileUserName.getText());
         currentUser.setPrenom(profileUserPrenom.getText());
         currentUser.setGmail(profileUserGmail.getText());
@@ -553,18 +593,15 @@ public class EmployeController {
 
         userService.update(currentUser);
 
-        // Mise à jour de l'affichage après la modification
-        updateCurrentUserDisplay();
+        // Fermer toutes les fenêtres avant d'ouvrir la connexion
+        closeAllWindows();
 
-        // Assurez-vous que `setCurrentUser` est appelé après la mise à jour
-        setCurrentUser(currentUser);
+        // Ouvrir la fenêtre de connexion
+        openSignInWindow();
     }
 
-
-
-
     @FXML
-    private void handleChangeProfileImage() {
+    private void handleChangeProfileImage(ActionEvent event) {
         if (currentUser == null) {
             afficherAlerte("Aucun utilisateur connecté !");
             return;
@@ -579,10 +616,48 @@ public class EmployeController {
             currentUser.setImage(file.getAbsolutePath());
             userService.update(currentUser);
 
-            // ⚡ Mise à jour de l'affichage après modification
-            updateCurrentUserDisplay();
+            // Fermer toutes les fenêtres avant d'ouvrir la connexion
+            closeAllWindows();
+
+            // Ouvrir la fenêtre de connexion
+            openSignInWindow();
         }
     }
+
+    private void closeAllWindows() {
+
+        List<Stage> openStages = new ArrayList<>();
+
+        for (Window window : Stage.getWindows()) {
+            if (window instanceof Stage) {
+                openStages.add((Stage) window);
+            }
+        }
+
+        for (Stage stage : openStages) {
+            stage.close();
+        }
+    }
+
+    private void openSignInWindow() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/signIn.fxml"));
+            Parent root = loader.load();
+
+            Scene scene = new Scene(root);
+            Stage signInStage = new Stage();
+            signInStage.setScene(scene);
+            signInStage.setTitle("Connexion");
+            signInStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            afficherAlerte("Erreur lors de l'ouverture de la page de connexion.");
+        }
+    }
+
+
+
+
 
 
 
@@ -606,16 +681,25 @@ public class EmployeController {
             return;
         }
 
+        // Vérification et mise à jour du nom
         if (currentUserName != null) {
             currentUserName.setText(currentUser.getNom());
         } else {
-            System.out.println("currentUserName is null!");
+            System.out.println("Erreur: currentUserName est null !");
         }
 
-        if (currentUser.getImage() != null) {
-            currentUserImage.setImage(new Image("file:" + currentUser.getImage()));
+        // Vérification et mise à jour de l'image
+        if (currentUserImage != null) {
+            if (currentUser.getImage() != null && !currentUser.getImage().isEmpty()) {
+                currentUserImage.setImage(new Image("file:" + currentUser.getImage()));
+            } else {
+                System.out.println("Aucune image utilisateur définie.");
+            }
+        } else {
+            System.out.println("Erreur: currentUserImage est null !");
         }
     }
+
 
 
 

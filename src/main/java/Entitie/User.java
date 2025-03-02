@@ -1,5 +1,9 @@
 package Entitie;
 
+import javafx.beans.property.StringProperty;
+import javafx.beans.property.SimpleStringProperty;
+
+
 public class User {
     private int Id = 0;
     private String Nom;
@@ -9,7 +13,10 @@ public class User {
     private String Role;
     private String Motdepasse;
     private String Image;
-    private String ban = "false"; // Ajout de l'attribut ban sous forme de String
+    private String ban = "false";
+    private StringProperty nom = new SimpleStringProperty();
+
+    private StringProperty image = new SimpleStringProperty();
 
     public static User currentUser;
 
@@ -65,6 +72,7 @@ public class User {
     public void setNom(String nom) {
         this.Nom = nom;
     }
+    public StringProperty NomProperty() { return nom; }
 
     public String getGmail() {
         return Gmail;
@@ -105,6 +113,7 @@ public class User {
     public void setImage(String image) {
         this.Image = image;
     }
+    public StringProperty ImagePathProperty() { return image; }
 
     public static User getCurrentUser() {
         return currentUser;
