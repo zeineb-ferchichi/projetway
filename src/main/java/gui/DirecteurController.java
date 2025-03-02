@@ -18,10 +18,15 @@ import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.mindrot.jbcrypt.BCrypt;
+import jakarta.mail.*;
+import jakarta.mail.internet.*;
+import java.util.Properties;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
+
 
 public class DirecteurController {
     @FXML
@@ -212,6 +217,7 @@ public class DirecteurController {
     }
 
 
+
     private HBox createNoteCard(Notedefrait note, User utilisateur) {
         HBox noteItem = new HBox(10);
         noteItem.setPadding(new Insets(10));
@@ -231,7 +237,7 @@ public class DirecteurController {
 
         // Image et identifiant de l'utilisateur
         ImageView userImage = new ImageView();
-        File userFile = new File(utilisateur.getImage()); // Use getImage() method
+        File userFile = new File(utilisateur.getImage());
         if (userFile.exists()) {
             userImage.setImage(new Image(userFile.toURI().toString(), 40, 40, false, false));
         } else {
@@ -243,82 +249,106 @@ public class DirecteurController {
         VBox noteDetails = new VBox();
         Label activiteLabel = new Label("Activité: " + note.getNomactivite());
         activiteLabel.setStyle("-fx-font-weight: bold;");
-        Label userIdLabel = new Label("Utilisateur: " + utilisateur.getIdentifiant()); // Affiche l'identifiant de l'utilisateur
+        Label userIdLabel = new Label("Utilisateur: " + utilisateur.getIdentifiant());
         userIdLabel.setStyle("-fx-font-style: italic;");
 
         noteDetails.getChildren().addAll(activiteLabel, userIdLabel);
 
-        // Menu pour Modifier/Supprimer
+        // Menu pour Envoyer un Mail / Supprimer
         MenuButton menuButton = new MenuButton("⋮");
-        MenuItem modifier = new MenuItem("Modifier");
-        MenuItem supprimer = new MenuItem("Supprimer");
+        MenuItem envoyerMail = new MenuItem("Envoyer un mail");
 
-        modifier.setOnAction(e -> selectNoteFrais(note));
 
-        supprimer.setOnAction(e -> {
-            selectNoteFrais(note); // sélectionne la note
-            supprimerNoteFrais();  // puis supprime
-        });
+        envoyerMail.setOnAction(e -> envoyerEmail(utilisateur.getGmail(), note.getNomactivite(), note.getLienfacture(), note));
 
-        menuButton.getItems().addAll(modifier, supprimer);
+
+
+
+
+        menuButton.getItems().addAll(envoyerMail);
 
         HBox.setHgrow(noteDetails, Priority.ALWAYS);
         noteItem.getChildren().addAll(userImage, factureImage, noteDetails, menuButton);
 
         return noteItem;
     }
-    private void selectNoteFrais(Notedefrait noteFrais) {
-        if (noteFrais == null) {
-            System.out.println("ERREUR : Note de frais sélectionnée est null !");
-            return;
-        }
-        selectedNoteFrais = noteFrais;
 
-        /*// Mise à jour des champs de texte
-        if (tfNomActiviteModif != null) {
-            tfNomActiviteModif.setText(noteFrais.getNomactivite());
-        }
-        if (tfDescriptionModif != null) {
-            tfDescriptionModif.setText(noteFrais.getDescription());
-        }*/
+    private void envoyerEmail(String destinataire, String activite, String lienImage, Notedefrait note) {
+        final String username = "mouhamarzoukk70@gmail.com"; // Remplacez par votre adresse e-mail
+        final String password = "yuha qqwo qoun yvrq";   // Remplacez par votre mot de passe ou utilisez un mot de passe d'application
 
-        // Mise à jour de l'image si elle existe
-        if (noteFrais.getLienfacture() != null && !noteFrais.getLienfacture().isEmpty()) {
-            Image image = new Image("file:" + noteFrais.getLienfacture());
-            notedefraitImage.setImage(image); // Corrected
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+
+        Session session = Session.getInstance(props, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(username));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinataire));
+            message.setSubject("Traitement de la Note de Frais");
+
+            MimeBodyPart textPart = new MimeBodyPart();
+            textPart.setText("Bonjour,\n\nVotre note de frais concernant l'activité '" + activite + "' a été traitée.\n\nCordialement,");
+
+            MimeBodyPart imagePart = new MimeBodyPart();
+            File file = new File(lienImage);
+            if (file.exists()) {
+                imagePart.attachFile(file);
+            }
+
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(textPart);
+            if (file.exists()) {
+                multipart.addBodyPart(imagePart);
+            }
+
+            message.setContent(multipart);
+
+            Transport.send(message);
+            System.out.println("Email envoyé avec succès à " + destinataire);
+
+            // ✅ Supprimer la note après envoi de l'email
+            supprimerNoteFrais( note);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    private void supprimerNoteFrais() {
-        if (selectedNoteFrais == null) {
-            afficherAlerte("Veuillez sélectionner une note de frais à supprimer.");
-            return;
-        }
 
-        // Vérifier que l'utilisateur connecté est bien le propriétaire de la note
-        if (currentUser == null || selectedNoteFrais.getUserId() != currentUser.getId()) {
-            afficherAlerte("Vous ne pouvez supprimer que vos propres notes de frais !");
-            return;
-        }
 
-        if (confirmDelete(selectedNoteFrais)) {
-            notedefraitService.deleteById(selectedNoteFrais.getId());
-            loadNotesFrais();  // Reload notes after deletion
-            clearFields();      // Clear fields after deletion
-        }
+
+
+
+
+
+
+    private void supprimerNoteFrais( Notedefrait note) {
+        // Get the lienFacture from the Notedefrait object
+        String lienFacture = note.getLienfacture();
+
+        // Call the service method to delete the note based on lienFacture
+        notedefraitService.deleteByLienFacture(lienFacture);
+
+        // Reload the notes after deletion
+        loadNotesFrais();
+
+        // Clear the fields after deletion
+        clearFields();
     }
 
 
-    private boolean confirmDelete(Notedefrait note) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation de suppression");
-        alert.setHeaderText(null);
-        alert.setContentText("Voulez-vous vraiment supprimer la note de frais : " + note.getNomactivite() + " ?");
-        ButtonType yesButton = new ButtonType("Oui", ButtonBar.ButtonData.OK_DONE);
-        ButtonType noButton = new ButtonType("Non", ButtonBar.ButtonData.CANCEL_CLOSE);
-        alert.getButtonTypes().setAll(yesButton, noButton);
-        return alert.showAndWait().orElse(noButton) == yesButton;
-    }
+
+
 
 
 

@@ -141,7 +141,7 @@ public class NotedefraitService implements IService<Notedefrait> {
         }
 
         // Vérifier unicité du lien de facture
-        if (!isUniqueLienFacture(notedefrait.getLienfacture())) {
+        if (!isUniqueLienFacture(notedefrait.getLienfacture(), notedefrait.getUserId())) {
             System.out.println("Erreur : Ce lien de facture existe déjà !");
             return false;
         }
@@ -162,20 +162,23 @@ public class NotedefraitService implements IService<Notedefrait> {
     }
 
 
-    public static boolean isUniqueLienFacture(String lienfacture) {
-        String requete = "SELECT COUNT(*) FROM notedefrait WHERE lienfacture = ?";
+    public static boolean isUniqueLienFacture(String lienfacture, int userId) {
+        String requete = "SELECT COUNT(*) FROM notedefrait WHERE lienfacture = ? AND user_id != ?";
         try (PreparedStatement pst = cnx.prepareStatement(requete)) {
             pst.setString(1, lienfacture);
+            pst.setInt(2, userId); // Optionally use userId if needed to ignore certain user's lienfacture
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt(1) == 0; // Retourne vrai si aucun lien n'existe
+                    return rs.getInt(1) == 0; // Returns true if no other lienfacture exists
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false; // En cas d'erreur, mieux vaut considérer que le lien existe déjà
+        return false; // In case of error, consider the lienfacture as not unique
     }
+
+
 
 
     public List<Notedefrait> getNotesByUserId(int userId) {
@@ -227,6 +230,26 @@ public class NotedefraitService implements IService<Notedefrait> {
 
         return filteredNotes;
     }
+
+
+    public void deleteByLienFacture(String lienFacture) {
+        // Modify the query to delete based only on lienFacture (receipt file path)
+        String query = "DELETE FROM notedefrait WHERE lienfacture = ?";
+
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setString(1, lienFacture);  // Set lienFacture (receipt file path)
+
+            int rowsAffected = pst.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Note de frais avec la facture '" + lienFacture + "' supprimée avec succès !");
+            } else {
+                System.out.println("Aucune note de frais trouvée pour cette facture.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
 

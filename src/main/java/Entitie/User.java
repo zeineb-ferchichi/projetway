@@ -14,8 +14,8 @@ public class User {
     private String Motdepasse;
     private String Image;
     private String ban = "false";
+    private String code;
     private StringProperty nom = new SimpleStringProperty();
-
     private StringProperty image = new SimpleStringProperty();
 
     public static User currentUser;
@@ -27,7 +27,7 @@ public class User {
     }
 
     // Constructeur avec paramètres
-    public User(String nom, String prenom, String gmail, String identifiant, String role, String motdepasse, String image) {
+    public User(String nom, String prenom, String gmail, String identifiant, String role, String motdepasse, String image, String code) {
         this(); // Appelle le constructeur par défaut
         this.Nom = nom;
         this.Prenom = prenom;
@@ -36,7 +36,7 @@ public class User {
         this.Role = role;
         this.Motdepasse = motdepasse;
         this.Image = image;
-
+        this.code = code;
     }
 
     // Getters et Setters pour ban
@@ -115,6 +115,14 @@ public class User {
     }
     public StringProperty ImagePathProperty() { return image; }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     public static User getCurrentUser() {
         return currentUser;
     }
@@ -123,11 +131,11 @@ public class User {
         currentUser = user;
     }
 
-    // Mise à jour du toString pour afficher l'attribut ban
+    // Mise à jour du toString pour afficher l'attribut code
     @Override
     public String toString() {
         return "User{id=" + Id + ", nom='" + Nom + "', prenom='" + Prenom + "', gmail='" + Gmail +
                 "', identifiant='" + Identifiant + "', role='" + Role + "', motdepasse='" + Motdepasse +
-                "', image='" + Image + "', ban='" + ban + "'}";
+                "', image='" + Image + "', ban='" + ban + "', code='" + code + "'}";
     }
 }

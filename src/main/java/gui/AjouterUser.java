@@ -94,6 +94,11 @@ public class AjouterUser {
             return;
         }
 
+        String generatedCode;
+        do {
+            generatedCode = generateRandomCode();
+        } while (!userService.isUniqueCode(generatedCode, 0)); // Passing 0 or any other default value for userId
+
         // Génération d'un identifiant aléatoire
         String generatedIdentifiant = generateRandomIdentifiant();
 
@@ -101,7 +106,7 @@ public class AjouterUser {
         String hashedPassword = BCrypt.withDefaults().hashToString(12, motdepasse.toCharArray());
 
         // Création de l'objet User
-        User user = new User(nom, prenom, gmail, generatedIdentifiant, defaultRole, hashedPassword, ImagePath);
+        User user = new User(nom, prenom, gmail, generatedIdentifiant, defaultRole, hashedPassword, ImagePath, generatedCode);
 
         if (!userService.validateUser(user)) {
             return;
@@ -113,6 +118,12 @@ public class AjouterUser {
 
         userService.insert(user);
         viderChamps();
+    }
+
+    private String generateRandomCode() {
+        Random random = new Random();
+        int code = 100000 + random.nextInt(900000); // Génère un nombre entre 100000 et 999999
+        return String.valueOf(code);
     }
 
     @FXML

@@ -262,6 +262,12 @@ public class EmployeController {
             return;
         }
 
+        // Vérifier que le lien de la facture est valide, sinon, afficher un message d'erreur
+        if (selectedFacturePath == null || selectedFacturePath.trim().isEmpty()) {
+            afficherAlerte("Le lien de facture est obligatoire !");
+            return;
+        }
+
         // Créez une instance de Notedefrait pour la validation
         Notedefrait nouvelleNote = new Notedefrait(nouveauNom, nouvelleDescription, selectedFacturePath, currentUser.getId());
 
@@ -289,6 +295,7 @@ public class EmployeController {
         // Nettoyer les champs après modification
         clearFields();
     }
+
 
 
 

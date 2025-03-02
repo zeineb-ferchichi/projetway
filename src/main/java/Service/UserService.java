@@ -24,7 +24,7 @@ public class UserService implements IService<User> {
         if (!validateUser(user)) {
             return;
         }
-        String requete = "INSERT INTO user (Nom, Prenom, Gmail, Identifiant, Role, Motdepasse, Image) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String requete = "INSERT INTO user (Nom, Prenom, Gmail, Identifiant, Role, Motdepasse, Image, Code) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pst = cnx.prepareStatement(requete)) {
             pst.setString(1, user.getNom());
             pst.setString(2, user.getPrenom());
@@ -33,22 +33,21 @@ public class UserService implements IService<User> {
             pst.setString(5, user.getRole());
             pst.setString(6, user.getMotdepasse());
             pst.setString(7, user.getImage());
-
+            pst.setString(8, user.getCode()); // Ajout du code
             pst.executeUpdate();
             System.out.println("User inséré avec succès !");
         } catch (SQLException e) {
-            System.out.println("Erreur lors de l'insertion du user : " + e.getMessage());
             e.printStackTrace();
         }
     }
+
 
     @Override
     public void update(User user) {
         if (!validateUser(user)) {
             return;
         }
-        // Requête mise à jour avec l'attribut ban
-        String requete = "UPDATE user SET Nom = ?, Prenom = ?, Gmail = ?, Identifiant = ?, Role = ?, Motdepasse = ?, Image = ?, ban = ? WHERE id = ?";
+        String requete = "UPDATE user SET Nom = ?, Prenom = ?, Gmail = ?, Identifiant = ?, Role = ?, Motdepasse = ?, Image = ?, ban = ?, Code = ? WHERE id = ?";
         try (PreparedStatement pst = cnx.prepareStatement(requete)) {
             pst.setString(1, user.getNom());
             pst.setString(2, user.getPrenom());
@@ -57,8 +56,9 @@ public class UserService implements IService<User> {
             pst.setString(5, user.getRole());
             pst.setString(6, user.getMotdepasse());
             pst.setString(7, user.getImage());
-            pst.setString(8, user.getBan());  // Nouveau paramètre pour ban
-            pst.setInt(9, user.getId());
+            pst.setString(8, user.getBan());
+            pst.setString(9, user.getCode()); // Ajout du code
+            pst.setInt(10, user.getId());
             pst.executeUpdate();
             System.out.println("User mis à jour avec succès !");
         } catch (SQLException e) {
@@ -85,7 +85,9 @@ public class UserService implements IService<User> {
                         rs.getString("Identifiant"),
                         rs.getString("Role"),
                         rs.getString("Motdepasse"),
-                        rs.getString("Image")
+                        rs.getString("Image"),
+                        rs.getString("Code")
+
 
                 );
                 p.setId(rs.getInt("id"));
@@ -112,7 +114,8 @@ public class UserService implements IService<User> {
                             rs.getString("Identifiant"),
                             rs.getString("Role"),
                             rs.getString("Motdepasse"),
-                            rs.getString("Image")
+                            rs.getString("Image"),
+                            rs.getString("Code")
                     );
                 }
             }
@@ -136,7 +139,8 @@ public class UserService implements IService<User> {
                         rs.getString("Identifiant"),
                         rs.getString("Role"),
                         rs.getString("Motdepasse"),
-                        rs.getString("Image")
+                        rs.getString("Image"),
+                        rs.getString("Code")
                 );
                 listeUsers.add(p);
             }
@@ -198,6 +202,11 @@ public class UserService implements IService<User> {
             return false;
         }
 
+        if (!isUniqueCode(user.getCode() , user.getId())) {
+            afficherAlerte("Erreur de validation", "Cet code est déjà utilisé !");
+            return false;
+        }
+
 
         // Vérifier que le rôle est valide
         if (user.getRole() == null || !(user.getRole().equalsIgnoreCase("directeur") || user.getRole().equalsIgnoreCase("employe") || user.getRole().equalsIgnoreCase("admin"))) {
@@ -236,6 +245,26 @@ public class UserService implements IService<User> {
         }
         return false; // En cas d'erreur, considère que l'identifiant n'est pas unique
     }
+
+
+    public boolean isUniqueCode(String generatedCode, int userId) {
+        String sql = "SELECT COUNT(*) FROM user WHERE code = ? AND Id != ?";
+        try (PreparedStatement stmt = cnx.prepareStatement(sql)) {
+            stmt.setString(1, generatedCode);
+            stmt.setInt(2, userId);  // Exclude the user with the given ID
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) == 0; // If no rows are returned, the code is unique
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Return false if there's an error or the code isn't unique
+    }
+
+
+
+
 
 
 
@@ -277,7 +306,8 @@ public class UserService implements IService<User> {
                             rs.getString("Identifiant"),
                             rs.getString("Role"),
                             rs.getString("Motdepasse"),
-                            rs.getString("Image")
+                            rs.getString("Image"),
+                            rs.getString("Code")
                     );
                 }
             }
@@ -306,36 +336,37 @@ public class UserService implements IService<User> {
     }
 
 
-    public User getUserByIdentifiantOrEmail(String input) {
-        // Chercher l'utilisateur dans la base de données par identifiant ou email
-        String sql = "SELECT * FROM user WHERE Identifiant = ? OR Gmail = ?";
-        User user = null;
-        try (Connection conn = DataSource.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, input);
-            stmt.setString(2, input);
+    public User getUserByIdentifiantOrEmail(String identifierOrEmail) {
+        String query = "SELECT Identifiant, Gmail, Code FROM user WHERE Identifiant = ? OR Gmail = ?";
+        try (PreparedStatement stmt = cnx.prepareStatement(query)) {
+            stmt.setString(1, identifierOrEmail);
+            stmt.setString(2, identifierOrEmail);
+
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                user = new User();
-                user.setIdentifiant(rs.getString("Identifiant"));
-                user.setGmail(rs.getString("Gmail"));
-                // Set other fields as needed
+                User user = new User();
+                user.setIdentifiant(rs.getString("identifiant"));
+                user.setGmail(rs.getString("gmail"));
+                user.setCode(rs.getString("code")); // Set the reset code
+                return user;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return user;
+        return null;
     }
 
 
 
-    public void sendResetEmail(User user, String resetLink) {
+
+
+    public void sendResetEmail(String to, String subject, String content) {
         final String fromEmail = "mouhamarzoukk70@gmail.com";
-        final String appPassword = "yuha qqwo qoun yvrq";
+        final String appPassword = "yuha qqwo qoun yvrq"; // Assure-toi que ce mot de passe est valide
 
         Properties properties = new Properties();
         properties.put("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.port", "587"); // Utilisation de STARTTLS → port 587
+        properties.put("mail.smtp.port", "587"); // Port 587 pour STARTTLS
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true"); // Active STARTTLS
 
@@ -349,16 +380,35 @@ public class UserService implements IService<User> {
         try {
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(fromEmail));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getGmail()));
-            message.setSubject("Réinitialisation de votre mot de passe");
-            message.setText("Cliquez sur le lien suivant pour réinitialiser votre mot de passe : " + resetLink);
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            message.setSubject(subject);
+            message.setText(content);
 
             Transport.send(message);
-            System.out.println("Email envoyé avec succès.");
+            System.out.println("Email envoyé avec succès à : " + to);
         } catch (MessagingException e) {
             e.printStackTrace();
         }
     }
+
+
+    public boolean updatePasswordAndCode(String userIdentifiant, String newPassword, String randomCode) {
+        String sql = "UPDATE user SET MotDePasse = ?, Code = ? WHERE Identifiant = ?";
+
+        try (PreparedStatement stmt = cnx.prepareStatement(sql)) {
+            stmt.setString(1, newPassword); // Set the hashed password
+            stmt.setString(2, randomCode);  // Set the new random code
+            stmt.setString(3, userIdentifiant); // Set the user identifier
+
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0; // Return true if at least one row was updated
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Return false if an error occurs
+        }
+    }
+
+
 
 
 
