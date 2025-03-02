@@ -26,9 +26,12 @@ public class AfficherHebergement {
     @FXML private TextField searchField; // Search field
     @FXML private Button searchButton; // Search button
     @FXML private Button sortPriceButton; // Sort by price button
+    @FXML private Pagination pagination; // Pagination component
 
     private final HebergementService hebergementService = new HebergementService();
     private boolean ascendingOrder = true;
+    private List<Hebergement> allHebergements; // Store all hébergements for pagination
+    private static final int ITEMS_PER_PAGE = 8; // Number of items per page
 
     @FXML
     public void initialize() {
@@ -46,6 +49,9 @@ public class AfficherHebergement {
         // Add search action
         searchButton.setOnAction(event -> handleSearch());
         sortPriceButton.setOnAction(event -> handleSortByPrice());
+
+        // Initialize pagination
+        pagination.setPageFactory(this::createPage);
     }
 
     private void loadImage() {
@@ -59,12 +65,25 @@ public class AfficherHebergement {
     }
 
     private void loadHebergements() {
+        allHebergements = hebergementService.getAll(); // Load all hébergements
+        int pageCount = (int) Math.ceil((double) allHebergements.size() / ITEMS_PER_PAGE);
+        pagination.setPageCount(pageCount);
+        pagination.setCurrentPageIndex(0); // Start at the first page
+    }
+
+    private VBox createPage(int pageIndex) {
         gridHebergements.getChildren().clear(); // Clear the grid
-        List<Hebergement> hebergements = hebergementService.getAll();
-        for (Hebergement hebergement : hebergements) {
+
+        int fromIndex = pageIndex * ITEMS_PER_PAGE;
+        int toIndex = Math.min(fromIndex + ITEMS_PER_PAGE, allHebergements.size());
+
+        List<Hebergement> pageHebergements = allHebergements.subList(fromIndex, toIndex);
+        for (Hebergement hebergement : pageHebergements) {
             VBox gridItem = createGridItem(hebergement);
             gridHebergements.getChildren().add(gridItem);
         }
+
+        return new VBox(gridHebergements);
     }
 
     private VBox createGridItem(Hebergement hebergement) {
@@ -85,8 +104,6 @@ public class AfficherHebergement {
         // Add labels for details
         Label nameLabel = new Label(hebergement.getNom());
         nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
-
-
 
         Label villePaysLabel = new Label("Ville: " + hebergement.getVille() + ", Pays: " + hebergement.getPays());
         villePaysLabel.setStyle("-fx-font-size: 12px;");
@@ -124,11 +141,10 @@ public class AfficherHebergement {
                 .filter(h -> h.getPays().toLowerCase().contains(searchText))
                 .collect(Collectors.toList());
 
-        gridHebergements.getChildren().clear();
-        for (Hebergement hebergement : filteredList) {
-            VBox gridItem = createGridItem(hebergement);
-            gridHebergements.getChildren().add(gridItem);
-        }
+        allHebergements = filteredList;
+        int pageCount = (int) Math.ceil((double) allHebergements.size() / ITEMS_PER_PAGE);
+        pagination.setPageCount(pageCount);
+        pagination.setCurrentPageIndex(0); // Reset to the first page
     }
 
     private void deleteHebergement(Hebergement hebergement) {
@@ -178,18 +194,58 @@ public class AfficherHebergement {
 
     @FXML
     private void handleSortByPrice() {
-        List<Hebergement> sortedList = hebergementService.getAll().stream()
-                .sorted((h1, h2) -> ascendingOrder
-                        ? Integer.compare(h1.getPrix(), h2.getPrix())
-                        : Integer.compare(h2.getPrix(), h1.getPrix()))
-                .collect(Collectors.toList());
+        // Trier la liste complète des hébergements
+        allHebergements.sort((h1, h2) -> ascendingOrder
+                ? Integer.compare(h1.getPrix(), h2.getPrix())
+                : Integer.compare(h2.getPrix(), h1.getPrix()));
 
-        gridHebergements.getChildren().clear();
-        for (Hebergement hebergement : sortedList) {
-            VBox gridItem = createGridItem(hebergement);
-            gridHebergements.getChildren().add(gridItem);
-        }
-
+        // Inverser l'ordre pour le prochain tri
         ascendingOrder = !ascendingOrder;
+
+        // Rafraîchir la pagination pour afficher la liste triée
+        int currentPage = pagination.getCurrentPageIndex();
+        pagination.setPageCount((int) Math.ceil((double) allHebergements.size() / ITEMS_PER_PAGE));
+        pagination.setCurrentPageIndex(currentPage); // Recharger la page actuelle
+
+        // Forcer le rafraîchissement de la page actuelle
+        pagination.setCurrentPageIndex(currentPage); // Cette ligne force le rechargement
+    }
+
+    private boolean isAlreadySorted() {
+        // Vérifier si la liste est déjà triée dans l'ordre actuel
+        for (int i = 1; i < allHebergements.size(); i++) {
+            int comparison = Integer.compare(allHebergements.get(i - 1).getPrix(), allHebergements.get(i).getPrix());
+            if ((ascendingOrder && comparison > 0) || (!ascendingOrder && comparison < 0)) {
+                return false; // La liste n'est pas triée dans l'ordre actuel
+            }
+        }
+        return true; // La liste est déjà triée dans l'ordre actuel
+    }
+
+    @FXML
+    private void AfficherHebergement() {
+        ouvrirFenetre("/AfficherHebergement.fxml", "Afficher les Hébergements");
+    }
+
+    @FXML
+    private void AfficherReservation() {
+        ouvrirFenetre("/AfficherReservation.fxml", "Afficher les Réservations");
+    }
+
+    @FXML
+    private void quitter() {
+        System.exit(0);
+    }
+
+    private void ouvrirFenetre(String fxmlPath, String titre) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Stage stage = new Stage();
+            stage.setScene(new Scene(loader.load()));
+            stage.setTitle(titre);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

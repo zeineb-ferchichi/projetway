@@ -29,6 +29,7 @@
         <!-- Quitter Button -->
         <Button fx:id="btnQuitter" text="❌ Quitter" onAction="#quitter"
                 style="-fx-font-size: 16px; -fx-background-color: #F44336; -fx-text-fill: white; -fx-padding: 10 20; -fx-border-radius: 5; -fx-font-weight: bold;"/>
+
     </VBox>
 
     <!-- Right side: Welcome message and image on the left -->
