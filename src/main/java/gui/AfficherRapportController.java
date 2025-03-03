@@ -355,17 +355,24 @@ public class AfficherRapportController {
 
         for (Rapport rapport : rapportList) {
             if (rapport.getMission() != null && rapport.getMission().getNomMission() != null) {
-                System.out.println("🔍 Vérification du rapport : " + rapport.getLibelleR() + " - Mission : " + rapport.getMission().getNomMission());
-                if (rapport.getMission().getNomMission().equals(selectedMission)) {
+                System.out.println("🔍 Rapport : " + rapport.getLibelleR() + " - Mission stockée : " + rapport.getMission().getNomMission());
+
+                // Vérifions si les deux valeurs correspondent exactement
+                if (rapport.getMission().getNomMission().trim().equalsIgnoreCase(selectedMission.trim())) {
+                    System.out.println("✅ Correspondance trouvée : " + rapport.getLibelleR());
                     filteredRapports.add(rapport);
+                } else {
+                    System.out.println("❌ Aucune correspondance pour " + rapport.getLibelleR());
                 }
             } else {
-                System.out.println("⚠ Rapport sans mission détecté : " + rapport.getIdRapport());
+                System.out.println("⚠ Rapport avec mission NULL détecté : " + rapport.getIdRapport());
             }
         }
 
         if (filteredRapports.isEmpty()) {
             showAlert("Information", "Aucun rapport trouvé pour cette mission.");
+        } else {
+            System.out.println("✅ Rapports filtrés : " + filteredRapports.size());
         }
 
         afficherRapports(filteredRapports);
