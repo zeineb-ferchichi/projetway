@@ -3,30 +3,32 @@ package gui;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import entities.trajet;
-import entities.voyage;
 import servies.TrajetService;
-import servies.voyageservice;
 import java.util.List;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class affichertables {
+
     @FXML
     private ListView<HBox> trajetListView;
 
+    @FXML
+    private Button sumButton;  // Button for calculating the sum of costs
+
+    @FXML
+    private Label sumLabel;    // Label for displaying the sum of costs
 
     private final TrajetService trajetService = new TrajetService();
-
 
     @FXML
     public void initialize() {
         loadTrajets();
-
     }
 
     private void loadTrajets() {
@@ -46,8 +48,6 @@ public class affichertables {
         }
         trajetListView.setItems(items);
     }
-
-
 
     private void modifyTrajet(trajet t) {
         Stage stage = new Stage();
@@ -72,15 +72,23 @@ public class affichertables {
         stage.show();
     }
 
-    private void modifyVoyage(voyage v) {
-
-
-    }
-
     private void deleteTrajet(trajet t) {
         trajetService.delete(t.getId_trajet());
         loadTrajets(); // Refresh ListView
     }
 
+    // Calculate the sum of costs for all trajets and display it in the label
+    @FXML
+    private void calculateSumOfCosts() {
+        List<trajet> trajets = trajetService.getAll();
+        double totalCost = 0.0;
 
+        // Assuming each trajet has a "getCost()" method, you can sum the costs.
+        for (trajet t : trajets) {
+            totalCost += t.getCout(); // Replace getCost() with the actual method for retrieving cost.
+        }
+
+        // Update the label to display the sum of the costs
+        sumLabel.setText("Somme des Coûts: " + totalCost);
+    }
 }

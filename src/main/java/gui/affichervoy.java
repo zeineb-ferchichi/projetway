@@ -108,7 +108,7 @@ public class affichervoy {
         Map<String, Integer> destinationCountMap = new HashMap<>();
         for (voyage v : voyages) {
             String destination = v.getDestination().name();
-            destinationCountMap.put(destination, destinationCountMap.getOrDefault(destination, 0) + 1);
+            destinationCountMap.put(destination, destinationCountMap.getOrDefault(destination, 0) + 6);
         }
 
         // Prepare the data for the chart

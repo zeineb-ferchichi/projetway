@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.image.Image?>
@@ -15,6 +16,10 @@
                 <Image url="@img.png" />
             </image>
         </ImageView>
+        <Button fx:id="sumButton" layoutX="230.0" layoutY="433.0" onAction="#calculateSumOfCosts" prefHeight="34.0" prefWidth="119.0" text="Somme des Coûts">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></Button>
 
         <!-- Trajets Section -->
         <Label layoutX="240.0" layoutY="14.0" text="Trajets :">
@@ -22,6 +27,12 @@
                 <Font name="Aldhabi" size="32.0" />
             </font>
         </Label>
-        <ListView fx:id="trajetListView" layoutX="230.0" layoutY="70.0" prefHeight="500.0" prefWidth="500.0" />
+        <ListView fx:id="trajetListView" layoutX="230.0" layoutY="70.0" prefHeight="363.0" prefWidth="465.0" />
+
+        <!-- Label to display the sum -->
+        <Label fx:id="sumLabel" layoutX="535.0" layoutY="398.0" prefHeight="34.0" prefWidth="209.0" text="Somme des Coûts: ">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></Label>
     </children>
 </AnchorPane>
