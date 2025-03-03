@@ -1,37 +1,52 @@
 package entities;
 
+import java.time.LocalDate;
+import java.util.Collection;
+
 public class voyage {
 
+    private int idvoyage;
+    private Destination destination;
+    private LocalDate date_depart;
+    private LocalDate date_retour;
 
+    public voyage(String destination, String dateDepart, String dateRetour) {}
 
-
-    int idvoyage;
-    String destination;
-    String date_depart,date_retour;
-
-    public voyage(){}
-    public voyage(int idvoyage,String destination,String date_depart,String date_retour) {
+    public voyage(int idvoyage, Destination destination, LocalDate date_depart, LocalDate date_retour) {
+        validateDates(date_depart, date_retour);
         this.idvoyage = idvoyage;
         this.destination = destination;
         this.date_depart = date_depart;
         this.date_retour = date_retour;
     }
 
-    public voyage(String destination,String  date_depart,String date_retour) {
-
+    public voyage(Destination destination, LocalDate date_depart, LocalDate date_retour) {
+        validateDates(date_depart, date_retour);
         this.destination = destination;
         this.date_depart = date_depart;
-        this.date_retour =date_retour ;
+        this.date_retour = date_retour;
     }
 
+    public voyage() {
+
+    }
+
+    private void validateDates(LocalDate date_depart, LocalDate date_retour) {
+        if (date_depart == null || date_retour == null) {
+            throw new IllegalArgumentException("Les dates ne peuvent pas être nulles.");
+        }
+        if (!date_depart.isBefore(date_retour)) {
+            throw new IllegalArgumentException("La date de départ doit être avant la date de retour.");
+        }
+    }
 
     @Override
     public String toString() {
-        return "voyage{" +
+        return "Voyage{" +
                 "id=" + idvoyage +
                 ", destination=" + destination +
-                ", date depart='" + date_depart + '\'' +
-                ", date retour='" + date_retour + '\'' +
+                ", date_depart=" + date_depart +
+                ", date_retour=" + date_retour +
                 '}';
     }
 
@@ -43,27 +58,36 @@ public class voyage {
         this.idvoyage = idvoyage;
     }
 
-    public String getDestination() {
+    public Destination getDestination() {
         return destination;
     }
 
-    public void setDestination(String destination) {
+    public void setDestination(Destination destination) {
         this.destination = destination;
     }
 
-    public String getDate_depart() {
+    public LocalDate getDate_depart() {
         return date_depart;
     }
 
-    public void setDate_depart(String date_depart) {
+    public void setDate_depart(LocalDate date_depart) {
+        validateDates(date_depart, this.date_retour);
         this.date_depart = date_depart;
     }
 
-    public String getDate_retour() {
+    public LocalDate getDate_retour() {
         return date_retour;
     }
 
-    public void setDate_retour(String date_retour) {
+    public void setDate_retour(LocalDate date_retour) {
+        validateDates(this.date_depart, date_retour);
         this.date_retour = date_retour;
     }
-}
+
+    public enum Destination {
+        FRANCE, USA, CANADA, GERMANY, ITALY, SPAIN, UK, JAPAN, CHINA, BRAZIL, AUSTRALIA, INDIA;
+
+        public String toLowerCase() {
+            return this.name().toLowerCase();
+        }
+    }}

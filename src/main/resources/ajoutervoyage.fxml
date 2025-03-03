@@ -2,8 +2,9 @@
 
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -16,7 +17,7 @@
     <!-- Background Image -->
     <ImageView fitHeight="450.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
         <image>
-            <Image url="@../../../../../Pictures/img.png" />
+            <Image url="@img.png" />
         </image>
     </ImageView>
 
@@ -34,35 +35,40 @@
             </Label>
 
             <!-- Input Fields -->
-            <VBox layoutX="65.0" layoutY="72.0" prefHeight="120.0" prefWidth="350.0" spacing="15.0">
+            <VBox layoutX="65.0" layoutY="72.0" prefHeight="150.0" prefWidth="350.0" spacing="15.0">
                 <children>
+                    <!-- Destination Selection -->
                     <HBox alignment="CENTER_LEFT" spacing="10.0">
                         <children>
-                            <TextField fx:id="TFPrenom" prefWidth="300.0" promptText="Entrez la destination" />
+                            <ComboBox fx:id="comboDestination" promptText="Sélectionnez une destination" prefWidth="300.0" />
                         </children>
                     </HBox>
 
+                    <!-- Date Depart -->
                     <HBox alignment="CENTER_LEFT" spacing="10.0">
                         <children>
-                            <TextField fx:id="TFNom" prefWidth="300.0" promptText="(date de depart) JJ/MM/AAAA" />
+                            <DatePicker fx:id="dpDateDepart" promptText="Date de départ" prefWidth="300.0" />
                         </children>
                     </HBox>
 
+                    <!-- Date Retour -->
                     <HBox alignment="CENTER_LEFT" spacing="10.0">
                         <children>
-                            <TextField fx:id="TFAge" prefWidth="300.0" promptText="(date de retour) JJ/MM/AAAA" />
+                            <DatePicker fx:id="dpDateRetour" promptText="Date de retour" prefWidth="300.0" />
                         </children>
                     </HBox>
                 </children>
             </VBox>
 
+            <!-- Error Message Label -->
+            <Label fx:id="lblError" layoutX="75.0" layoutY="230.0" textFill="RED" />
+
             <!-- Buttons -->
-            <HBox layoutX="50.0" layoutY="310.0" spacing="20.0" />
-             <Button layoutX="75.0" layoutY="263.0" minHeight="7.0" onAction="#ajouter" prefHeight="37.0" prefWidth="303.0" styleClass="button-primary" text="Ajouter">
-                 <font>
-                     <Font name="Dubai Regular" size="14.0" />
-                 </font>
-             </Button>
+            <Button layoutX="75.0" layoutY="263.0" minHeight="7.0" onAction="#ajouter" prefHeight="37.0" prefWidth="303.0" styleClass="button-primary" text="Ajouter">
+                <font>
+                    <Font name="Dubai Regular" size="14.0" />
+                </font>
+            </Button>
         </children>
     </Group>
 </AnchorPane>

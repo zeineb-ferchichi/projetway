@@ -13,6 +13,7 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.33</version>
         </dependency>
+
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
@@ -28,7 +29,17 @@
 
 
 
+
     </dependencies>
+    <repositories>
+        <repository>
+            <id>itext</id>
+            <url>https://repo.itextsupport.com/maven2/</url>
+        </repository>
+    </repositories>
+
+
+
     <build>
         <plugins>
             <plugin>

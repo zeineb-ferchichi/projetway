@@ -33,7 +33,10 @@ public class interfaces {
     private void affichertrajet(ActionEvent event) {
         ouvrirFenetre("/affichertrajet.fxml", "Affichertrajet");
     }
-
+    @FXML
+    private void affichertrajetss(ActionEvent event) {
+        ouvrirFenetre("/affichervoy.fxml", "Affichervoyage");
+    }
     private void ouvrirFenetre(String path, String title) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));

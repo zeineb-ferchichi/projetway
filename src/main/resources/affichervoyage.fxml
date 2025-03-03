@@ -1,18 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.affichervoyage">
+<AnchorPane prefHeight="572.0" prefWidth="802.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.affichervoyage">
+    <children>
+        <!-- Title Text -->
+        <VBox alignment="CENTER" layoutX="0" layoutY="20" spacing="20" />
 
-    <!-- Title -->
-    <Text layoutX="210.0" layoutY="30.0" styleClass="title" text="Liste des Voyages" textAlignment="CENTER" wrappingWidth="169.026123046875">
-      <font>
-         <Font name="Aldhabi" size="34.0" />
-      </font></Text>
+        <!-- Search Field -->
+        <TextField fx:id="searchField" layoutX="230.0" layoutY="132.0" maxWidth="511.0" prefHeight="26.0" prefWidth="511.0" promptText="Rechercher un voyage..." stylesheets="@styles.css">
+         <font>
+            <Font size="14.0" />
+         </font></TextField>
 
-    <!-- ListView for displaying voyages -->
-    <ListView fx:id="listViewVoyages" layoutY="40.0" prefHeight="300" prefWidth="500" styleClass="voyage-list" />
+        <!-- ListView to display voyages -->
+        <ListView fx:id="listVoyages" layoutX="228.0" layoutY="158.0" prefHeight="386.0" prefWidth="511.0" stylesheets="@styles.css" />
+
+        <!-- Image -->
+        <ImageView fitHeight="587.0" fitWidth="255.0" layoutX="-43.0" layoutY="-15.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@img.png" />
+            </image>
+        </ImageView>
+         <Text layoutX="345.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Liste Voyage :" textAlignment="CENTER" wrappingWidth="276.45867919921875">
+             <font>
+                 <Font name="Aldhabi" size="50.0" />
+             </font>
+         </Text>
+        <Button fx:id="sortButton" layoutX="739.0" layoutY="130.0" prefHeight="30.0" prefWidth="46.0" stylesheets="@styles.css" text="A..Z" />
+
+    </children>
 </AnchorPane>

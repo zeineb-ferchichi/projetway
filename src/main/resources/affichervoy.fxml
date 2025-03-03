@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.affichertables">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.affichervoy">
     <children>
         <!-- Background Image -->
         <ImageView fitHeight="626.0" fitWidth="258.0" layoutX="-48.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
@@ -17,11 +17,11 @@
         </ImageView>
 
         <!-- Trajets Section -->
-        <Label layoutX="240.0" layoutY="14.0" text="Trajets :">
+        <Label layoutX="240.0" layoutY="14.0" text="Voyages :">
             <font>
                 <Font name="Aldhabi" size="32.0" />
             </font>
         </Label>
-        <ListView fx:id="trajetListView" layoutX="230.0" layoutY="70.0" prefHeight="500.0" prefWidth="500.0" />
+        <ListView fx:id="voyageListView" layoutX="230.0" layoutY="70.0" prefHeight="500.0" prefWidth="500.0" />
     </children>
 </AnchorPane>
