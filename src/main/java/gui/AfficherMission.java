@@ -127,13 +127,16 @@ public class AfficherMission {
             Parent root = loader.load();
 
             ModifierMission controller = loader.getController();
-            controller.setMissionData(mission);
+            controller.setMissionData(mission);  // Assure-toi que cette méthode est bien appelée
 
             Stage stage = new Stage();
             stage.setTitle("Modifier Mission");
             stage.setScene(new Scene(root));
-            stage.show();
+            stage.showAndWait();
+
+            loadMissions(); // Rafraîchir la liste après modification
         } catch (IOException e) {
+            e.printStackTrace();
             showAlert("Erreur", "Impossible d'ouvrir la fenêtre de modification.");
         }
     }

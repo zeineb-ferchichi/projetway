@@ -34,14 +34,20 @@ public class ModifierMission {
 
 
     public void setMissionData(Mission mission) {
+        if (mission == null) {
+            showAlert("Erreur", "Aucune mission sélectionnée !");
+            return;
+        }
+
         this.currentMission = mission;
         TFNomMission.setText(mission.getNomMission());
         TFDescription.setText(mission.getdescription());
         DPDateDebut.setValue(mission.getDate_deb());
         DPDateFin.setValue(mission.getDate_fin());
 
-        System.out.println("🔍 Mission chargée : " + mission.getNomMission() + ", Statut : " + mission.getStatut());
+        System.out.println("🔍 Mission chargée : " + mission.getNomMission());
     }
+
 
     @FXML
     private void updateMission() {
@@ -109,6 +115,7 @@ public class ModifierMission {
             cbStatut.setValue(mission.getStatut().toString());
         }
     }
+
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
