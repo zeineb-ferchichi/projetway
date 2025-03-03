@@ -73,6 +73,9 @@ public class ModifierRapportController {
             if (!(rapport.getRessources() instanceof ArrayList)) {
                 rapport.setRessources(new ArrayList<>(rapport.getRessources()));
             }
+            if (!(rapport.getRessources() instanceof java.util.ArrayList)) {
+                rapport.setRessources(new ArrayList<>(rapport.getRessources())); // Convertir en liste modifiable
+            }
             rapport.getRessources().clear();
             rapport.getRessources().add(fichierJoint);
         }
