@@ -20,6 +20,7 @@
          <font>
             <Font name="Arial" size="12.0" />
          </font></Button>
+        <Button fx:id="totalCostButton" layoutX="402.0" layoutY="531.0" onAction="#calculateTotalCost" text="Calculate Total Cost" />
 
         <!-- Trajets Section -->
         <Label layoutX="240.0" layoutY="14.0" text="Trajets :">

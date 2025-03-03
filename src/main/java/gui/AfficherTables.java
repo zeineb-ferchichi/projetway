@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import gui.CostCalculator;
 
 public class affichertables {
 
@@ -25,10 +26,12 @@ public class affichertables {
     private Label sumLabel;    // Label for displaying the sum of costs
 
     private final TrajetService trajetService = new TrajetService();
+    private final CostCalculator costCalculator = new CostCalculator();
 
     @FXML
     public void initialize() {
         loadTrajets();
+
     }
 
     private void loadTrajets() {
@@ -91,4 +94,15 @@ public class affichertables {
         // Update the label to display the sum of the costs
         sumLabel.setText("Somme des Coûts: " + totalCost);
     }
+
+    @FXML
+    private Button totalCostButton;  // Button for calculating the total cost in USD
+
+    @FXML
+    private void calculateTotalCost() {
+        List<trajet> trajets = trajetService.getAll(); // Get the list of all trajets
+        double totalCost = costCalculator.calculateTotalCost(trajets);
+        sumLabel.setText("Total Cost in USD: " + totalCost);
+    }
+
 }
