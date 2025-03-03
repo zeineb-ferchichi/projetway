@@ -1,5 +1,4 @@
 services\MissionService.class
-gui\AfficherMission$1$1.class
 gui\ModifierMission.class
 entities\Mission.class
 entities\StatutTermint.class
@@ -10,11 +9,9 @@ org\example\Main.class
 gui\ModifierRapportController.class
 entities\RapportMissionDTO.class
 entities\Rapport.class
-gui\AfficherMission.class
 services\IService.class
 gui\TestFX.class
 util\DBConnection.class
 gui\MainGUIController.class
 gui\AjoutRapportController.class
 gui\addmission.class
-gui\AfficherMission$1.class
