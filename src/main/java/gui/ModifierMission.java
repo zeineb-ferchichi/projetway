@@ -45,7 +45,7 @@ public class ModifierMission {
         DPDateDebut.setValue(mission.getDate_deb());
         DPDateFin.setValue(mission.getDate_fin());
 
-        System.out.println("🔍 Mission chargée : " + mission.getNomMission());
+        System.out.println("🔍 Mission chargée : " + mission.getNomMission()); // Vérification
     }
 
 

@@ -1,4 +1,5 @@
 services\MissionService.class
+gui\AfficherMission$1$1.class
 gui\ModifierMission.class
 entities\Mission.class
 entities\StatutTermint.class
@@ -16,3 +17,4 @@ util\DBConnection.class
 gui\MainGUIController.class
 gui\AjoutRapportController.class
 gui\addmission.class
+gui\AfficherMission$1.class

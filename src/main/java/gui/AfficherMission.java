@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import services.MissionService;
 import java.io.IOException;
 import java.util.List;
@@ -127,7 +128,7 @@ public class AfficherMission {
             Parent root = loader.load();
 
             ModifierMission controller = loader.getController();
-            controller.setMissionData(mission);  // Assure-toi que cette méthode est bien appelée
+            controller.setMissionData(mission); // ✅ Transmission de la mission
 
             Stage stage = new Stage();
             stage.setTitle("Modifier Mission");
@@ -140,6 +141,35 @@ public class AfficherMission {
             showAlert("Erreur", "Impossible d'ouvrir la fenêtre de modification.");
         }
     }
+    private void ajouterBoutonModifier(TableColumn<Mission, Void> colModifier) {
+        Callback<TableColumn<Mission, Void>, TableCell<Mission, Void>> cellFactory = new Callback<>() {
+            @Override
+            public TableCell<Mission, Void> call(final TableColumn<Mission, Void> param) {
+                return new TableCell<>() {
+                    private final Button btn = new Button("Modifier");
+
+                    {
+                        btn.setOnAction(event -> {
+                            Mission mission = getTableView().getItems().get(getIndex());
+                            ouvrirFenetreModification(mission);
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+            }
+        };
+        colModifier.setCellFactory(cellFactory);
+    }
+
 
     private void supprimerMission(Mission mission) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
