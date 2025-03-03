@@ -60,6 +60,7 @@ public class AfficherRapportController {
     private void initialize() {
         rafraichirListe();
         loadRapports();
+        rapportList.setAll(rapportService.getAll());
 
         // Charger les missions disponibles
         List<Mission> missions = missionService.getAll();
@@ -345,21 +346,26 @@ public class AfficherRapportController {
         }
 
         ObservableList<Rapport> filteredRapports = FXCollections.observableArrayList();
+
         for (Rapport rapport : rapportList) {
-            if (rapport.getMission() != null) {
-                if (rapport.getMission().getNomMission() != null) {
-                    if (rapport.getMission().getNomMission().equals(selectedMission)) {
-                        filteredRapports.add(rapport);
-                    }
-                } else {
-                    System.out.println("⚠ Mission sans nom détectée dans un rapport : ID = " + rapport.getMission().getIdMission());
+            if (rapport.getMission() != null && rapport.getMission().getNomMission() != null) {
+                if (rapport.getMission().getNomMission().equals(selectedMission)) {
+                    filteredRapports.add(rapport);
                 }
-            } else {
-                System.out.println("⚠ Rapport avec mission NULL détecté : ID = " + rapport.getIdRapport());
             }
+        }
+
+        if (filteredRapports.isEmpty()) {
+            showAlert("Information", "Aucun rapport trouvé pour cette mission.");
         }
 
         afficherRapports(filteredRapports);
     }
+
+    @FXML
+    private void afficherTousLesRapports() {
+        afficherRapports(rapportList); // Recharge toute la liste
+    }
+
 
 }
