@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
 
 <AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.affichervoy">
     <children>
@@ -16,12 +19,27 @@
             </image>
         </ImageView>
 
-        <!-- Trajets Section -->
+        <!-- Title Label -->
         <Label layoutX="240.0" layoutY="14.0" text="Voyages :">
             <font>
                 <Font name="Aldhabi" size="32.0" />
             </font>
         </Label>
-        <ListView fx:id="voyageListView" layoutX="230.0" layoutY="70.0" prefHeight="500.0" prefWidth="500.0" />
+
+        <!-- ListView for displaying voyages -->
+        <ListView fx:id="voyageListView" layoutX="230.0" layoutY="70.0" prefHeight="300.0" prefWidth="500.0" />
+
+        <!-- Sort Button to trigger sorting -->
+        <Button fx:id="sortButton" layoutX="350.0" layoutY="380.0" text="Trier par Destination" onAction="#sortVoyagesByDestination" />
+
+        <!-- BarChart to display the sorted data by destination -->
+        <BarChart fx:id="voyageBarChart" layoutX="230.0" layoutY="430.0" prefHeight="150.0" prefWidth="500.0">
+            <xAxis>
+                <CategoryAxis fx:id="categoryAxis" />
+            </xAxis>
+            <yAxis>
+                <NumberAxis fx:id="numberAxis" />
+            </yAxis>
+        </BarChart>
     </children>
 </AnchorPane>
