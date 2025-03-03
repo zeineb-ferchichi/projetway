@@ -61,6 +61,9 @@ public class AfficherRapportController {
         rafraichirListe();
         loadRapports();
         rapportList.setAll(rapportService.getAll());
+        System.out.println("📌 Liste des missions disponibles : " + cbMissions.getItems());
+        rapportList.setAll(rapportService.getAll());
+        System.out.println("📌 Nombre total de rapports chargés : " + rapportList.size());
 
         // Charger les missions disponibles
         List<Mission> missions = missionService.getAll();
@@ -341,17 +344,23 @@ public class AfficherRapportController {
         String selectedMission = cbMissions.getValue(); // Récupérer la mission sélectionnée
 
         if (selectedMission == null || selectedMission.isEmpty()) {
+            System.out.println("❌ Aucune mission sélectionnée !");
             showAlert("Erreur", "Veuillez sélectionner une mission !");
             return;
+        } else {
+            System.out.println("📌 Mission sélectionnée : " + selectedMission);
         }
 
         ObservableList<Rapport> filteredRapports = FXCollections.observableArrayList();
 
         for (Rapport rapport : rapportList) {
             if (rapport.getMission() != null && rapport.getMission().getNomMission() != null) {
+                System.out.println("🔍 Vérification du rapport : " + rapport.getLibelleR() + " - Mission : " + rapport.getMission().getNomMission());
                 if (rapport.getMission().getNomMission().equals(selectedMission)) {
                     filteredRapports.add(rapport);
                 }
+            } else {
+                System.out.println("⚠ Rapport sans mission détecté : " + rapport.getIdRapport());
             }
         }
 
