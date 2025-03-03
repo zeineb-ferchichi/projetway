@@ -32,21 +32,14 @@ public class ModifierMission {
     private Mission currentMission;
 
 
-
     public void setMissionData(Mission mission) {
-        if (mission == null) {
-            showAlert("Erreur", "Aucune mission sélectionnée !");
-            return;
-        }
-
-        this.currentMission = mission;
+        this.currentMission = mission; // Pas besoin de vérifier si c'est null
         TFNomMission.setText(mission.getNomMission());
         TFDescription.setText(mission.getdescription());
         DPDateDebut.setValue(mission.getDate_deb());
         DPDateFin.setValue(mission.getDate_fin());
-
-        System.out.println("🔍 Mission chargée : " + mission.getNomMission()); // Vérification
     }
+
 
 
     @FXML

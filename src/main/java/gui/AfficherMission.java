@@ -151,7 +151,7 @@ public class AfficherMission {
                     {
                         btn.setOnAction(event -> {
                             Mission mission = getTableView().getItems().get(getIndex());
-                            ouvrirFenetreModification(mission);
+                            ouvrirFenetreModification(mission); // Ouvre la fenêtre directement
                         });
                     }
 
@@ -169,6 +169,7 @@ public class AfficherMission {
         };
         colModifier.setCellFactory(cellFactory);
     }
+
 
 
     private void supprimerMission(Mission mission) {
