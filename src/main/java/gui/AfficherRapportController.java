@@ -348,16 +348,17 @@ public class AfficherRapportController {
             showAlert("Erreur", "Veuillez sélectionner une mission !");
             return;
         } else {
-            System.out.println("📌 Mission sélectionnée : " + selectedMission);
+            System.out.println("📌 Mission sélectionnée dans ComboBox : '" + selectedMission + "'");
         }
 
         ObservableList<Rapport> filteredRapports = FXCollections.observableArrayList();
 
         for (Rapport rapport : rapportList) {
             if (rapport.getMission() != null && rapport.getMission().getNomMission() != null) {
-                System.out.println("🔍 Rapport : " + rapport.getLibelleR() + " - Mission stockée : " + rapport.getMission().getNomMission());
+                System.out.println("🔍 Rapport ID: " + rapport.getIdRapport() + " - Nom: " + rapport.getLibelleR() +
+                        " - Mission stockée : '" + rapport.getMission().getNomMission() + "'");
 
-                // Vérifions si les deux valeurs correspondent exactement
+                // Vérifier si les deux valeurs correspondent
                 if (rapport.getMission().getNomMission().trim().equalsIgnoreCase(selectedMission.trim())) {
                     System.out.println("✅ Correspondance trouvée : " + rapport.getLibelleR());
                     filteredRapports.add(rapport);
@@ -377,6 +378,7 @@ public class AfficherRapportController {
 
         afficherRapports(filteredRapports);
     }
+
 
     @FXML
     private void afficherTousLesRapports() {
