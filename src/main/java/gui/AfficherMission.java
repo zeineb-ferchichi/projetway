@@ -128,7 +128,7 @@ public class AfficherMission {
             Parent root = loader.load();
 
             ModifierMission controller = loader.getController();
-            controller.setMissionData(mission); // ✅ Transmission de la mission
+            controller.setMission(mission);
 
             Stage stage = new Stage();
             stage.setTitle("Modifier Mission");
