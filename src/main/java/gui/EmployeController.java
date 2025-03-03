@@ -262,14 +262,8 @@ public class EmployeController {
             return;
         }
 
-        // Vérifier que le lien de la facture est valide, sinon, afficher un message d'erreur
-        if (selectedFacturePath == null || selectedFacturePath.trim().isEmpty()) {
-            afficherAlerte("Le lien de facture est obligatoire !");
-            return;
-        }
-
-        // Créez une instance de Notedefrait pour la validation
-        Notedefrait nouvelleNote = new Notedefrait(nouveauNom, nouvelleDescription, selectedFacturePath, currentUser.getId());
+        // Créez une instance de Notedefrait pour la validation (sans modifier le lien de facture)
+        Notedefrait nouvelleNote = new Notedefrait(nouveauNom, nouvelleDescription, selectedNoteFrais.getLienfacture(), currentUser.getId());
 
         // Validation de la nouvelle note de frais
         if (!Service.NotedefraitService.validateNotedefrait(nouvelleNote)) {
@@ -277,14 +271,9 @@ public class EmployeController {
             return;
         }
 
-        // Mise à jour des valeurs dans l'objet sélectionné
+        // Mise à jour des valeurs dans l'objet sélectionné (sans toucher au lien de facture)
         selectedNoteFrais.setNomactivite(nouveauNom);
         selectedNoteFrais.setDescription(nouvelleDescription);
-
-        // Mise à jour de l'image si une nouvelle a été sélectionnée
-        if (selectedFacturePath != null) {
-            selectedNoteFrais.setLienfacture(selectedFacturePath);
-        }
 
         // Appeler le service pour effectuer la mise à jour
         notedefraitService.update(selectedNoteFrais);
@@ -295,6 +284,7 @@ public class EmployeController {
         // Nettoyer les champs après modification
         clearFields();
     }
+
 
 
 

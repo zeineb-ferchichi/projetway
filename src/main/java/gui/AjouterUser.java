@@ -17,6 +17,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.util.Properties;
 
 import java.io.File;
 import java.io.IOException;
@@ -117,6 +121,7 @@ public class AjouterUser {
         }
 
         userService.insert(user);
+        envoyerEmailUtilisateur(user.getGmail(), user.getIdentifiant());
         viderChamps();
     }
 
@@ -187,4 +192,40 @@ public class AjouterUser {
         }
         return sb.toString();
     }
+
+
+
+
+    private void envoyerEmailUtilisateur(String email, String identifiant) {
+        final String senderEmail = "mouhamarzoukk70@gmail.com"; // Remplace par ton email
+        final String senderPassword = "yuha qqwo qoun yvrq"; // Remplace par ton mot de passe
+
+        Properties properties = new Properties();
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.port", "587");
+
+        Session session = Session.getInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(senderEmail, senderPassword);
+            }
+        });
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(senderEmail));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+            message.setSubject("Bienvenue !");
+            message.setText("Bonjour,\n\nVotre compte a été créé avec succès.\nVotre identifiant est : " + identifiant + "\n\nMerci de ne pas partager cet identifiant.");
+
+            Transport.send(message);
+            System.out.println("E-mail envoyé avec succès à " + email);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            afficherAlerte("Erreur d'envoi", "Impossible d'envoyer l'email à " + email);
+        }
+    }
+
 }

@@ -33,13 +33,11 @@ public class NotedefraitService implements IService<Notedefrait> {
 
     @Override
     public void update(Notedefrait notedefrait) {
-        String query = "UPDATE Notedefrait SET nomActivite= ?, description= ?, lienFacture = ?, user_id = ? WHERE id = ?";
+        String query = "UPDATE Notedefrait SET nomActivite = ?, description = ? WHERE id = ?";
         try (PreparedStatement pst = cnx.prepareStatement(query)) {
             pst.setString(1, notedefrait.getNomactivite());
             pst.setString(2, notedefrait.getDescription());
-            pst.setString(3, notedefrait.getLienfacture());
-            pst.setInt(4, notedefrait.getUserId());
-            pst.setInt(5, notedefrait.getId());
+            pst.setInt(3, notedefrait.getId()); // Correction de l'index
 
             pst.executeUpdate();
             System.out.println("Note de frais mise à jour avec succès pour l'utilisateur ID " + notedefrait.getUserId());
@@ -47,6 +45,7 @@ public class NotedefraitService implements IService<Notedefrait> {
             e.printStackTrace();
         }
     }
+
 
     @Override
     public List<Notedefrait> getAll() {

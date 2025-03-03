@@ -18,9 +18,10 @@ import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.mindrot.jbcrypt.BCrypt;
-import jakarta.mail.*;
-import jakarta.mail.internet.*;
+import java.io.File;
 import java.util.Properties;
+import javax.mail.*;
+import javax.mail.internet.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -261,11 +262,11 @@ public class DirecteurController {
 
         envoyerMail.setOnAction(e -> envoyerEmail(utilisateur.getGmail(), note.getNomactivite(), note.getLienfacture(), note));
 
+        MenuItem voirDetails = new MenuItem("Voir Détails");
+        voirDetails.setOnAction(e -> showNoteDetails(note, utilisateur));
 
+        menuButton.getItems().addAll(voirDetails, envoyerMail);
 
-
-
-        menuButton.getItems().addAll(envoyerMail);
 
         HBox.setHgrow(noteDetails, Priority.ALWAYS);
         noteItem.getChildren().addAll(userImage, factureImage, noteDetails, menuButton);
@@ -273,16 +274,70 @@ public class DirecteurController {
         return noteItem;
     }
 
-    private void envoyerEmail(String destinataire, String activite, String lienImage, Notedefrait note) {
+
+
+
+    private void showNoteDetails(Notedefrait note, User utilisateur) {
+        if (note == null) {
+            afficherAlerte("Aucune note de frais sélectionnée !");
+            return;
+        }
+
+        // Création de l'alerte
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Détails de la Note de Frais");
+        dialog.setHeaderText("Détails de la note de frais pour " + utilisateur.getNom() + " " + utilisateur.getPrenom());
+
+        // Conteneur principal
+        VBox content = new VBox(10);
+        content.setPadding(new Insets(10));
+
+        // Détails de la note
+        Label lblActivite = new Label("Activité: " + note.getNomactivite());
+        lblActivite.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+        Label lblDescription = new Label("Description: " + note.getDescription());
+        Label lblUser = new Label("Utilisateur: " + utilisateur.getIdentifiant());
+        Label lblEmail = new Label("Email: " + utilisateur.getGmail());
+
+        // Image de la facture (grande taille)
+        ImageView factureImage = new ImageView();
+        File file = new File(note.getLienfacture());
+        if (file.exists()) {
+            factureImage.setImage(new Image(file.toURI().toString(), 300, 300, true, true));
+        } else {
+            factureImage.setImage(new Image("/img/default.jpg", 300, 300, true, true));
+        }
+        factureImage.setPreserveRatio(true);
+
+        // Ajout des éléments au conteneur
+        content.getChildren().addAll(lblActivite, lblDescription, lblUser, lblEmail, factureImage);
+
+        // Ajout du contenu à la boîte de dialogue
+        dialog.getDialogPane().setContent(content);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+
+        dialog.showAndWait();
+    }
+
+
+
+
+
+
+
+    public void envoyerEmail(String destinataire, String activite, String lienImage, Notedefrait note) {
         final String username = "mouhamarzoukk70@gmail.com"; // Remplacez par votre adresse e-mail
         final String password = "yuha qqwo qoun yvrq";   // Remplacez par votre mot de passe ou utilisez un mot de passe d'application
 
+        // Configuration des propriétés SMTP
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");
 
+        // Création de la session avec authentification
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -291,33 +346,35 @@ public class DirecteurController {
         });
 
         try {
+            // Création du message
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinataire));
             message.setSubject("Traitement de la Note de Frais");
 
+            // Corps du mail (texte)
             MimeBodyPart textPart = new MimeBodyPart();
             textPart.setText("Bonjour,\n\nVotre note de frais concernant l'activité '" + activite + "' a été traitée.\n\nCordialement,");
 
-            MimeBodyPart imagePart = new MimeBodyPart();
-            File file = new File(lienImage);
-            if (file.exists()) {
-                imagePart.attachFile(file);
-            }
-
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(textPart);
-            if (file.exists()) {
+
+            // Ajout de l'image si elle existe
+            File file = new File(lienImage);
+            if (file.exists() && file.isFile()) {
+                MimeBodyPart imagePart = new MimeBodyPart();
+                imagePart.attachFile(file);
                 multipart.addBodyPart(imagePart);
             }
 
             message.setContent(multipart);
 
+            // Envoi du mail
             Transport.send(message);
-            System.out.println("Email envoyé avec succès à " + destinataire);
+            System.out.println("✅ Email envoyé avec succès à " + destinataire);
 
-            // ✅ Supprimer la note après envoi de l'email
-            supprimerNoteFrais( note);
+            // Suppression de la note après envoi
+            supprimerNoteFrais(note);
 
         } catch (Exception e) {
             e.printStackTrace();
