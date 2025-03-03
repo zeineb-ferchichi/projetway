@@ -117,6 +117,12 @@ public class ModifierRapportController {
         if (TFFichier == null) {
             System.out.println("❌ TFFichier est NULL !");
         }
+        if (DPDateCreation == null) {
+            System.out.println("❌ DPDateCreation est NULL ! Vérifiez votre FXML.");
+        } else {
+            DPDateCreation.setValue(LocalDate.now());
+        }
+
     }
 
     public void setRapport(Rapport rapport) {

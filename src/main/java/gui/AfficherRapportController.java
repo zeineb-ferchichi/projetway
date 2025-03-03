@@ -169,13 +169,15 @@ public class AfficherRapportController {
 
     @FXML
     private void ouvrirFichier(String chemin) {
-        if (chemin == null || chemin.isEmpty()) {
-            showAlert("Erreur", "Aucun fichier sélectionné !");
+        if (rapportSelectionne == null) {
+            showAlert("Erreur", "Veuillez sélectionner un rapport d'abord.");
             return;
         }
-
+        if (chemin == null || chemin.isEmpty()) {
+            showAlert("Erreur", "Aucun fichier associé à ce rapport.");
+            return;
+        }
         File fichier = new File(chemin);
-
         if (!fichier.exists()) {
             showAlert("Erreur", "Fichier introuvable !");
             return;
@@ -189,12 +191,8 @@ public class AfficherRapportController {
                 e.printStackTrace();
             }
         } else {
-            showAlert("Erreur", "L'ouverture de fichiers n'est pas supportée sur ce système !");
+            showAlert("Erreur", "Votre système ne supporte pas l'ouverture de fichiers.");
         }
-    }
-    @FXML
-    private void ouvrirFichier() { // Méthode utilisée dans le FXML
-        showAlert("Erreur", "Veuillez sélectionner un fichier avant d'ouvrir !");
     }
 
 
@@ -256,22 +254,25 @@ public class AfficherRapportController {
 
     @FXML
     private void supprimerRapport() {
+        if (rapportSelectionne == null) {
+            showAlert("Erreur", "Veuillez sélectionner un rapport à supprimer.");
+            return;
+        }
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation");
-        alert.setHeaderText(null);
-        alert.setContentText("Voulez-vous vraiment supprimer le rapport '" + rapportSelectionne.getLibelleR() + "' ?");
-
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                "Voulez-vous vraiment supprimer le rapport '" + rapportSelectionne.getLibelleR() + "' ?",
+                ButtonType.YES, ButtonType.NO);
         alert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
+            if (response == ButtonType.YES) {
                 rapportService.delete(rapportSelectionne);
-                showAlert("Succès", "Rapport supprimé avec succès !");
+                showAlert("Succès", "Rapport supprimé !");
                 rapportSelectionne = null;
-                rafraichirListe();  // 🔄 Mettre à jour la liste
+                rafraichirListe();
             }
         });
     }
-                
+
+
 
     @FXML
     private void ouvrirModificationRapport() {
