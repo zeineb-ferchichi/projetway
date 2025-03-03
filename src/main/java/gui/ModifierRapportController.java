@@ -70,6 +70,9 @@ public class ModifierRapportController {
         rapport.setDateExpo(LocalDate.now()); // ✅ Mettre automatiquement la date d'exposition à aujourd'hui
 
         if (!fichierJoint.isEmpty()) {
+            if (!(rapport.getRessources() instanceof ArrayList)) {
+                rapport.setRessources(new ArrayList<>(rapport.getRessources()));
+            }
             rapport.getRessources().clear();
             rapport.getRessources().add(fichierJoint);
         }
@@ -124,6 +127,7 @@ public class ModifierRapportController {
             if (DPDateCreation != null) {
                 DPDateCreation.setValue(rapport.getDateExpo() != null ? rapport.getDateExpo() : LocalDate.now());
             }
+
 
             if (TFFichier != null) {
                 TFFichier.setText(rapport.getRessources() != null && !rapport.getRessources().isEmpty()

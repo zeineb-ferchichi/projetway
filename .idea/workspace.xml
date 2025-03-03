@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4521cf16-3487-4307-9bcd-1a7e6c8c1d4f" name="Changes" comment="" />
+    <list default="true" id="4521cf16-3487-4307-9bcd-1a7e6c8c1d4f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gui/ModifierRapportController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/ModifierRapportController.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -170,7 +173,7 @@
       <workItem from="1740835696612" duration="5334000" />
       <workItem from="1740873827846" duration="3831000" />
       <workItem from="1740916502122" duration="31000" />
-      <workItem from="1741034526360" duration="8175000" />
+      <workItem from="1741034526360" duration="8980000" />
     </task>
     <servers />
   </component>
