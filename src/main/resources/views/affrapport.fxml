@@ -1,65 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
 
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ComboBox?>
-<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AfficherRapportController">
-    <Button onAction="#retourMain" style="-fx-background-color: #0c2542; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 8 16;" text="⬅ Retour" translateX="-200.0" />
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AfficherRapportController">
 
+    <!-- Sidebar -->
+    <VBox prefWidth="200" style="-fx-background-color: #1E3A8A; -fx-padding: 10px;">
+        <Label text="ProjectWay" style="-fx-font-size: 18px; -fx-text-fill: white; -fx-font-weight: bold;" />
+        <Button text="🏠 Accueil" style="-fx-background-color: transparent; -fx-text-fill: white;" />
+        <Button text="📌 Gérer les Missions" style="-fx-background-color: transparent; -fx-text-fill: white;" />
+        <Button text="📂 Déposer vos Rapports" style="-fx-background-color: transparent; -fx-text-fill: white;" />
+        <Button text="❌ Quitter" style="-fx-background-color: transparent; -fx-text-fill: white;" />
+    </VBox>
 
-    <children>
-        <VBox layoutX="20" layoutY="20" spacing="15">
-            <Button onAction="#retourMain" style="-fx-background-color: #0c2542; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 8 16;" text="⬅ Retour" translateX="-200.0" />
+    <VBox alignment="TOP_CENTER">
+        <!-- En-tête -->
+        <HBox spacing="10" style="-fx-padding: 10px; -fx-background-color: #0D47A1;">
+            <Button text="⬅ Retour" style="-fx-background-color: #0D47A1; -fx-text-fill: white; -fx-font-weight: bold;"/>
+            <Label text="Liste des Rapports" style="-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        </HBox>
 
-            <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-padding: 10;" text="📋 Liste des Rapports" />
-            <TextField fx:id="searchRapportField" promptText="Rechercher..." onKeyReleased="#filtrerRapports"
-                       style="-fx-padding: 5; -fx-font-size: 14px; -fx-border-radius: 5; -fx-background-radius: 5;"/>
-            <HBox spacing="10">
-                <Label text="Filtrer par Mission :" />
-                <ComboBox fx:id="cbMissions" onAction="#filtrerRapportsParMission" />
-            </HBox>
-            <!-- GridPane pour afficher les rapports -->
-            <GridPane fx:id="gridRapports" hgap="15" vgap="15">
-                <columnConstraints>
-                    <ColumnConstraints minWidth="50" />
-                    <ColumnConstraints minWidth="180" /> <!-- Ajustement pour les noms de rapport -->
-                    <ColumnConstraints minWidth="120" />
-                    <ColumnConstraints minWidth="220" />
-                    <ColumnConstraints minWidth="170" />
-                    <ColumnConstraints minWidth="110" />
-                    <ColumnConstraints minWidth="110" />
-                </columnConstraints>
-            </GridPane>
-            <HBox spacing="15" />
+        <!-- Barre de recherche -->
+        <HBox spacing="10" style="-fx-padding: 10px;">
+            <TextField fx:id="searchRapportField" promptText="Rechercher..." />
+            <ComboBox fx:id="cbMissions" promptText="Filtrer par Mission"/>
+            <Button text="🔄 Rafraîchir" fx:id="btnRafraichir" style="-fx-background-color: #1565C0; -fx-text-fill: white;"/>
+        </HBox>
 
+        <!-- Table des rapports -->
+        <TableView fx:id="tableRapports" style="-fx-padding: 10px;">
+            <columns>
+                <TableColumn text="ID" />
+                <TableColumn text="Nom Rapport" />
+                <TableColumn text="Date d'Expiration" />
+                <TableColumn text="Actions" />
+            </columns>
+        </TableView>
 
-            <!-- Boutons d'action -->
-            <HBox spacing="20">
-                <padding>
-                    <Insets bottom="10" left="10" right="10" top="10" />
-                </padding>
+        <!-- Boutons d'action -->
+        <HBox spacing="10" style="-fx-padding: 10px;">
+            <Button text="➕ Ajouter" fx:id="btnAjouterRapport" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" />
+            <Button text="🗑 Supprimer" fx:id="btnSupprimerRapport" style="-fx-background-color: #D32F2F; -fx-text-fill: white;" />
+            <Button text="✏ Modifier" fx:id="btnModifierRapport" style="-fx-background-color: #1976D2; -fx-text-fill: white;" />
+        </HBox>
+    </VBox>
 
-                <Button fx:id="btnAjouterRapport" onAction="#ouvrirAjoutRapport" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-padding: 8 16;" text="➕" />
-
-                <Button fx:id="btnSupprimer" onAction="#supprimerRapport" style="-fx-background-color: #FF5252; -fx-text-fill: white; -fx-padding: 8 16;" text="🗑️ " />
-
-                <Button fx:id="btnModifier" onAction="#ouvrirModificationRapport" style="-fx-background-color: #FFC107; -fx-text-fill: black; -fx-padding: 8 16;" text="✏️ " />
-
-                <Button fx:id="btnRafraichir" onAction="#rafraichirListe" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-padding: 8 16;" text="🔄 Rafraîchir" />
-            </HBox>
-
-            <!-- Espacement pour les boutons "Ouvrir" -->
-            <VBox fx:id="boxOuvrirButtons" spacing="12" style="-fx-padding: 15;">
-                <!-- Les boutons "Ouvrir" seront ajoutés ici dynamiquement -->
-            </VBox>
-        </VBox>
-    </children>
-</AnchorPane>
+</BorderPane>
