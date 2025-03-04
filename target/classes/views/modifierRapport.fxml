@@ -22,6 +22,7 @@
             <TextField fx:id="TFFichier" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="200"/>
             <Button text="📂 Parcourir" onAction="#choisirFichier" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
         </GridPane>
+        <DatePicker fx:id="DPDateCreation" />
 
         <!-- Bouton de mise à jour -->
         <Button text="Mettre à jour"

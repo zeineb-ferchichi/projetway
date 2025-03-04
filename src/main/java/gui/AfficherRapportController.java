@@ -44,8 +44,9 @@ public class AfficherRapportController {
     private void initialize() {
         System.out.println("📌 Initialisation terminée !");
         chargerMissions();
-        rafraichirListe();
+        rafraichirListe(); // 🔄 Assure-toi que cette méthode est bien appelée
     }
+
 
     private void chargerMissions() {
         List<Mission> missions = missionService.getAll();
@@ -57,34 +58,67 @@ public class AfficherRapportController {
     }
 
     @FXML
-    public void rafraichirListe() {
-        if (gridRapports == null) {
-            System.out.println("⚠ gridRapports est NULL !");
+    private void rafraichirListe() {
+        gridRapports.getChildren().clear(); // 🔄 Supprime tout avant de recharger
+        List<Rapport> rapports = rapportService.getAll();
+
+        if (rapports.isEmpty()) {
+            System.out.println("❌ Aucun rapport trouvé !");
             return;
         }
 
-        gridRapports.getChildren().clear();
-        rapportList.setAll(rapportService.getAll());
-
         int row = 1;
-        for (Rapport rapport : rapportList) {
-            gridRapports.add(new Label(String.valueOf(rapport.getIdRapport())), 0, row);
-            gridRapports.add(new Label(rapport.getLibelleR()), 1, row);
-            gridRapports.add(new Label(rapport.getDateExpo().toString()), 2, row);
+        for (Rapport rapport : rapports) {
+            Label lblId = new Label(String.valueOf(rapport.getIdRapport()));
+            Label lblNom = new Label(rapport.getLibelleR());
+            Label lblDate = new Label(rapport.getDateExpo().toString());
+            Label lblMission = new Label(rapport.getMission().getNomMission());
 
-            Button btnModifier = new Button("📝 Modifier");
+            gridRapports.add(lblId, 0, row);
+            gridRapports.add(lblNom, 1, row);
+            gridRapports.add(lblDate, 2, row);
+            gridRapports.add(lblMission, 3, row);
+
+            Button btnModifier = new Button("✏ Modifier");
             btnModifier.setOnAction(event -> ouvrirModificationRapport(rapport));
-            btnModifier.setStyle("-fx-background-color: #4682B4; -fx-text-fill: white;");
-            gridRapports.add(btnModifier, 3, row);
-
-            Button btnSupprimer = new Button("🗑 Supprimer");
-            btnSupprimer.setOnAction(event -> supprimerRapport(rapport));
-            btnSupprimer.setStyle("-fx-background-color: #D32F2F; -fx-text-fill: white;");
-            gridRapports.add(btnSupprimer, 4, row);
+            btnModifier.setStyle("-fx-background-color: #1976D2; -fx-text-fill: white;");
+            gridRapports.add(btnModifier, 4, row);
 
             row++;
         }
     }
+    @FXML
+    private void ouvrirGestionMissions() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/affmission.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) sidebar.getScene().getWindow();
+            stage.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void quitterApplication() {
+        Stage stage = (Stage) sidebar.getScene().getWindow();
+        stage.close();
+    }
+
+    @FXML
+    private void filtrerRapports() {
+        String searchText = searchRapportField.getText().toLowerCase();
+        ObservableList<Rapport> filteredList = FXCollections.observableArrayList();
+
+        for (Rapport rapport : rapportList) {
+            if (rapport.getLibelleR().toLowerCase().contains(searchText) ||
+                    rapport.getDateExpo().toString().contains(searchText)) {
+                filteredList.add(rapport);
+            }
+        }
+        afficherRapports(filteredList);
+    }
+
 
     private void ouvrirModificationRapport(Rapport rapport) {
         try {
@@ -109,6 +143,7 @@ public class AfficherRapportController {
         }
     }
 
+    @FXML
     private void supprimerRapport(Rapport rapport) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                 "Voulez-vous vraiment supprimer ce rapport ?", ButtonType.YES, ButtonType.NO);
@@ -116,10 +151,11 @@ public class AfficherRapportController {
             if (response == ButtonType.YES) {
                 rapportService.delete(rapport);
                 showAlert("Succès", "Rapport supprimé !");
-                rafraichirListe();
+                rafraichirListe();  // Rafraîchir la liste après suppression
             }
         });
     }
+
 
     @FXML
     private void filtrerRapportsParMission() {
@@ -152,19 +188,24 @@ public class AfficherRapportController {
             gridRapports.add(new Label(rapport.getLibelleR()), 1, rowIndex);
             gridRapports.add(new Label(rapport.getDateExpo().toString()), 2, rowIndex);
 
+            // Bouton Modifier
             Button btnModifier = new Button("📝 Modifier");
             btnModifier.setOnAction(event -> ouvrirModificationRapport(rapport));
             btnModifier.setStyle("-fx-background-color: #4682B4; -fx-text-fill: white;");
             gridRapports.add(btnModifier, 3, rowIndex);
 
+            // Bouton Supprimer
             Button btnSupprimer = new Button("🗑 Supprimer");
             btnSupprimer.setOnAction(event -> supprimerRapport(rapport));
             btnSupprimer.setStyle("-fx-background-color: #D32F2F; -fx-text-fill: white;");
-            gridRapports.add(btnSupprimer, 4, rowIndex);
+            gridRapports.add(btnSupprimer, 5, rowIndex);
+            btnSupprimer.setManaged(true);
+            btnSupprimer.setVisible(true);
 
             rowIndex++;
         }
     }
+
 
     @FXML
     private void ouvrirAjoutRapport() {

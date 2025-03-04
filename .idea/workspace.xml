@@ -8,7 +8,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/gui/AfficherRapportController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/AfficherRapportController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/views/affrapport.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/affrapport.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/views/modifierRapport.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/modifierRapport.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/gui/AfficherRapportController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gui/AfficherRapportController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/views/affrapport.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/views/affrapport.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -175,12 +177,24 @@
       <workItem from="1740835696612" duration="5334000" />
       <workItem from="1740873827846" duration="3831000" />
       <workItem from="1740916502122" duration="31000" />
-      <workItem from="1741034526360" duration="12334000" />
+      <workItem from="1741034526360" duration="13150000" />
+      <workItem from="1741085944631" duration="6472000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
