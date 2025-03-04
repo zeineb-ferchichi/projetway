@@ -77,7 +77,6 @@ public class AjoutRapportController {
     private TextField TFFichier;
     @FXML
     private DatePicker DPDateExp;
-
     @FXML
     private void ajouterRapport() {
         String nomRapport = TFNomRapport.getText().trim();
@@ -89,15 +88,24 @@ public class AjoutRapportController {
             return;
         }
 
-        Rapport nouveauRapport = new Rapport(nomRapport, fichier, dateExp);
+        // 🔹 Convertir le fichier en une liste (puisque Rapport attend une liste de fichiers)
+        List<String> ressources = new ArrayList<>();
+        ressources.add(fichier);
+
+        // 🔹 Création du rapport avec la mission associée (temporaire, tu peux adapter)
+        Mission missionAssociee = new Mission(1, "Mission par défaut"); // ⚠ Remplace par la vraie mission si disponible
+
+        // ✅ Créer un objet Rapport avec les bons paramètres
+        Rapport nouveauRapport = new Rapport(nomRapport, dateExp, ressources, missionAssociee);
+
+        // ✅ Ajouter dans la base de données
         rapportService.add(nouveauRapport);
         showAlert("Succès", "Rapport ajouté avec succès !");
 
-        // 🔄 Fermer la fenêtre et forcer le rafraîchissement
+        // 🔄 Fermer la fenêtre et rafraîchir la liste
         Stage stage = (Stage) btnAjouter.getScene().getWindow();
         stage.close();
     }
-
 
 
     @FXML

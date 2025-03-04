@@ -1,6 +1,7 @@
 package entities;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Rapport {
@@ -19,6 +20,13 @@ public class Rapport {
         this.dateExpo = dateExpo;
         this.ressources = ressources;
         this.mission = mission;
+    }
+    public Rapport(String libelleR, String fichier, LocalDate dateExpo) {
+        this.libelleR = libelleR;
+        this.dateExpo = dateExpo;
+        this.ressources = new ArrayList<>();
+        this.ressources.add(fichier);
+        this.mission = new Mission(1, "Mission par défaut"); // ⚠ Remplace par une mission valide
     }
 
     public Rapport(String libelleR, LocalDate dateExpo, List<String> ressources, Mission mission) {
