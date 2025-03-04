@@ -21,8 +21,11 @@
             <Label text="Fichier joint:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
             <TextField fx:id="TFFichier" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="200"/>
             <Button text="📂 Parcourir" onAction="#choisirFichier" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+
+            <Label text="Date d'expiration:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <DatePicker fx:id="DPDateExp" promptText="Sélectionner une date d'expiration"
+                        GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="200"/>
         </GridPane>
-        <DatePicker fx:id="DPDateCreation" />
 
         <!-- Bouton de mise à jour -->
         <Button text="Mettre à jour"

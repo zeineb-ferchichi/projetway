@@ -7,8 +7,11 @@
     <list default="true" id="4521cf16-3487-4307-9bcd-1a7e6c8c1d4f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/gui/AfficherRapportController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/AfficherRapportController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gui/ModifierRapportController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/ModifierRapportController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gui/AjoutRapportController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/AjoutRapportController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/views/modifierRapport.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/views/modifierRapport.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/gui/AfficherRapportController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gui/AfficherRapportController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/gui/ModifierRapportController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gui/ModifierRapportController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/views/modifierRapport.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/views/modifierRapport.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -176,7 +179,7 @@
       <workItem from="1740873827846" duration="3831000" />
       <workItem from="1740916502122" duration="31000" />
       <workItem from="1741034526360" duration="13150000" />
-      <workItem from="1741085944631" duration="7440000" />
+      <workItem from="1741085944631" duration="9494000" />
     </task>
     <servers />
   </component>
