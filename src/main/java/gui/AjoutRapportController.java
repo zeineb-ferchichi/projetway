@@ -72,24 +72,28 @@ public class AjoutRapportController {
     }
 
     @FXML
-    private void ajouterRapport() {
-        String libelle = TFLibelle.getText().trim();
-        Mission missionAssociee = cbMission.getSelectionModel().getSelectedItem();
+    private TextField TFNomRapport;
+    @FXML
+    private TextField TFFichier;
+    @FXML
+    private DatePicker DPDateExp;
 
-        if (libelle.isEmpty() || missionAssociee == null) {
+    @FXML
+    private void ajouterRapport() {
+        String nomRapport = TFNomRapport.getText().trim();
+        String fichier = TFFichier.getText().trim();
+        LocalDate dateExp = DPDateExp.getValue();
+
+        if (nomRapport.isEmpty() || fichier.isEmpty() || dateExp == null) {
             showAlert("Erreur", "Veuillez remplir tous les champs !");
             return;
         }
 
-        LocalDate dateExpo = LocalDate.now(); // ✅ Prend la date du jour
-
-        // ✅ Vérifier si la liste `selectedFiles` est vide avant d'appeler `String.join()`
-        String ressources = selectedFiles.isEmpty() ? "" : String.join(", ", selectedFiles);
-
-        Rapport nouveauRapport = new Rapport(libelle, dateExpo, Collections.singletonList(ressources), missionAssociee);
+        Rapport nouveauRapport = new Rapport(nomRapport, fichier, dateExp);
         rapportService.add(nouveauRapport);
+        showAlert("Succès", "Rapport ajouté avec succès !");
 
-        showAlert("Succès", "✅ Rapport ajouté avec succès !");
+        // 🔄 Fermer la fenêtre et forcer le rafraîchissement
         Stage stage = (Stage) btnAjouter.getScene().getWindow();
         stage.close();
     }

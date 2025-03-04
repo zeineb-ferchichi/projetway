@@ -56,16 +56,11 @@ public class AfficherRapportController {
         }
         cbMissions.setItems(missionNames);
     }
-
     @FXML
     private void rafraichirListe() {
-        gridRapports.getChildren().clear(); // 🔄 Supprime tout avant de recharger
-        List<Rapport> rapports = rapportService.getAll();
+        gridRapports.getChildren().clear(); // 🔄 Vider le tableau avant de recharger
 
-        if (rapports.isEmpty()) {
-            System.out.println("❌ Aucun rapport trouvé !");
-            return;
-        }
+        List<Rapport> rapports = rapportService.getAll(); // Récupère tous les rapports
 
         int row = 1;
         for (Rapport rapport : rapports) {
@@ -79,14 +74,23 @@ public class AfficherRapportController {
             gridRapports.add(lblDate, 2, row);
             gridRapports.add(lblMission, 3, row);
 
+            // Bouton Modifier
             Button btnModifier = new Button("✏ Modifier");
             btnModifier.setOnAction(event -> ouvrirModificationRapport(rapport));
             btnModifier.setStyle("-fx-background-color: #1976D2; -fx-text-fill: white;");
             gridRapports.add(btnModifier, 4, row);
 
+            // Bouton Supprimer
+            Button btnSupprimer = new Button("🗑 Supprimer");
+            btnSupprimer.setOnAction(event -> supprimerRapport(rapport));
+            btnSupprimer.setStyle("-fx-background-color: #D32F2F; -fx-text-fill: white;");
+            gridRapports.add(btnSupprimer, 5, row);
+
             row++;
         }
     }
+
+
     @FXML
     private void ouvrirGestionMissions() {
         try {
@@ -136,12 +140,17 @@ public class AfficherRapportController {
             Stage stage = new Stage();
             stage.setTitle("Modifier un Rapport");
             stage.setScene(new Scene(root));
+
+            // 🔄 Rafraîchir automatiquement lorsque la fenêtre est fermée
+            stage.setOnHidden(event -> rafraichirListe());
+
             stage.show();
         } catch (IOException e) {
             showAlert("Erreur", "Impossible d'ouvrir l'interface de modification.");
             e.printStackTrace();
         }
     }
+
 
     @FXML
     private void supprimerRapport(Rapport rapport) {
@@ -151,10 +160,11 @@ public class AfficherRapportController {
             if (response == ButtonType.YES) {
                 rapportService.delete(rapport);
                 showAlert("Succès", "Rapport supprimé !");
-                rafraichirListe();  // Rafraîchir la liste après suppression
+                rafraichirListe(); // 🔄 Rafraîchir automatiquement après suppression
             }
         });
     }
+
 
 
     @FXML
@@ -216,11 +226,17 @@ public class AfficherRapportController {
             Stage stage = new Stage();
             stage.setTitle("Ajouter un Rapport");
             stage.setScene(new Scene(root));
+
+            // 🔄 Rafraîchir automatiquement après l'ajout du rapport
+            stage.setOnHidden(event -> rafraichirListe());
+
             stage.show();
         } catch (IOException e) {
             showAlert("Erreur", "Impossible d'ouvrir l'interface d'ajout.");
+            e.printStackTrace();
         }
     }
+
 
     @FXML
     private void retourMain() {
