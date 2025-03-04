@@ -2,10 +2,8 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.image.ImageView?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AfficherRapportController">
-
     <!-- Sidebar -->
     <VBox prefWidth="200" style="-fx-background-color: #1E3A8A; -fx-padding: 10px;">
         <Label text="ProjectWay" style="-fx-font-size: 18px; -fx-text-fill: white; -fx-font-weight: bold;" />
@@ -18,26 +16,28 @@
     <VBox alignment="TOP_CENTER">
         <!-- En-tête -->
         <HBox spacing="10" style="-fx-padding: 10px; -fx-background-color: #0D47A1;">
-            <Button text="⬅ Retour" style="-fx-background-color: #0D47A1; -fx-text-fill: white; -fx-font-weight: bold;"/>
+            <Button text="⬅ Retour" fx:id="btnRetour" style="-fx-background-color: #0D47A1; -fx-text-fill: white; -fx-font-weight: bold;"/>
             <Label text="Liste des Rapports" style="-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;"/>
         </HBox>
 
-        <!-- Barre de recherche -->
+        <!-- Barre de recherche et filtres -->
         <HBox spacing="10" style="-fx-padding: 10px;">
             <TextField fx:id="searchRapportField" promptText="Rechercher..." />
             <ComboBox fx:id="cbMissions" promptText="Filtrer par Mission"/>
             <Button text="🔄 Rafraîchir" fx:id="btnRafraichir" style="-fx-background-color: #1565C0; -fx-text-fill: white;"/>
         </HBox>
 
-        <!-- Table des rapports -->
-        <TableView fx:id="tableRapports" style="-fx-padding: 10px;">
-            <columns>
-                <TableColumn text="ID" />
-                <TableColumn text="Nom Rapport" />
-                <TableColumn text="Date d'Expiration" />
-                <TableColumn text="Actions" />
-            </columns>
-        </TableView>
+        <!-- Zone d'affichage des rapports avec un GridPane -->
+        <ScrollPane fitToWidth="true" style="-fx-padding: 10px;">
+            <GridPane fx:id="gridRapports" style="-fx-padding: 10px;" hgap="10" vgap="10">
+                <!-- En-tête du tableau -->
+                <RowConstraints />
+                <Label text="ID" GridPane.columnIndex="0" style="-fx-font-weight: bold;" />
+                <Label text="Nom Rapport" GridPane.columnIndex="1" style="-fx-font-weight: bold;" />
+                <Label text="Date d'Expiration" GridPane.columnIndex="2" style="-fx-font-weight: bold;" />
+                <Label text="Actions" GridPane.columnIndex="3" style="-fx-font-weight: bold;" />
+            </GridPane>
+        </ScrollPane>
 
         <!-- Boutons d'action -->
         <HBox spacing="10" style="-fx-padding: 10px;">
@@ -46,5 +46,4 @@
             <Button text="✏ Modifier" fx:id="btnModifierRapport" style="-fx-background-color: #1976D2; -fx-text-fill: white;" />
         </HBox>
     </VBox>
-
 </BorderPane>
