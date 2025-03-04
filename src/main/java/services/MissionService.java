@@ -106,6 +106,16 @@ public class MissionService implements IService<Mission> {
             update(mission);
         }
     }
+    public Mission getMissionByName(String nomMission) {
+        List<Mission> missions = getAll(); // Suppose que getAll() retourne toutes les missions
+        for (Mission mission : missions) {
+            if (mission.getNomMission().equalsIgnoreCase(nomMission)) {
+                return mission;
+            }
+        }
+        return null; // Retourne null si aucune mission correspond
+    }
+
     public void mettreAJourStatuts() {
         List<Mission> missions = getAll();
         LocalDate today = LocalDate.now();

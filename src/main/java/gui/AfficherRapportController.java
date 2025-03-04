@@ -57,7 +57,7 @@ public class AfficherRapportController {
         cbMissions.setItems(missionNames);
     }
     @FXML
-    private void rafraichirListe() {
+    public void rafraichirListe() {
         gridRapports.getChildren().clear(); // 🔄 Vider le tableau avant de recharger
 
         List<Rapport> rapports = rapportService.getAll(); // Récupère tous les rapports
