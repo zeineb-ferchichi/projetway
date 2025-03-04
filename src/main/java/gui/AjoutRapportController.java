@@ -35,40 +35,65 @@ public class AjoutRapportController {
     private final ObservableList<String> missionNames = FXCollections.observableArrayList();
     private final List<String> ressources = new ArrayList<>();
 
+    private AfficherRapportController parentController; // 🔄 Ajout du contrôleur parent
+
+    public void setParentController(AfficherRapportController parentController) {
+        this.parentController = parentController;
+    }
     @FXML
     private void initialize() {
-        System.out.println("🚀 Initialisation de AjoutRapportController !");
-        chargerMissions();
+        List<Mission> allMissions = missionService.getAll();
+        ObservableList<String> missionNames = FXCollections.observableArrayList();
+
+        for (Mission mission : allMissions) {
+            System.out.println("✅ Mission trouvée : " + mission.getNomMission() + " - Statut : " + mission.getStatut());
+
+            // Vérifier le statut correctement
+            if (mission.getStatut() != null && mission.getStatut().toString().equalsIgnoreCase("TERMINE")) {
+                missionNames.add(mission.getNomMission());
+            }
+        }
+
+        if (missionNames.isEmpty()) {
+            showAlert("Information", "Aucune mission terminée disponible pour ajouter un rapport.");
+        } else {
+            cbMission.setItems(missionNames);
+        }
     }
 
-    private void chargerMissions() {
-        List<Mission> missions = missionService.getAll();
-        for (Mission mission : missions) {
-            missionNames.add(mission.getNomMission());
-        }
-        cbMission.setItems(missionNames);
-    }
+
 
     @FXML
     private void ajouterRapport() {
         String nomRapport = TFNomRapport.getText().trim();
         LocalDate dateExp = DPDateExp.getValue();
-        String missionName = cbMission.getValue();
+        String selectedMissionName = cbMission.getValue();
 
-        if (nomRapport.isEmpty() || dateExp == null || missionName == null) {
+        if (nomRapport.isEmpty() || dateExp == null || selectedMissionName == null) {
             showAlert("Erreur", "Veuillez remplir tous les champs !");
             return;
         }
 
-        Mission mission = missionService.getMissionByName(missionName);
-        Rapport nouveauRapport = new Rapport(nomRapport, dateExp, ressources, mission);
-        rapportService.add(nouveauRapport);
+        // Vérifier si la mission est terminée
+        Mission selectedMission = missionService.getMissionByName(selectedMissionName);
+        if (!selectedMission.getStatut().toString().equalsIgnoreCase("Terminée")) { // ✅ Correction
+            showAlert("Erreur", "Impossible d'ajouter un rapport à une mission non terminée !");
+            return;
+        }
 
+        // Création du rapport
+        List<String> fichiers = new ArrayList<>(LVFiles.getItems()); // Liste des fichiers
+        Rapport nouveauRapport = new Rapport(nomRapport, dateExp, fichiers, selectedMission);
+
+        // Ajout en base de données
+        rapportService.add(nouveauRapport);
         showAlert("Succès", "Rapport ajouté avec succès !");
 
-        // 🔄 Fermer la fenêtre et rafraîchir automatiquement la liste des rapports
+        // Rafraîchir la liste des rapports et fermer la fenêtre
         fermerFenetre();
-        rafraichirListeRapports();
+        if (parentController != null) {
+            parentController.rafraichirListe(); // ✅ Rafraîchissement correct
+        }
     }
 
     @FXML
@@ -86,17 +111,6 @@ public class AjoutRapportController {
     private void fermerFenetre() {
         Stage stage = (Stage) btnAjouter.getScene().getWindow();
         stage.close();
-    }
-
-    private void rafraichirListeRapports() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/affrapport.fxml"));
-            Parent root = loader.load();
-            AfficherRapportController controller = loader.getController();
-            controller.rafraichirListe();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void showAlert(String titre, String message) {
