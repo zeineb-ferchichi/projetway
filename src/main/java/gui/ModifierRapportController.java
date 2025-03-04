@@ -103,27 +103,18 @@ public class ModifierRapportController {
         this.rapport = rapport;
         remplirChamps(); // Remplit les champs avec les données du rapport sélectionné
     }
-
     @FXML
     private void initialize() {
-        System.out.println("✅ Initialisation de ModifierRapportController...");
+        System.out.println("📌 Initialisation de ModifierRapportController...");
 
-        if (TFNomRapport == null) {
-            System.out.println("❌ TFNomRapport est NULL !");
-        }
-        if (DPDateCreation == null) {
-            System.out.println("❌ DPDateCreation est NULL !");
-        }
-        if (TFFichier == null) {
-            System.out.println("❌ TFFichier est NULL !");
-        }
-        if (DPDateCreation == null) {
-            System.out.println("❌ DPDateCreation est NULL ! Vérifiez votre FXML.");
+        if (DPDateExp == null) {
+            System.out.println("❌ ERREUR : DPDateExp est NULL ! Vérifiez votre FXML.");
         } else {
-            DPDateCreation.setValue(LocalDate.now());
+            System.out.println("✅ DPDateExp est bien chargé !");
         }
-
     }
+
+
 
     public void setRapport(Rapport rapport) {
         this.rapport = rapport;

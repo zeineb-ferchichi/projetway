@@ -198,13 +198,14 @@ public class AfficherRapportController {
             Button btnSupprimer = new Button("🗑 Supprimer");
             btnSupprimer.setOnAction(event -> supprimerRapport(rapport));
             btnSupprimer.setStyle("-fx-background-color: #D32F2F; -fx-text-fill: white;");
-            gridRapports.add(btnSupprimer, 5, rowIndex);
-            btnSupprimer.setManaged(true);
-            btnSupprimer.setVisible(true);
+
+            System.out.println("Ajout du bouton Supprimer pour le rapport ID: " + rapport.getIdRapport()); // DEBUG
+            gridRapports.add(btnSupprimer, 4, rowIndex);
 
             rowIndex++;
         }
     }
+
 
 
     @FXML
