@@ -40,7 +40,7 @@ public class interfaces {
     private void ouvrirFenetre(String path, String title) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
-            Parent root = loader.load()
+            Parent root = loader.load();
             Stage stage = new Stage();
             stage.setTitle(title);
             stage.setScene(new Scene(root));
