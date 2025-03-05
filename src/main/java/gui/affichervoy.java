@@ -110,19 +110,23 @@ public class affichervoy {
     }
 
     // Fonction pour envoyer un email à l'employé après modification ou suppression d'un voyage
+    // Fonction pour envoyer un email à l'employé après modification ou suppression d'un voyage
     private void envoyerEmail(voyage v) {
-        List<trajet> trajets = v.getTrajets();
-        System.out.println("Trajets: " + trajets);  // Ajoute cette ligne pour vérifier si trajets est null
+        // Récupère uniquement la destination du voyage
+        String destination = v.getDestination().toString(); // Assure-toi que getDestination() renvoie bien une chaîne
 
-        if (trajets == null || trajets.isEmpty()) {
-            System.out.println("Aucun trajet associé à ce voyage.");
-            return; // Ne pas envoyer l'email si les trajets sont vides
+        System.out.println("Destination: " + destination);  // Vérifie la destination dans la console
+
+        if (destination == null || destination.isEmpty()) {
+            System.out.println("Destination vide ou non spécifiée.");
+            return; // Ne pas envoyer l'email si la destination est vide
         }
 
         String employeEmail = "mouhamarzoukk70@gmail.com"; // Remplace par l'email de l'employé
         String nomEmploye = "Nom de l'employé"; // Remplace par le nom de l'employé
-        EmailService.envoyerEmailEmploye(employeEmail, nomEmploye, trajets);
+        EmailService.envoyerEmailEmploye(employeEmail, nomEmploye, destination); // Envoi uniquement la destination
     }
+
 
     // Tri des voyages par destination et affichage dans le BarChart
     @FXML
