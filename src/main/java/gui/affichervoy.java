@@ -87,7 +87,7 @@ public class affichervoy {
             // Appeler l'envoi d'email après modification
             envoyerEmail(v);  // Envoie l'email avec les informations modifiées
 
-            stage.close();
+            stage.close()
         });
 
         vbox.getChildren().addAll(
