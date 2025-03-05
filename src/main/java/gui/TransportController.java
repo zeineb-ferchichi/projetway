@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.Modality;
 import services.TransportService;
 import models.Transport;
 import util.WindowsNotificationUtil;
@@ -100,7 +101,8 @@ public class TransportController {
                 "ID: " + transp.getId_transp() +
                         " | Type: " + transp.getType_transp() +
                         " | Station: " + transp.getNom_station() +
-                        " | Zone: " + transp.getZone_geographique()
+                        " | Zone: " + transp.getZone_geographique() +
+                        " | Note : " + transp.getNote()
         );
 
         Button btnDelete = new Button("supprimer❌");
@@ -108,8 +110,10 @@ public class TransportController {
 
         Button btnEdit = new Button("modifier✏️");
         btnEdit.setOnAction(e -> selectTransportForEdit(transp));
+        Button btnRATING = new Button("Rate");
+        btnRATING.setOnAction(e -> selectTransportForRating(transp));
 
-        card.getChildren().addAll(info, btnEdit, btnDelete);
+        card.getChildren().addAll(info, btnEdit, btnDelete,btnRATING);
         return card;
     }
 
@@ -220,6 +224,30 @@ public class TransportController {
         cmbType.setValue(transp.getType_transp());
         txtNomStation.setText(transp.getNom_station());
         txtZone.setText(transp.getZone_geographique());
+    }
+    @FXML
+    private void selectTransportForRating(Transport transp) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Rating.fxml"));
+            Parent root = loader.load();
+ System.out.println("clicked");
+            System.out.println("transport"+transp.getNom_station());
+            RatingController controller = loader.getController();
+            controller.setTransport(transp, (transport, rating) -> {
+                System.out.println("Rated " + transport.getNom_station() + " with " + rating);
+              service.addRating(rating,transp.getId_transp());
+                loadTransports();
+            });
+
+            Stage stage = new Stage();
+            stage.setTitle("Rate Transport");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     @FXML
     private boolean validateFields() {

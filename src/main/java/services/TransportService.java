@@ -40,6 +40,30 @@ public class TransportService {
         }
         return generatedId; // ✅ Retourner l'ID généré
     }
+    public int addRating(Integer Rating,Integer transport) {
+        String sql = "INSERT INTO rating (transport_id, note) VALUES (?, ?)";
+        int generatedId = -1; // ✅ Variable pour stocker l'ID généré
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, transport);
+            stmt.setInt(2, Rating);
+            stmt.executeUpdate();
+
+            // ✅ Récupération de l'ID généré
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    generatedId = rs.getInt(1);
+                }
+            }
+
+            // 🔔 Notification Windows avec ID
+            WindowsNotificationUtil.showWindowsNotification("Ajout Transport", "Transport ID: " + generatedId + " ajouté !");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return generatedId; // ✅ Retourner l'ID généré
+    }
 
 
     public void update(Transport transport) {
@@ -98,14 +122,24 @@ public class TransportService {
 
     public List<Transport> getAll() {
         List<Transport> list = new ArrayList<>();
-        String sql = "SELECT * FROM transport";
+        String sql = "SELECT \n" +
+                "    t.id_transp AS transport_id, \n" +
+                "    t.nom_station, \n" +
+                "    t.type_transp, \n" +
+                "    t.zone_geographique, \n" +
+                "    COALESCE(AVG(r.note), 0) AS avg_note\n" +
+                "FROM transport t\n" +
+                "LEFT JOIN rating r ON t.id_transp = r.transport_id\n" +
+                "GROUP BY t.id_transp, t.nom_station, t.type_transp;";
         try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 list.add(new Transport(
-                        rs.getInt("id_transp"),
+                        rs.getInt("transport_id"),
                         rs.getString("type_transp"),
                         rs.getString("nom_station"),
-                        rs.getString("zone_geographique")
+                        rs.getString("zone_geographique"),
+                        rs.getInt("avg_note")
+
                 ));
             }
         } catch (SQLException e) {

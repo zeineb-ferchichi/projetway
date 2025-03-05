@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="gui.RatingController"
+      spacing="10" alignment="CENTER" style="-fx-padding: 20;">
+
+    <Label text="Rate this transport (1 to 10):" />
+    <Slider fx:id="ratingSlider" min="1" max="10" value="5" showTickLabels="true" showTickMarks="true" majorTickUnit="1"/>
+
+    <Button text="Confirm" onAction="#confirmRating"/>
+</VBox>

@@ -6,11 +6,18 @@ public class Transport {
     private String type_transp;
     private String nom_station;  // ✅ Remplace date_transp par nom_station
     private String zone_geographique;
-
+    private Integer note;
     // Constructeur sans paramètres
     public Transport() {}
 
     // Constructeur avec paramètres incluant l'ID (utilisé pour récupérer un transport existant)
+    public Transport(int id_transp, String type_transp, String nom_station, String zone_geographique, Integer note) {
+        this.id_transp = id_transp;
+        this.type_transp = type_transp;
+        this.nom_station = nom_station;
+        this.zone_geographique = zone_geographique;
+        this.note = note;
+    }
     public Transport(int id_transp, String type_transp, String nom_station, String zone_geographique) {
         this.id_transp = id_transp;
         this.type_transp = type_transp;
@@ -56,6 +63,10 @@ public class Transport {
 
     public void setZone_geographique(String zone_geographique) {
         this.zone_geographique = zone_geographique;
+    }
+
+    public Integer getNote() {
+        return note;
     }
 
     // Méthode toString() pour afficher les informations de l'objet
