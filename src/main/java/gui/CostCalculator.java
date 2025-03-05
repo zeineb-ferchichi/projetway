@@ -1,63 +1,88 @@
 package gui;
+
 import okhttp3.*;
 import org.json.JSONObject;
 import java.io.IOException;
 import java.util.List;
 import entities.trajet;
+
 public class CostCalculator {
 
-    private static final String API_KEY = "YOUR_API_KEY"; // Replace with your API key for the exchange rate service
-    private static final String EXCHANGE_API_URL = "https://v6.exchangerate-api.com/v6/" + API_KEY + "/latest/";
+    private static final String API_KEY = "3485c58e40mshb315bf3b9aa9ee8p1fb0e1jsn245bc097e9fb"; // Correct API Key format
+    private static final String GEMINI_API_URL = "\n" +
+            "https://gemini-pro-ai.p.rapidapi.com/"; // Correct API URL
 
-    public double calculateTotalCost(List<trajet> trajets) {
-        double totalCostInBaseCurrency = 0.0;
+    public double calculateTotalCostUsingAI(List<trajet> trajets) {
+        String prompt = buildPrompt(trajets);
 
-        for (trajet trajet : trajets) {
-            double costInLocalCurrency = trajet.getCout(); // Get cost in local currency
-            String destinationCurrency = trajet.getVille_depart(); // Assuming destination currency is available
-
-            try {
-                // Get conversion rate from destination currency to base currency (e.g., USD)
-                double conversionRate = getConversionRate(destinationCurrency, "USD");
-                double costInBaseCurrency = costInLocalCurrency * conversionRate;
-                totalCostInBaseCurrency += costInBaseCurrency;
-            } catch (IOException e) {
-                showAlert("Error", "Error calculating cost: " + e.getMessage());
-            }
+        try {
+            String aiResponse = getAIResponse(prompt);
+            return extractCostFromResponse(aiResponse);
+        } catch (IOException e) {
+            showAlert("Error", "AI Error: " + e.getMessage());
+            return 0.0;
         }
-
-        return totalCostInBaseCurrency;
     }
 
-    // Get the conversion rate from the destination currency to the base currency (e.g., USD)
-    private double getConversionRate(String fromCurrency, String toCurrency) throws IOException {
-        OkHttpClient client = new OkHttpClient();
-        String url = EXCHANGE_API_URL + fromCurrency; // URL like: "https://v6.exchangerate-api.com/v6/YOUR_API_KEY/latest/USD"
+    private String buildPrompt(List<trajet> trajets) {
+        StringBuilder prompt = new StringBuilder("Estimate the total travel cost based on these trips:\n");
 
+        for (trajet t : trajets) {
+            prompt.append("Departure: ").append(t.getVille_depart())
+                    .append(", Destination: ").append(t.getVille_arrivee())
+                    .append(", Cost: ").append(t.getCout())
+                    .append("\n");
+        }
+
+        prompt.append("Provide the estimated total cost in USD.");
+
+        return prompt.toString();
+    }
+
+    private String getAIResponse(String prompt) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        JSONObject jsonBody = new JSONObject();
+        jsonBody.put("contents", new JSONObject().put("parts", new JSONObject().put("text", prompt)));
+
+        RequestBody body = RequestBody.create(jsonBody.toString(), MediaType.get("application/json; charset=utf-8"));
         Request request = new Request.Builder()
-                .url(url)
+                .url(GEMINI_API_URL)
+                .post(body)
                 .addHeader("Content-Type", "application/json")
+                .addHeader("X-RapidAPI-Key", API_KEY) // 🔥 Correction ici
+                .addHeader("X-RapidAPI-Host", "gemini-pro-ai.p.rapidapi.com")
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                throw new IOException("Unexpected code " + response);
+                throw new IOException("Unexpected response: " + response.body().string());
             }
-
-            JSONObject jsonResponse = new JSONObject(response.body().string());
-            JSONObject rates = jsonResponse.getJSONObject("rates");
-
-            if (rates.has(toCurrency)) {
-                return rates.getDouble(toCurrency);
-            } else {
-                throw new IOException("No exchange rate found for currency: " + toCurrency);
-            }
+            return response.body().string();
         }
     }
 
-    // Alert method for displaying errors
+    private double extractCostFromResponse(String response) {
+        try {
+            JSONObject jsonResponse = new JSONObject(response);
+            String textResponse = jsonResponse.getJSONArray("candidates")
+                    .getJSONObject(0)
+                    .getJSONObject("content")
+                    .getJSONArray("parts")
+                    .getJSONObject(0)
+                    .getString("text");
+
+            return parseCostFromText(textResponse);
+        } catch (Exception e) {
+            return 0.0;
+        }
+    }
+
+    private double parseCostFromText(String text) {
+        text = text.replaceAll("[^0-9.]", ""); // Remove non-numeric characters
+        return text.isEmpty() ? 0.0 : Double.parseDouble(text);
+    }
+
     private void showAlert(String title, String message) {
-        // Displaying the alert to the user (use appropriate method depending on your UI framework)
         System.err.println(title + ": " + message);
     }
 }

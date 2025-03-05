@@ -1,7 +1,7 @@
 package entities;
 
 import java.time.LocalDate;
-import java.util.Collection;
+import java.util.List;
 
 public class voyage {
 
@@ -9,8 +9,12 @@ public class voyage {
     private Destination destination;
     private LocalDate date_depart;
     private LocalDate date_retour;
+    private List<trajet> trajets;  // Liste des trajets associés à ce voyage
 
-    public voyage(String destination, String dateDepart, String dateRetour) {}
+    public voyage(String destination, String dateDepart, String dateRetour) {
+        // Ce constructeur pourrait être utilisé pour une conversion ou une initialisation
+        // mais tu devras probablement le remplir de façon appropriée.
+    }
 
     public voyage(int idvoyage, Destination destination, LocalDate date_depart, LocalDate date_retour) {
         validateDates(date_depart, date_retour);
@@ -28,7 +32,6 @@ public class voyage {
     }
 
     public voyage() {
-
     }
 
     private void validateDates(LocalDate date_depart, LocalDate date_retour) {
@@ -84,10 +87,19 @@ public class voyage {
         this.date_retour = date_retour;
     }
 
+    public List<trajet> getTrajets() {
+        return trajets;  // Retourne la liste des trajets associés au voyage
+    }
+
+    public void setTrajets(List<trajet> trajets) {
+        this.trajets = trajets;  // Assigne la liste des trajets
+    }
+
     public enum Destination {
         FRANCE, USA, CANADA, GERMANY, ITALY, SPAIN, UK, JAPAN, CHINA, BRAZIL, AUSTRALIA, INDIA;
 
         public String toLowerCase() {
             return this.name().toLowerCase();
         }
-    }}
+    }
+}

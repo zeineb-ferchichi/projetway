@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import gui.CostCalculator;
+import gui.CostCalculator; // Ajout de l'IA
 
 public class affichertables {
 
@@ -20,18 +21,24 @@ public class affichertables {
     private ListView<HBox> trajetListView;
 
     @FXML
-    private Button sumButton;  // Button for calculating the sum of costs
+    private Button sumButton;  // Bouton pour calculer la somme des coûts
 
     @FXML
-    private Label sumLabel;    // Label for displaying the sum of costs
+    private Label sumLabel;    // Label pour afficher la somme
+
+    @FXML
+    private Button totalCostButton;  // Bouton pour coût en USD
+
+    @FXML
+    private Button aiCostButton;  // Bouton pour coût via IA
 
     private final TrajetService trajetService = new TrajetService();
     private final CostCalculator costCalculator = new CostCalculator();
+    private final CostCalculator aiCostCalculator = new CostCalculator(); // Instance IA
 
     @FXML
     public void initialize() {
         loadTrajets();
-
     }
 
     private void loadTrajets() {
@@ -80,29 +87,30 @@ public class affichertables {
         loadTrajets(); // Refresh ListView
     }
 
-    // Calculate the sum of costs for all trajets and display it in the label
     @FXML
     private void calculateSumOfCosts() {
         List<trajet> trajets = trajetService.getAll();
         double totalCost = 0.0;
 
-        // Assuming each trajet has a "getCost()" method, you can sum the costs.
         for (trajet t : trajets) {
-            totalCost += t.getCout(); // Replace getCost() with the actual method for retrieving cost.
+            totalCost += t.getCout();
         }
 
-        // Update the label to display the sum of the costs
         sumLabel.setText("Somme des Coûts: " + totalCost);
     }
 
     @FXML
-    private Button totalCostButton;  // Button for calculating the total cost in USD
-
-    @FXML
     private void calculateTotalCost() {
-        List<trajet> trajets = trajetService.getAll(); // Get the list of all trajets
-        double totalCost = costCalculator.calculateTotalCost(trajets);
+        List<trajet> trajets = trajetService.getAll();
+        double totalCost = costCalculator.calculateTotalCostUsingAI(trajets);
         sumLabel.setText("Total Cost in USD: " + totalCost);
     }
 
+    // 📌 Nouveau bouton pour l'IA
+    @FXML
+    private void calculateTotalCostUsingAI() {
+        List<trajet> trajets = trajetService.getAll();
+        double estimatedCost = aiCostCalculator.calculateTotalCostUsingAI(trajets);
+        sumLabel.setText("Total Cost (AI): " + estimatedCost);
+    }
 }
