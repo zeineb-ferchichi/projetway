@@ -44,7 +44,7 @@ public class interfaces {
             Stage stage = new Stage();
             stage.setTitle(title);
             stage.setScene(new Scene(root));
-            stage.show();
+            stage.show()
         } catch (IOException e) {
             System.out.println("Erreur lors du chargement de la fenêtre: " + e.getMessage());
             e.printStackTrace();
