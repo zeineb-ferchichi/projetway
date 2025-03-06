@@ -12,8 +12,7 @@ public class CostCalculator {
 
     private static final String API_KEY = System.getenv("\n" +
             "3485c58e40mshb315bf3b9aa9ee8p1fb0e1jsn245bc097e9fb"); // Clé API sécurisée
-    private static final String GEMINI_API_URL = "https://gemini-pro.p.rapidapi.com/generate";
-    // Vérifiez l'URL correcte
+    private static final String GEMINI_API_URL = "https://gemini-pro-ai.p.rapidapi.com/"; // Vérifiez l'URL correcte
 
     public double calculateTotalCostUsingAI(List<trajet> trajets) {
         if (API_KEY == null || API_KEY.isEmpty()) {
