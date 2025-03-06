@@ -1,4 +1,4 @@
-package models
+package models;
 
 public class Transport {
     // Attributs correspondant aux colonnes de la table `transport`
