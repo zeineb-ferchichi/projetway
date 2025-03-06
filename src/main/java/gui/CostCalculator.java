@@ -21,7 +21,7 @@ public class CostCalculator {
             return extractCostFromResponse(aiResponse);
         } catch (IOException e) {
             showAlert("Error", "AI Error: " + e.getMessage());
-            return 0.0;
+            return 10;
         }
     }
 
