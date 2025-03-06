@@ -67,7 +67,7 @@ public class TransportService {
 
 
     public void update(Transport transport) {
-        String sql = "UPDATE transport SET type_transp = ?, nom_station = ?, zone_geographique = ? WHERE id_transp = ?";
+        String sql "UPDATE transport SET type_transp = ?, nom_station = ?, zone_geographique = ? WHERE id_transp = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, transport.getType_transp());
             stmt.setString(2, transport.getNom_station());
