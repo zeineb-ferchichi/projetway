@@ -1,4 +1,4 @@
-package gui;
+package gui
 import services.PDFExportAbonnementService;
 
 import javafx.collections.FXCollections;
