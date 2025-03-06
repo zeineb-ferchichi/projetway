@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.affichervoy">
+<AnchorPane prefHeight="627.0" prefWidth="912.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.affichervoy">
     <children>
         <!-- Background Image -->
         <ImageView fitHeight="626.0" fitWidth="258.0" layoutX="-48.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
@@ -28,13 +28,13 @@
         </Label>
 
         <!-- ListView for displaying voyages -->
-        <ListView fx:id="voyageListView" layoutX="230.0" layoutY="70.0" prefHeight="300.0" prefWidth="500.0" />
+        <ListView fx:id="voyageListView" layoutX="230.0" layoutY="70.0" prefHeight="306.0" prefWidth="638.0" />
 
         <!-- Sort Button to trigger sorting -->
-        <Button fx:id="sortButton" layoutX="565.0" layoutY="365.0" onAction="#sortVoyagesByDestination" prefHeight="35.0" prefWidth="164.0" stylesheets="@styles.css" text="Statiques" />
+        <Button fx:id="sortButton" layoutX="498.0" layoutY="384.0" onAction="#sortVoyagesByDestination" prefHeight="35.0" prefWidth="164.0" stylesheets="@styles.css" text="Statiques" />
 
         <!-- BarChart to display the sorted data by destination -->
-        <BarChart fx:id="voyageBarChart" layoutX="230.0" layoutY="430.0" prefHeight="150.0" prefWidth="500.0">
+        <BarChart fx:id="voyageBarChart" layoutX="230.0" layoutY="430.0" prefHeight="183.0" prefWidth="648.0">
             <xAxis>
                 <CategoryAxis fx:id="categoryAxis" />
             </xAxis>

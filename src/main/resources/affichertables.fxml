@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.affichertables">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.affichertables">
     <children>
         <!-- Background Image -->
         <ImageView fitHeight="626.0" fitWidth="258.0" layoutX="-48.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
@@ -16,11 +16,11 @@
                 <Image url="@img.png" />
             </image>
         </ImageView>
-        <Button fx:id="sumButton" layoutX="230.0" layoutY="433.0" onAction="#calculateSumOfCosts" prefHeight="34.0" prefWidth="119.0" text="Somme des Coûts">
+        <Button fx:id="sumButton" layoutX="230.0" layoutY="439.0" onAction="#calculateSumOfCosts" prefHeight="36.0" prefWidth="210.0" text="Somme des Coûts">
          <font>
             <Font name="Arial" size="12.0" />
          </font></Button>
-        <Button fx:id="totalCostButton" layoutX="402.0" layoutY="531.0" onAction="#calculateTotalCost" text="Calculate Total Cost" />
+        <Button fx:id="totalCostButton" layoutX="579.0" layoutY="437.0" onAction="#calculateTotalCost" prefHeight="36.0" prefWidth="198.0" text="Calculate Total Cost" />
 
         <!-- Trajets Section -->
         <Label layoutX="240.0" layoutY="14.0" text="Trajets :">
@@ -28,10 +28,10 @@
                 <Font name="Aldhabi" size="32.0" />
             </font>
         </Label>
-        <ListView fx:id="trajetListView" layoutX="230.0" layoutY="70.0" prefHeight="363.0" prefWidth="465.0" />
+        <ListView fx:id="trajetListView" layoutX="230.0" layoutY="70.0" prefHeight="363.0" prefWidth="548.0" />
 
         <!-- Label to display the sum -->
-        <Label fx:id="sumLabel" layoutX="535.0" layoutY="398.0" prefHeight="34.0" prefWidth="209.0" text="Somme des Coûts: ">
+        <Label fx:id="sumLabel" layoutX="584.0" layoutY="392.0" prefHeight="34.0" prefWidth="209.0" text="Somme des Coûts: ">
          <font>
             <Font name="Arial" size="12.0" />
          </font></Label>

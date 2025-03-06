@@ -13,7 +13,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="572.0" prefWidth="802.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ajoutertrajet">
+<AnchorPane prefHeight="572.0" prefWidth="802.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ajoutertrajet">
     <!-- Background Image -->
     <ImageView fitHeight="572.0" fitWidth="246.0" layoutX="-32.0" pickOnBounds="true" preserveRatio="true">
         <image>
@@ -28,7 +28,7 @@
             <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="399.0" layoutX="49.0" layoutY="-4.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="406.0" />
       
             <!-- Title -->
-            <Label layoutX="145.0" layoutY="-19.0" prefHeight="21.0" prefWidth="200.0" stylesheets="@styles.css" text="Ajouter un Trajet" textAlignment="CENTER" textFill="#2c3e50">
+            <Label layoutX="192.0" layoutY="-29.0" prefHeight="21.0" prefWidth="200.0" stylesheets="@styles.css" text="Ajouter un Trajet" textAlignment="CENTER" textFill="#2c3e50">
                 <font>
                     <Font name="Aldhabi" size="39.0" />
                 </font>

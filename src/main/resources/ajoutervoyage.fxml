@@ -28,7 +28,7 @@
             <Rectangle arcHeight="20.0" arcWidth="20.0" fill="WHITE" height="355.0" layoutX="50.0" layoutY="-4.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5" width="380.0" />
 
             <!-- Title -->
-            <Label layoutX="145.0" layoutY="-4.0" prefHeight="21.0" prefWidth="200.0" text="Ajouter un Voyage" textAlignment="CENTER" textFill="#2c3e50">
+            <Label layoutX="166.0" layoutY="2.0" prefHeight="21.0" prefWidth="200.0" text="Ajouter un Voyage" textAlignment="CENTER" textFill="#2c3e50">
                 <font>
                     <Font name="Aldhabi" size="39.0" />
                 </font>
@@ -40,21 +40,21 @@
                     <!-- Destination Selection -->
                     <HBox alignment="CENTER_LEFT" spacing="10.0">
                         <children>
-                            <ComboBox fx:id="comboDestination" promptText="Sélectionnez une destination" prefWidth="300.0" />
+                            <ComboBox fx:id="comboDestination" prefWidth="300.0" promptText="Sélectionnez une destination" />
                         </children>
                     </HBox>
 
                     <!-- Date Depart -->
                     <HBox alignment="CENTER_LEFT" spacing="10.0">
                         <children>
-                            <DatePicker fx:id="dpDateDepart" promptText="Date de départ" prefWidth="300.0" />
+                            <DatePicker fx:id="dpDateDepart" prefWidth="300.0" promptText="Date de départ" />
                         </children>
                     </HBox>
 
                     <!-- Date Retour -->
                     <HBox alignment="CENTER_LEFT" spacing="10.0">
                         <children>
-                            <DatePicker fx:id="dpDateRetour" promptText="Date de retour" prefWidth="300.0" />
+                            <DatePicker fx:id="dpDateRetour" prefWidth="300.0" promptText="Date de retour" />
                         </children>
                     </HBox>
                 </children>

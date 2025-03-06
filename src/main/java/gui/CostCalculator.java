@@ -8,7 +8,8 @@ import entities.trajet;
 
 public class CostCalculator {
 
-    private static final String API_KEY = "3485c58e40mshb315bf3b9aa9ee8p1fb0e1jsn245bc097e9fb"; // Correct API Key format
+    private static final String API_KEY = "\n" +
+            "3485c58e40mshb315bf3b9aa9ee8p1fb0e1jsn245bc097e9fb"; // Correct API Key format
     private static final String GEMINI_API_URL = "\n" +
             "https://gemini-pro-ai.p.rapidapi.com/"; // Correct API URL
 
@@ -28,8 +29,7 @@ public class CostCalculator {
         StringBuilder prompt = new StringBuilder("Estimate the total travel cost based on these trips:\n");
 
         for (trajet t : trajets) {
-            prompt.append("Departure: ").append(t.getVille_depart())
-                    .append(", Destination: ").append(t.getVille_arrivee())
+            prompt
                     .append(", Cost: ").append(t.getCout())
                     .append("\n");
         }
