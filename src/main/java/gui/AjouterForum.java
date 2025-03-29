@@ -13,8 +13,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.fxml.FXMLLoader;
-import java.io.File;
-import java.io.IOException;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.file.Files;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,20 +69,31 @@ public class AjouterForum {
             showAlert(Alert.AlertType.WARNING, "Image manquante", "Veuillez sélectionner une image.");
             return;
         }
+
         String sanitizedTitre = isContentInappropriate(titre);
         String sanitizedContenu = isContentInappropriate(contenu);
-        if (sanitizedTitre.contains("*") || sanitizedContenu.contains("*") ) {
+        if (sanitizedTitre.contains("*") || sanitizedContenu.contains("*")) {
             showAlert(Alert.AlertType.ERROR, "Contenu interdit", "Votre message contient des propos inappropriés.");
-
         }
-        TFtitre.setText(sanitizedTitre);
-         TFcontenue.setText(sanitizedContenu);
-        // Récupérer l'image depuis ImageView
 
+        TFtitre.setText(sanitizedTitre);
+        TFcontenue.setText(sanitizedContenu);
+
+        // **UPLOAD IMAGE FIRST** (if it's not already a URL)
+        if (imagePath != null && !imagePath.startsWith("http")) {
+            try {
+                imagePath = uploadImageToServer(new File(imagePath));  // Upload & get URL
+            } catch (IOException e) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Échec du téléversement de l'image.");
+                return;
+            }
+        }
+
+        // Création d'un nouveau Forum avec l'URL de l'image
         try {
             Forum forum = new Forum(sanitizedTitre, sanitizedContenu, imagePath, new Date(System.currentTimeMillis()));
 
-            forumService.add(forum); // Utilisation de ForumService pour l'ajout
+            forumService.add(forum); // Enregistrement dans la base de données
 
             // Ajouter le forum à la liste statique
             forumsList.add(forum);
@@ -91,10 +105,11 @@ public class AjouterForum {
             TFcontenue.clear();
             TFimage.setImage(null);
 
-        } catch (Exception e) {  // Exception générale au lieu de IOException
+        } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'ajout du forum : " + e.getMessage());
         }
     }
+
 
     /**
      * Méthode pour afficher des alertes
@@ -192,5 +207,44 @@ public class AjouterForum {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur de vérification AI : " + e.getMessage());
             return text;
         }
+    }
+    public String uploadImageToServer(File imageFile) throws IOException {
+        String uploadUrl = "http://localhost:8000/upload-image";
+        HttpURLConnection connection = (HttpURLConnection) new URL(uploadUrl).openConnection();
+        System.out.println("here");
+        connection.setRequestMethod("POST");
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=----Boundary");
+        System.out.println("here é");
+
+        OutputStream outputStream = connection.getOutputStream();
+        PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream, "UTF-8"), true);
+
+        // Send file data
+        writer.append("------Boundary\r\n")
+                .append("Content-Disposition: form-data; name=\"image\"; filename=\"" + imageFile.getName() + "\"\r\n")
+                .append("Content-Type: " + Files.probeContentType(imageFile.toPath()) + "\r\n\r\n")
+                .flush();
+        System.out.println("here 22");
+
+        Files.copy(imageFile.toPath(), outputStream);
+        outputStream.flush();
+        writer.append("\r\n------Boundary--\r\n").flush();
+
+        // Get response from Symfony
+        InputStream responseStream = new BufferedInputStream(connection.getInputStream());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(responseStream));
+        StringBuilder response = new StringBuilder();
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            response.append(line);
+        }
+
+        reader.close();
+
+        // Parse JSON response to extract the URL
+        JSONObject jsonResponse = new JSONObject(response.toString());
+        return jsonResponse.getString("url");
     }
 }

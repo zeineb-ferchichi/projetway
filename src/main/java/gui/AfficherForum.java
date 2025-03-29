@@ -103,7 +103,7 @@ public class AfficherForum {
                 if (imageFile.exists() && imageFile.isFile()) {
                     image = new Image("file:" + imagePath);
                 } else {
-                    image = new Image("file:/chemin/vers/image/empty.png");
+                    image = new Image(imagePath);
                 }
 
                 ImageView imageView = new ImageView(image);

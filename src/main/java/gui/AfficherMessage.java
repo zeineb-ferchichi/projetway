@@ -186,9 +186,9 @@ public class AfficherMessage {
         File imageFile = new File(imagePath);
         Image image;
         if (imageFile.exists() && imageFile.isFile()) {
-            image = new Image("file:" + imagePath);
+            image = new Image(imagePath);
         } else {
-            image = new Image("file:/chemin/vers/image/empty.png");
+            image = new Image(imagePath);
         }
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(200);

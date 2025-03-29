@@ -205,9 +205,9 @@ public class AjouterMessage {
      File imageFile = new File(imagePath);
      Image image;
      if (imageFile.exists() && imageFile.isFile()) {
-         image = new Image("file:" + imagePath);
+         image = new Image( imagePath);
      } else {
-         image = new Image("file:/chemin/vers/image/empty.png");
+         image = new Image(imagePath);
      }
      ImageView imageView = new ImageView(image);
      imageView.setFitWidth(200);
@@ -235,7 +235,7 @@ public class AjouterMessage {
                 + "Text: " + text;
         content.put("text", prompt);
 
-        JSONObject contents = new JSONObject();
+        JSONObject contents = new JSONObject(); 
         contents.put("parts", new org.json.JSONArray().put(content));
 
         requestBody.put("contents", new org.json.JSONArray().put(contents));
