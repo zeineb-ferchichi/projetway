@@ -13,6 +13,8 @@ import javafx.event.ActionEvent;
 
 import java.io.File;
 import java.io.IOException;
+
+import javafx.stage.Stage;
 import models.Forum;
 import models.Message;
 import okhttp3.*;
@@ -54,6 +56,7 @@ public class AjouterMessage {
 
         // Action sur le bouton d'envoi
         btnEnvoyer.setOnAction(event -> ajouterMessage());
+
     }
 
     // Méthode pour initialiser les données avec le forum sélectionné
@@ -184,12 +187,17 @@ public class AjouterMessage {
     @FXML
     void afficher(ActionEvent event) {
         try {
-            // Charge le fichier FXML de l'écran des forums
-            Parent root = FXMLLoader.load(getClass().getResource("/AfficherForum.fxml"));
-            // Change la scène pour afficher la nouvelle interface
-            btnAfficherForum.getScene().setRoot(root);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherForum.fxml"));
+            Parent root = loader.load();
+
+            AfficherForum controller = loader.getController();
+            controller.setIsAdmin(Session.isAdmin());
+
+            Stage stage = (Stage) btnAfficherForum.getScene().getWindow();
+            stage.getScene().setRoot(root);
+
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Erreur lors du chargement du forum : " + e.getMessage());
         }
     }
  void afficherForum(Forum forum){

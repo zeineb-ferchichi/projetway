@@ -21,6 +21,8 @@ import java.nio.file.Files;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import okhttp3.*;
 
 
@@ -152,15 +154,48 @@ public class AjouterForum {
     @FXML
     void afficher(ActionEvent event) {
         try {
-            // Charge le fichier FXML de l'écran des forums
-            Parent root = FXMLLoader.load(getClass().getResource("/AfficherForum.fxml"));
-            // Change la scène pour afficher la nouvelle interface
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherForum.fxml"));
+            Parent root = loader.load();
+            AfficherForum controller = loader.getController();
+            controller.setIsAdmin(Session.isAdmin());
             btnAfficherForum.getScene().setRoot(root);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }
+    @FXML
+    void generateAIImage(ActionEvent event) {
+        String prompt = TFcontenue.getText().trim();
 
+        if (prompt.isEmpty() || prompt.length() < 5) {
+            showAlert(Alert.AlertType.WARNING, "Contenu insuffisant", "Veuillez entrer un contenu suffisant pour générer une image.");
+            return;
+        }
+
+        try {
+            String apiUrl = "https://image.pollinations.ai/prompt/" + java.net.URLEncoder.encode(prompt, "UTF-8");
+            URL url = new URL(apiUrl);
+            InputStream is = url.openStream();
+
+            // Save image locally
+            File generatedImage = new File("generated_image.jpg");
+            try (OutputStream os = new FileOutputStream(generatedImage)) {
+                byte[] buffer = new byte[2048];
+                int bytesRead;
+                while ((bytesRead = is.read(buffer)) != -1) {
+                    os.write(buffer, 0, bytesRead);
+                }
+            }
+
+            imagePath = generatedImage.getAbsolutePath();  // Save for later upload
+            TFimage.setImage(new Image(generatedImage.toURI().toString()));
+
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Image IA générée et ajoutée au formulaire.");
+
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Échec de la génération d'image : " + e.getMessage());
+        }
+    }
     private String isContentInappropriate(String text) {
         OkHttpClient client = new OkHttpClient();
         String apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + API_KEY;

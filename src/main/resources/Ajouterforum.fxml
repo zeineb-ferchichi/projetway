@@ -19,6 +19,10 @@
       <Label layoutX="137.0" layoutY="347.0" text="contenu" />
       <TextField fx:id="TFcontenue" layoutX="128.0" layoutY="365.0" prefHeight="90.0" prefWidth="342.0"
                  promptText="contenu" />
+      <Button layoutX="128.0" layoutY="225.0" mnemonicParsing="false"
+              onAction="#generateAIImage"
+              style="-fx-background-color: #1B4B65;"
+              text="Générer Image IA" textFill="WHITE" />
       <Button layoutX="129.0" layoutY="470.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="342.0"
               style="-fx-background-color: #1B4B65;" onAction="#ajouter" text="Ajouter" textFill="WHITE" />
       <Button layoutX="128.0" layoutY="506.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="342.0"

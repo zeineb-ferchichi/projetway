@@ -8,7 +8,7 @@ public class Forum {
     private String contenu;
     private String image;
     private Date dateCreation;
-
+    private int likes;
     // Constructeurs
     public Forum() {}
 
@@ -48,6 +48,7 @@ public class Forum {
         return contenu;
     }
 
+
     public void setContenu(String contenu) {
         this.contenu = contenu;
     }
@@ -66,6 +67,22 @@ public class Forum {
 
     public void setDateCreation(Date dateCreation) {
         this.dateCreation = dateCreation;
+    }
+    public int getLikes() {
+        return likes;
+    }
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+    public void increaseLikes() {
+        likes++;
+        this.setLikes(likes);
+    }
+    public void decreaseLikes() {
+        if (likes > 0) {
+            likes--;
+            this.setLikes(likes);
+        }
     }
 
     @Override

@@ -96,12 +96,16 @@ public class AfficherMessage {
                     modifyButton.setStyle("-fx-background-color: #62B9CB; -fx-text-fill: white; -fx-background-radius: 5;");
                     modifyButton.setOnAction(event -> modifyMessage(msg));
 
+
                     Button deleteButton = new Button("Supprimer");
                     deleteButton.setStyle("-fx-background-color: #D9534F; -fx-text-fill: white; -fx-background-radius: 5;");
                     deleteButton.setOnAction(event -> deleteMessage(msg));
 
                     HBox buttonBox = new HBox(10, modifyButton, deleteButton);
-
+                    if (Session.isAdmin()) {
+                        modifyButton.setVisible(false);
+                        modifyButton.setManaged(false);
+                    }
                     messageBox.getChildren().addAll(contenuLabel, dateLabel, buttonBox);
                     messageTilePane.getChildren().add(messageBox);
                 }

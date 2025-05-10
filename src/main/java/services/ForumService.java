@@ -30,15 +30,15 @@ public class ForumService {
     }
 
     // Mettre à jour un forum
-    // Mettre à jour un forum
     public boolean update(Forum forum) {
-        String query = "UPDATE forum SET titre=?, contenu=?, image=?, dateCreation=? WHERE idForum=?";
+        String query = "UPDATE forum SET titre=?, contenu=?, image=?, dateCreation=?, likes=? WHERE idForum=?";
         try (PreparedStatement pst = connection.prepareStatement(query)) {
             pst.setString(1, forum.getTitre());
             pst.setString(2, forum.getContenu());
             pst.setString(3, forum.getImage());
             pst.setDate(4, forum.getDateCreation());
-            pst.setInt(5, forum.getIdForum());
+            pst.setInt(5, forum.getLikes());
+            pst.setInt(6, forum.getIdForum());
 
             int rowsUpdated = pst.executeUpdate();
             if (rowsUpdated > 0) {
@@ -139,6 +139,19 @@ public class ForumService {
     public Forum getForumById(int forumId) {
         // Simulate fetching forum from database
         return new Forum(forumId, "Titre du forum", "Contenu du forum", "path_to_image.jpg", new java.sql.Date(System.currentTimeMillis()));
+    }
+    public int countByForumId(int forumId) {
+        String query = "SELECT COUNT(*) FROM message WHERE idForum = ?";
+        try (PreparedStatement pst = connection.prepareStatement(query)) {
+            pst.setInt(1, forumId);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors du comptage des commentaires : " + e.getMessage());
+        }
+        return 0;
     }
 
 }

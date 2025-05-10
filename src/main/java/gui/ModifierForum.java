@@ -134,7 +134,10 @@ public class ModifierForum {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherForum.fxml"));
             Parent root = loader.load();
-            btnAfficherForum.getScene().setRoot(root);  // Changer de vue
+            AfficherForum controller = loader.getController();
+            controller.setIsAdmin(Session.isAdmin());
+            btnAfficherForum.getScene().setRoot(root);
+            // Changer de vue
         } catch (IOException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'afficher la liste des forums : " + e.getMessage());
         }
